@@ -34,8 +34,8 @@ Each `Kertomus-<version>-linux-<arch>.AppImage` and `.tar.gz` also has a detache
 `.asc` signature:
 
 ```bash
-gpg --verify Kertomus-1.3.1-linux-x64.AppImage.asc \
-  Kertomus-1.3.1-linux-x64.AppImage
+gpg --verify Kertomus-1.3.1-linux-x86_64.AppImage.asc \
+  Kertomus-1.3.1-linux-x86_64.AppImage
 ```
 
 A valid signature means the file was signed by this key. It does not replace

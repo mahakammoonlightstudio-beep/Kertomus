@@ -171,7 +171,7 @@ Each platform has a full installer/app and a portable folder build.
 | --- | --- | --- |
 | Windows | `Kertomus-1.3.1-win-x64.exe` (NSIS installer) | `Kertomus-1.3.1-win-x64.zip` |
 | macOS | `Kertomus-1.3.1-mac-universal.dmg` (universal) | `Kertomus-1.3.1-mac-universal.zip` / `Kertomus-1.3.1-mac-arm64.zip` |
-| Linux (x64) | `Kertomus-1.3.1-linux-x64.AppImage` | `Kertomus-1.3.1-linux-x64.tar.gz` |
+| Linux (x64) | `Kertomus-1.3.1-linux-x86_64.AppImage` | `Kertomus-1.3.1-linux-x64.tar.gz` |
 | Linux (arm64) | `Kertomus-1.3.1-linux-arm64.AppImage` | `Kertomus-1.3.1-linux-arm64.tar.gz` |
 
 The macOS disk image and the main macOS zip are universal (Intel + Apple
@@ -200,8 +200,8 @@ Each AppImage and tarball also has a detached `.asc` signature, so a single
 file can be checked without the manifest:
 
 ```bash
-gpg --verify Kertomus-1.3.1-linux-x64.AppImage.asc \
-  Kertomus-1.3.1-linux-x64.AppImage
+gpg --verify Kertomus-1.3.1-linux-x86_64.AppImage.asc \
+  Kertomus-1.3.1-linux-x86_64.AppImage
 ```
 
 Release key fingerprint:

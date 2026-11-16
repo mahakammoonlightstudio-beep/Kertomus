@@ -54,7 +54,7 @@
       return find([/mac/i, /universal/i, /\.dmg$/i]) || find([/mac/i, /\.zip$/i]);
     }
     if (target === 'linux') {
-      return find([/linux/i, /x64/i, /\.AppImage$/i]) || find([/linux/i, /\.tar\.gz$/i]);
+      return find([/linux/i, /x86_64|x64/i, /\.AppImage$/i]) || find([/linux/i, /\.tar\.gz$/i]);
     }
     if (target === 'linux-arm64') {
       return find([/linux/i, /arm64/i, /\.AppImage$/i]) || find([/linux/i, /arm64/i, /\.tar\.gz$/i]);
