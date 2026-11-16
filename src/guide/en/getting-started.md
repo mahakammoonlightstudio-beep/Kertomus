@@ -6,7 +6,7 @@ order: 1
 
 # Getting started
 
-OpenPlot AI is a local-first chat and story studio. Your chats, projects, story bible and settings live in one SQLite file on your machine — only the model request leaves the app.
+Kertomus is a local-first chat and story studio. Your chats, projects, story bible and settings live in one SQLite file on your machine — only the model request leaves the app.
 
 ## 1. Add a provider
 Open [[settings:providers]] and either use **Smart setup** (pick a preset → paste a key → test) or add a provider manually.

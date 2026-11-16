@@ -1,543 +1,504 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OpenPlot AI — a free, local-first AI story studio</title>
-  <meta name="description" content="OpenPlot AI is a free, open-source, local-first AI chat and story-writing studio for Windows, macOS and Linux. No account, no cloud, no telemetry.">
-  <link rel="canonical" href="https://mahakammoonlightstudio-beep.github.io/OpenPlot-AI/">
-  <link rel="alternate" hreflang="en" href="https://mahakammoonlightstudio-beep.github.io/OpenPlot-AI/">
-  <link rel="alternate" hreflang="id" href="https://mahakammoonlightstudio-beep.github.io/OpenPlot-AI/id/">
-  <link rel="alternate" hreflang="x-default" href="https://mahakammoonlightstudio-beep.github.io/OpenPlot-AI/">
-  <link rel="icon" href="review/01-chat.png">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kertomus — a local-first AI writing studio</title>
+  <meta name="description" content="Kertomus is a free, open-source, local-first AI writing studio for Windows, macOS and Linux. Chat with any model, keep canon in a story bible, outline in three acts, and write chapters in one desktop window.">
+  <meta name="theme-color" content="#15110d">
+  <link rel="canonical" href="https://mahakammoonlightstudio-beep.github.io/Kertomus/">
+  <link rel="icon" href="brand/kertomus-logo.jpeg" type="image/jpeg">
+  <link rel="preload" as="image" href="kertomus-banner.webp">
 
-  <!-- Open Graph / Twitter previews -->
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="OpenPlot AI">
-  <meta property="og:url" content="https://mahakammoonlightstudio-beep.github.io/OpenPlot-AI/">
-  <meta property="og:title" content="OpenPlot AI — a free, local-first AI story studio">
-  <meta property="og:description" content="AI chat with any provider, story bible, chapters with version history, writing stats. Free, open source, no cloud, no telemetry. Windows, macOS, Linux.">
-  <meta property="og:image" content="https://mahakammoonlightstudio-beep.github.io/OpenPlot-AI/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="OpenPlot AI — your story deserves a studio, not five browser tabs. Free and open source for Windows, macOS and Linux.">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:locale:alternate" content="id_ID">
+  <meta property="og:site_name" content="Kertomus">
+  <meta property="og:title" content="Kertomus — your story studio">
+  <meta property="og:description" content="A free, open-source, local-first AI writing studio. One window for chat, canon, outline, chapters and stats.">
+  <meta property="og:url" content="https://mahakammoonlightstudio-beep.github.io/Kertomus/">
+  <meta property="og:image" content="https://mahakammoonlightstudio-beep.github.io/Kertomus/kertomus-banner.webp">
+  <meta property="og:image:width" content="1400">
+  <meta property="og:image:height" content="788">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="OpenPlot AI — a free, local-first AI story studio">
-  <meta name="twitter:description" content="AI chat with any provider, story bible, chapters, stats. Free and open source, local-first.">
-  <meta name="twitter:image" content="https://mahakammoonlightstudio-beep.github.io/OpenPlot-AI/og-image.png">
+  <meta name="twitter:title" content="Kertomus — your story studio">
+  <meta name="twitter:description" content="A local-first AI writing studio for people who would rather write than manage tabs.">
+  <meta name="twitter:image" content="https://mahakammoonlightstudio-beep.github.io/Kertomus/kertomus-banner.webp">
 
-  <style>
-    :root {
-      --bg: #0e1116;
-      --panel: #161b22;
-      --border: #2a313b;
-      --text: #e6edf3;
-      --muted: #9aa7b3;
-      --accent: #7aa2f7;
-      --accent-strong: #4d7fe0;
-      --ok: #3fb950;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.6;
-    }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
-
-    nav {
-      border-bottom: 1px solid var(--border);
-      background: rgba(14, 17, 22, 0.85);
-      backdrop-filter: blur(8px);
-      position: sticky; top: 0; z-index: 10;
-    }
-    nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
-    .brand { font-weight: 700; letter-spacing: 0.2px; color: var(--text); }
-    .brand span { color: var(--accent); }
-    nav .right { display: flex; align-items: center; gap: 22px; }
-    nav .links { display: flex; gap: 20px; font-size: 0.95rem; }
-    nav .links a { color: var(--muted); }
-    nav .links a:hover { color: var(--text); text-decoration: none; }
-    .lang-switch { display: flex; gap: 4px; }
-    .lang-btn {
-      background: transparent; border: 1px solid var(--border);
-      color: var(--muted); border-radius: 7px; padding: 5px 11px;
-      font-size: 0.85rem; font-weight: 600; cursor: pointer;
-    }
-    .lang-btn:hover { color: var(--text); }
-    .lang-btn.active { background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
-
-    header { padding: 88px 0 64px; text-align: center; }
-    header h1 { font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.15; letter-spacing: -0.5px; }
-    header h1 em { font-style: normal; color: var(--accent); }
-    header p.sub { color: var(--muted); font-size: 1.15rem; max-width: 640px; margin: 18px auto 0; }
-    .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 34px; }
-
-    .btn {
-      display: inline-flex; align-items: center; gap: 9px;
-      padding: 13px 26px; border-radius: 9px;
-      font-size: 1.02rem; font-weight: 600;
-      border: 1px solid var(--border);
-      cursor: pointer; transition: transform .08s ease, background .15s ease;
-    }
-    .btn:hover { text-decoration: none; transform: translateY(-1px); }
-    .btn-primary { background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
-    .btn-primary:hover { background: var(--accent); }
-    .btn-secondary { background: transparent; color: var(--text); }
-    .btn-secondary:hover { background: var(--panel); }
-
-    .detect {
-      margin-top: 16px; font-size: 0.92rem; color: var(--muted);
-      min-height: 1.4em;
-    }
-    .detect .spin {
-      display: inline-block; width: 12px; height: 12px;
-      border: 2px solid var(--border); border-top-color: var(--accent);
-      border-radius: 50%; animation: spin 0.8s linear infinite;
-      vertical-align: -2px; margin-right: 6px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .detect .ok { color: var(--ok); }
-
-    .shot { margin: 26px auto 0; max-width: 900px; }
-    .shot img {
-      width: 100%; border: 1px solid var(--border); border-radius: 12px;
-      box-shadow: 0 22px 60px rgba(0,0,0,0.45);
-    }
-    .shot figcaption { color: var(--muted); font-size: 0.88rem; margin-top: 10px; }
-
-    section { padding: 56px 0; }
-    section h2 { font-size: 1.7rem; margin-bottom: 26px; letter-spacing: -0.3px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
-    .card {
-      background: var(--panel); border: 1px solid var(--border);
-      border-radius: 12px; padding: 22px;
-    }
-    .card h3 { font-size: 1.05rem; margin-bottom: 8px; }
-    .card p { color: var(--muted); font-size: 0.95rem; }
-    .card code { color: var(--accent); font-size: 0.85rem; }
-
-    table.assets { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
-    table.assets th, table.assets td {
-      text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border);
-    }
-    table.assets th { color: var(--muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.4px; }
-    table.assets td.dl a { font-weight: 600; }
-
-    .badge {
-      display: inline-block; padding: 3px 10px; border-radius: 999px;
-      border: 1px solid var(--border); font-size: 0.8rem; color: var(--muted);
-    }
-
-    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
-    .step { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-    .step .n {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 28px; height: 28px; border-radius: 50%;
-      background: var(--accent-strong); color: #fff; font-weight: 700; margin-bottom: 10px;
-    }
-    .step p { color: var(--muted); font-size: 0.93rem; }
-    .step p strong { color: var(--text); }
-
-    footer {
-      border-top: 1px solid var(--border); padding: 34px 0 44px;
-      color: var(--muted); font-size: 0.9rem;
-    }
-    footer .wrap { display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; align-items: center; }
-    footer .donate a { margin-left: 14px; }
-    footer .donate a.paypal {
-      display: inline-block; margin-left: 10px; padding: 4px 11px;
-      border: 1px solid var(--border); border-radius: 999px;
-      color: var(--text); font-weight: 600;
-    }
-    footer .donate a.paypal:hover { border-color: var(--accent); color: var(--accent); }
-
-    @media (max-width: 640px) {
-      nav .links { display: none; }
-      header { padding: 60px 0 44px; }
-    }
-  </style>
+  <link rel="stylesheet" href="site.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Kertomus",
+    "applicationCategory": "WritingApplication",
+    "operatingSystem": "Windows, macOS, Linux",
+    "description": "A free, open-source, local-first AI writing studio for chat, story canon, outlining and manuscript drafting.",
+    "url": "https://mahakammoonlightstudio-beep.github.io/Kertomus/",
+    "image": "https://mahakammoonlightstudio-beep.github.io/Kertomus/kertomus-banner.webp",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "license": "https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/LICENSE",
+    "author": { "@type": "Organization", "name": "Mahakam Moonlight Studio" }
+  }
+  </script>
 </head>
 <body>
-  <nav>
-    <div class="wrap">
-      <a class="brand" href="#">OpenPlot <span>AI</span></a>
-      <div class="right">
-        <div class="links">
-          <a href="#features" data-i18n="nav.features">Features</a>
-          <a href="#download" data-i18n="nav.download">Download</a>
-          <a href="#install" data-i18n="nav.install">Install</a>
-          <a href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI">GitHub</a>
-        </div>
-        <div class="lang-switch">
-          <button class="lang-btn" id="lang-en" type="button" aria-label="English">EN</button>
-          <a class="lang-btn" id="lang-id" href="id/" aria-label="Bahasa Indonesia">ID</a>
-        </div>
-      </div>
-    </div>
-  </nav>
+  <a class="skip" href="#main">Skip to content</a>
 
-  <header>
-    <div class="wrap">
-      <h1 data-i18n-html="hero.h1">Your story deserves a studio,<br>not <em>five browser tabs</em>.</h1>
-      <p class="sub" data-i18n="hero.sub">
-        OpenPlot AI is a free, open-source writing studio with an AI chat that works with
-        any provider — including fully local models. Your data never leaves your machine.
-      </p>
-      <div class="cta-row">
-        <a id="btn-primary" class="btn btn-primary" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/latest" data-i18n="hero.cta">Download for my OS</a>
-        <a class="btn btn-secondary" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI" data-i18n="hero.cta2">View source on GitHub</a>
-      </div>
-      <p class="detect" id="detect"></p>
-      <figure class="shot">
-        <img src="review/01-chat.png" alt="OpenPlot AI chat with streaming replies, prompt library and @-mentions" loading="lazy">
-        <figcaption data-i18n="hero.caption">The chat view: streaming replies, reasoning display, prompt library on “/”, @-mentions of story entries.</figcaption>
-      </figure>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="./" aria-label="Kertomus home">
+        <span class="brand-mark" aria-hidden="true">K</span>
+        <span class="brand-text">
+          <span class="brand-name">Kertomus</span>
+          <span class="brand-sub">Your story studio</span>
+        </span>
+      </a>
+
+      <nav class="nav" id="site-nav" aria-label="Main navigation">
+        <a href="#studio">The studio</a>
+        <a href="#desk">The desk</a>
+        <a href="#handbook">Handbook</a>
+        <a href="#download">Download</a>
+        <a class="nav-github" href="https://github.com/mahakammoonlightstudio-beep/Kertomus">GitHub ↗</a>
+        <span class="lang-switch" aria-label="Language">
+          <a href="./" aria-current="page">EN</a>
+          <a href="id/">ID</a>
+        </span>
+      </nav>
+
+      <button class="menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false">☰</button>
     </div>
   </header>
 
-  <section id="features">
+  <div class="announce">
     <div class="wrap">
-      <h2 data-i18n="features.h2">Everything a story needs, in one offline app</h2>
-      <div class="grid">
-        <div class="card">
-          <h3 data-i18n="c1.h">Any AI provider</h3>
-          <p data-i18n-html="c1.p">OpenAI, Anthropic, OpenRouter, Groq — or fully local via <code>Ollama</code> and <code>LM Studio</code>. Bring your own key; it is encrypted with the OS credential vault.</p>
+      <span><strong>v1.3.1</strong> — The Kertomus edition is here.</span>
+      <a href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/CHANGELOG.md">Read the release notes →</a>
+      <span class="long">Formerly OpenPlot AI · Formerly Inkwell</span>
+    </div>
+  </div>
+
+  <main id="main">
+    <section class="wrap hero">
+      <div class="hero-grid">
+        <div>
+          <p class="kicker">Formerly OpenPlot AI · Formerly Inkwell</p>
+          <h1>A quieter place to <em>write</em>.</h1>
+          <p class="hero-lede">
+            Kertomus is a free, open-source, <strong>local-first AI writing studio</strong>.
+            Chat with any model, keep canon in a real story bible, outline in three acts,
+            and draft chapters — in one desktop window, on your machine.
+          </p>
+          <div class="hero-actions">
+            <a class="btn" id="primary-download" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/releases/latest">
+              <span id="primary-label">Download for Windows</span>
+              <span aria-hidden="true">↓</span>
+            </a>
+            <a class="btn btn-ghost" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/docs/HANDBOOK.md">Read the handbook</a>
+          </div>
+          <div class="hero-note">
+            <span>No account</span>
+            <span>No telemetry</span>
+            <span>Windows · macOS · Linux</span>
+            <span id="detected-os">Free &amp; open source</span>
+          </div>
         </div>
-        <div class="card">
-          <h3 data-i18n="c2.h">Story bible</h3>
-          <p data-i18n="c2.p">Worlds, characters, items and lore — tagged, searchable and linked. @-mention any entry to pull it into the AI's context.</p>
-        </div>
-        <div class="card">
-          <h3 data-i18n="c3.h">Chapters &amp; history</h3>
-          <p data-i18n="c3.p">Draft/revising/done statuses, focus mode, and version history that snapshots before every AI edit (30 kept per chapter).</p>
-        </div>
-        <div class="card">
-          <h3 data-i18n="c4.h">Story flow &amp; stats</h3>
-          <p data-i18n="c4.p">A three-act outline board tied to chapters, plus daily goals, streaks and a 90-day heatmap that keep you writing.</p>
-        </div>
-        <div class="card">
-          <h3 data-i18n="c5.h">Real exports</h3>
-          <p data-i18n-html="c5.p">Whole-project export to Markdown, plain-text manuscript or EPUB — assembled locally, no external service.</p>
-        </div>
-        <div class="card">
-          <h3 data-i18n="c6.h">Private by design</h3>
-          <p data-i18n="c6.p">Local SQLite storage. No account, no cloud, no telemetry. Open source under the MIT license.</p>
-        </div>
-        <div class="card">
-          <h3 data-i18n="c7.h">Libraries &amp; Time Machine</h3>
-          <p data-i18n="c7.p">Keep several libraries in one studio and switch with a restart. Every library keeps up to 12 whole-file snapshots — before migrations, imports, resets and restores, plus a daily copy — so a bad edit is never final.</p>
-        </div>
-        <div class="card">
-          <h3 data-i18n="c8.h">Faster in 1.3</h3>
-          <p data-i18n="c8.p">Ctrl/Cmd+P opens a chats-and-projects quick switch from anywhere. Export a portable <code>.db</code> with your whole studio minus machine-bound secrets, follow every chapter change in the Revision Timeline, inspect skills in Skill Lab, and tune font, zoom, density and corner radius.</p>
-        </div>
+
+        <figure class="plate">
+          <span class="tape">The studio, illustrated</span>
+          <div class="plate-frame">
+            <img src="kertomus-banner.webp" width="1400" height="788"
+                 alt="Kertomus banner: a writer at a lamplit desk with the words 'Your story deserves a studio, not five browser tabs.'">
+          </div>
+          <figcaption>
+            <span>Kertomus <span data-version>1.3.1</span></span>
+            <span>The lamp is load-bearing</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <div class="strip" aria-hidden="true">
+      <div class="strip-track">
+        <span>Local-first</span><span>Bring your own model</span><span>Story bible</span>
+        <span>Chapters with history</span><span>Eight languages</span><span>Signed Linux builds</span>
+        <span>One very quiet seventh shelf</span>
+        <span>Local-first</span><span>Bring your own model</span><span>Story bible</span>
+        <span>Chapters with history</span><span>Eight languages</span><span>Signed Linux builds</span>
+        <span>One very quiet seventh shelf</span>
       </div>
     </div>
-  </section>
 
-  <section id="download" style="background: var(--panel); border-block: 1px solid var(--border);">
-    <div class="wrap">
-      <h2><span data-i18n="dl.h">Download</span> <span class="badge" id="ver-badge">v1.3.0</span></h2>
-      <p style="color: var(--muted); max-width: 620px;" data-i18n="dl.intro">
-        The button above picks the right installer for your operating system automatically.
-        Prefer to choose manually? All assets:
+    <section class="wrap section" id="studio">
+      <div class="section-head reveal">
+        <div>
+          <p class="eyebrow">The rooms</p>
+          <h2>Three desks. One <em>manuscript</em>.</h2>
+        </div>
+        <p>
+          Most writing tools hand you a chat box and wish you luck. Kertomus gives the
+          model your actual story — and gives you a room to shape it.
+        </p>
+      </div>
+
+      <div class="rooms">
+        <article class="room reveal">
+          <div class="room-top"><span class="room-num">01 / CHAT</span><span class="room-tag">Think</span></div>
+          <h3>Think out loud</h3>
+          <p>Streaming replies, reasoning traces, @-mentions, files and a prompt library. The model can read your canon instead of guessing at it.</p>
+          <div class="mock" aria-hidden="true">
+            <div class="mock-bar"><i></i><i></i><i></i><b>PLOTTING THE LEDGER TWIST</b></div>
+            <div class="mock-body">
+              <div class="mock-bubble me">What if the ledger numbers are coordinates?</div>
+              <div class="mock-row"><span class="mock-chip gold">web</span><span class="mock-chip">story bible</span><span class="mock-chip">2 entries</span></div>
+              <div class="mock-bubble">Then the harbour becomes a cipher. Every manifest is a map. <b>Nice.</b></div>
+              <div class="mock-line mid"></div><div class="mock-line short"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="room reveal">
+          <div class="room-top"><span class="room-num">02 / AGENT</span><span class="room-tag">Do</span></div>
+          <h3>Send it to work</h3>
+          <p>Agent mode reads the Story Bible, searches entries, writes chapters and saves memories — with every write visible.</p>
+          <div class="mock" aria-hidden="true">
+            <div class="mock-bar"><i></i><i></i><i></i><b>THE WORKBENCH</b></div>
+            <div class="mock-body">
+              <div class="mock-row"><span class="mock-chip green">agent</span><span class="mock-chip">tools 4</span><span class="mock-chip">mcp 1</span></div>
+              <div class="mock-card">
+                <div class="mock-title">read_story_bible</div>
+                <div class="mock-line mid"></div><div class="mock-line"></div>
+              </div>
+              <div class="mock-card">
+                <div class="mock-title">append_to_chapter · Chapter 7</div>
+                <div class="mock-line"></div><div class="mock-line short"></div>
+              </div>
+              <div class="mock-row"><span class="mock-chip gold">done</span><span class="mock-chip">canon refreshed</span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="room reveal">
+          <div class="room-top"><span class="room-num">03 / WRITING</span><span class="room-tag">Write</span></div>
+          <h3>Stay in the scene</h3>
+          <p>A manuscript board, chapter versions, sprints, a scene board and a three-act flow. The book, not a folder of drafts.</p>
+          <div class="mock" aria-hidden="true">
+            <div class="mock-bar"><i></i><i></i><i></i><b>HARBOUR LIGHTS · CHAPTER 1</b></div>
+            <div class="mock-cols">
+              <div class="mock-side">
+                <div class="mock-title">Manuscript</div>
+                <div class="mock-line"></div><div class="mock-line mid"></div><div class="mock-line short"></div>
+                <div class="mock-chip gold" style="margin-top:5px">Chapter 1 · 52</div>
+              </div>
+              <div class="mock-card">
+                <div class="mock-title">Low Tide</div>
+                <div class="mock-line"></div><div class="mock-line"></div><div class="mock-line mid"></div>
+                <div class="mock-line" style="margin-top:8px"></div><div class="mock-line short"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap section split" id="desk">
+      <div class="split-copy reveal">
+        <p class="eyebrow">The writing desk</p>
+        <h2>The part where you actually write.</h2>
+        <p>
+          Kertomus is not a chat window with a word counter bolted on. The manuscript
+          is the centre of the room: chapters in reading order, versions you can
+          reopen, and a sprint timer that counts words without locking the door.
+        </p>
+        <ul class="checklist">
+          <li><strong>A real manuscript board.</strong> Draft, revise, finish, reorder — with a scene board for the messy middle.</li>
+          <li><strong>Version history that stays out of the way.</strong> The last 30 snapshots are kept, including before an AI append and before a restore.</li>
+          <li><strong>Sprints, not streaks.</strong> Pick 10, 15, 25 or 50 minutes. Watch the delta. Nothing is locked; no guilt is installed.</li>
+          <li><strong>A three-act flow board.</strong> Beats link to chapters so the shape of the book is a board, not a feeling.</li>
+        </ul>
+      </div>
+
+      <div class="split-art reveal">
+        <div class="art-card">
+          <div class="art-label"><span>Writing / Manuscript</span><b>Saved</b></div>
+          <div class="editor" aria-hidden="true">
+            <div class="editor-head">
+              <span class="editor-title">Chapter 1 — Low Tide</span>
+              <span>Novels · Harbour Lights</span>
+            </div>
+            <div class="editor-body">
+              <div class="editor-rail">
+                <div class="on">Chapter 1 · 52</div>
+                <div>Chapter 2 · 0</div>
+                <div>Chapter 3 · 0</div>
+                <div style="margin-top:10px;opacity:.65">Scene board</div>
+                <div style="opacity:.65">History</div>
+              </div>
+              <div class="editor-page">
+                <h4>Low Tide</h4>
+                <p>The letter arrived on a Tuesday, folded inside a shipping manifest.</p>
+                <p>Sari read it twice. The harbour outside her window was still asleep under a quilt of fog, and the cranes along Pier 7 stood like gallows in the grey light.</p>
+                <p class="faint">“They found another one,” the note said. No signature. No date.</p>
+              </div>
+            </div>
+            <div class="editor-foot"><span>52 words</span><span>draft · autosaved</span></div>
+          </div>
+          <span class="sprint-pill">SPRINT 25:00 · +318 words</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap section split reverse" id="canon">
+      <div class="split-art reveal">
+        <div class="art-card">
+          <div class="art-label"><span>Story Bible / Harbour Lights</span><b>18 entries</b></div>
+          <div class="canon-board" aria-hidden="true">
+            <div class="canon-card">
+              <span class="canon-kind">Character</span>
+              <h4>Sari Winata</h4>
+              <p>Harbourmaster. Reads manifests for a living; reads people worse.</p>
+              <div class="canon-tags"><span>protagonist</span><span>pov</span><span>pier 7</span></div>
+            </div>
+            <div class="canon-card">
+              <span class="canon-kind">Location</span>
+              <h4>Pier 7</h4>
+              <p>Container cranes, a locked office, and a fog that arrives on schedule.</p>
+              <div class="canon-tags"><span>harbour</span><span>act i</span></div>
+            </div>
+            <div class="canon-card wide">
+              <span class="canon-kind">Lore</span>
+              <h4>The ledger cipher</h4>
+              <p>The numbers are coordinates. The harbour is the key. Sari has not noticed yet.</p>
+              <span class="canon-link">linked from Chapter 1 · Chapter 7</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="split-copy reveal">
+        <p class="eyebrow">Canon, not vibes</p>
+        <h2>It remembers what you wrote.</h2>
+        <p>
+          Worlds, locations, characters, items and lore are real records — tagged,
+          linked and searchable — not a paragraph you keep pasting into the prompt.
+          The agent reads the same bible you do.
+        </p>
+        <ul class="checklist">
+          <li><strong>Five kinds of canon.</strong> Worlds, locations, characters, items and lore, with per-category counts and full-text search.</li>
+          <li><strong>Links that do something.</strong> Entries cross-reference each other, and the agent can create or update them mid-conversation.</li>
+          <li><strong>Reference files live with the entry.</strong> Attach Markdown, text, JSON or CSV; read it later without hunting for the folder.</li>
+          <li><strong>Bulk import, sane boundaries.</strong> Bring a whole setting in from Markdown, JSON or CSV, with a preview and duplicate skipping.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="wrap section" id="numbers">
+      <div class="section-head reveal">
+        <div>
+          <p class="eyebrow">Very serious numbers</p>
+          <h2>A studio, measured in things that <em>matter</em>.</h2>
+        </div>
+        <p>
+          No growth chart. No investor deck. Just the numbers a writer might
+          actually care about, plus one we are contractually obliged not to explain.
+        </p>
+      </div>
+
+      <div class="numbers reveal">
+        <div class="number">
+          <strong>0</strong>
+          <span>Accounts, cloud sync and telemetry services between you and your manuscript.</span>
+          <small>LOCAL SQLITE · YOUR DISK</small>
+        </div>
+        <div class="number">
+          <strong>8</strong>
+          <span>Interface languages, including one from the 1700s and one that says “yarr”.</span>
+          <small>BOTH BETA. BOTH COMMITTED.</small>
+        </div>
+        <div class="number">
+          <strong>16</strong>
+          <span>Themes, eleven accents and one lamp. The lamp is not a setting.</span>
+          <small>LIGHT, DARK, AND OTHERWISE</small>
+        </div>
+        <div class="number">
+          <strong>1</strong>
+          <span>A seventh shelf that is not in the navigation, the docs, or this sentence.</span>
+          <small>PLEASE DO NOT ASK</small>
+        </div>
+      </div>
+      <p class="serif-note">
+        <em>Also true:</em> no subscription, no account, no “syncing…” spinner. Your words stay where you put them.
       </p>
-      <table class="assets" id="assets" style="margin-top: 18px;">
-        <thead>
-          <tr>
-            <th data-i18n="dl.platform">Platform</th>
-            <th data-i18n="dl.installer">Installer</th>
-            <th data-i18n="dl.portable">Portable</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Windows</td>
-            <td class="dl"><a data-os="win" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/latest">Setup .exe</a></td>
-            <td class="dl"><a data-os="win-zip" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/latest">.zip</a></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>macOS (Intel + Apple silicon)</td>
-            <td class="dl"><a data-os="mac-dmg" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/latest">Universal .dmg</a></td>
-            <td class="dl"><a data-os="mac-zip" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/latest">Universal .zip</a></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Linux (x64)</td>
-            <td class="dl"><a data-os="linux" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/latest">.AppImage</a></td>
-            <td class="dl"><a data-os="linux-tar" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/latest">.tar.gz</a></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Linux (arm64)</td>
-            <td class="dl"><a data-os="linux-arm64" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/latest">.AppImage</a></td>
-            <td class="dl"><a data-os="linux-arm64-tar" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/latest">.tar.gz</a></td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
-      <p style="color: var(--muted); font-size: 0.88rem; margin-top: 14px;" data-i18n-html="dl.note">
-        macOS builds are unsigned — if Gatekeeper complains, right-click the app and choose <strong>Open</strong> the first time.
+    </section>
+
+    <section class="wrap section" id="download">
+      <div class="download-shell reveal">
+        <div class="download-copy">
+          <p class="eyebrow">Take it home</p>
+          <h2>Your studio, on your desk.</h2>
+          <p>
+            Free and open source. Install it or unpack a portable folder. Bring your
+            own API key, or point Kertomus at Ollama and keep the whole thing offline.
+          </p>
+          <p class="ver"><span>Current release</span> v<span data-version>1.3.1</span> · Windows, macOS &amp; Linux</p>
+          <div class="download-actions">
+            <a class="btn" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/releases/latest">Browse the release ↓</a>
+            <a class="btn btn-ghost" href="https://github.com/mahakammoonlightstudio-beep/Kertomus#install">Install notes</a>
+          </div>
+          <p class="signing-note">
+            Linux artifacts are GPG-signed by the release workflow.
+            <a href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/docs/keys/README.md">How to verify a download</a>.
+          </p>
+        </div>
+
+        <div class="assets">
+          <div class="assets-head"><span>Pick your platform</span><span>v<span data-version>1.3.1</span></span></div>
+          <a class="asset" data-os="win" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/releases/latest">
+            <span class="asset-icon" aria-hidden="true">W</span>
+            <span><b>Windows · x64</b><small>NSIS installer · portable zip</small></span>
+            <span class="arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="asset" data-os="mac" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/releases/latest">
+            <span class="asset-icon" aria-hidden="true">M</span>
+            <span><b>macOS · universal</b><small>dmg · Intel + Apple silicon</small></span>
+            <span class="arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="asset" data-os="linux" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/releases/latest">
+            <span class="asset-icon" aria-hidden="true">L</span>
+            <span><b>Linux · x64</b><small>AppImage · tar.gz · signed</small></span>
+            <span class="arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="asset" data-os="linux-arm64" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/releases/latest">
+            <span class="asset-icon" aria-hidden="true">A</span>
+            <span><b>Linux · arm64</b><small>AppImage · tar.gz · signed</small></span>
+            <span class="arrow" aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+      <p class="browse">
+        Every release also ships a portable copy, a changelog and a SHA-256 manifest.
+        <a href="https://github.com/mahakammoonlightstudio-beep/Kertomus/releases">See all releases ↗</a>
       </p>
-    </div>
-  </section>
+    </section>
 
-  <section id="install">
+    <section class="wrap section" id="handbook">
+      <div class="section-head reveal">
+        <div>
+          <p class="eyebrow">The handbook</p>
+          <h2>Read the manual. <em>It is good.</em></h2>
+        </div>
+        <p>
+          A real guide, not a feature list with screenshots. Start with the first
+          chapter, or jump straight to the thing that is currently on fire.
+        </p>
+      </div>
+
+      <div class="handbook">
+        <a class="hand-card primary reveal" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/docs/HANDBOOK.md">
+          <span class="hand-kicker">English · Handbook</span>
+          <h3>From first launch to finished chapter.</h3>
+          <p>Providers, chat, canon, chapters, flow, stats, skills, MCP, privacy and every shortcut. Written for humans with a manuscript.</p>
+          <span class="go">Open the handbook ↗</span>
+        </a>
+        <a class="hand-card reveal" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/docs/HANDBOOK.id.md">
+          <span class="hand-kicker">Bahasa Indonesia · Panduan</span>
+          <h3>Panduan lengkap.</h3>
+          <p>Versi Indonesia dari handbook, dengan istilah teknis yang tetap jujur.</p>
+          <span class="go">Buka panduan ↗</span>
+        </a>
+        <a class="hand-card reveal" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/docs/PLUGIN_API.md">
+          <span class="hand-kicker">Extend · Plugin API</span>
+          <h3>Hooks, commands, approvals.</h3>
+          <p>Lifecycle hooks, palette commands, and the approval gate that keeps arbitrary code from running itself.</p>
+          <span class="go">Read the API ↗</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="wrap section faq" id="faq">
+      <div class="reveal">
+        <p class="eyebrow">Fair questions</p>
+        <h2>Things people ask before opening the lamp.</h2>
+      </div>
+      <div class="faq-list reveal">
+        <details>
+          <summary>Is my manuscript uploaded somewhere?</summary>
+          <p>Only what you choose to send to a model provider. Your library — chats, canon, chapters, versions, settings — lives in a local SQLite file. There is no Kertomus account and no telemetry. If you use a hosted model, its provider’s policy applies to the text you send it; if you use Ollama or LM Studio, nothing leaves the machine.</p>
+        </details>
+        <details>
+          <summary>Do I need an API key?</summary>
+          <p>You need a model, not an account with us. Bring an OpenAI-compatible key, Anthropic, OpenRouter, Groq, or point it at a local server. Ollama and LM Studio need no key. One provider card per service; a different model per chat.</p>
+        </details>
+        <details>
+          <summary>Does it really run on Linux?</summary>
+          <p>Yes. x64 and arm64 AppImage and tarball builds, with a matching <code>.zsync</code> for AppImageUpdate. Release artifacts are GPG-signed and accompanied by <code>SHA256SUMS-linux-x64</code> (or <code>-arm64</code>) plus detached signatures.</p>
+        </details>
+        <details>
+          <summary>What is the seventh shelf?</summary>
+          <p><strong>The seventh shelf is not a feature.</strong> It is not in the navigation. It is a short story, and it is exactly where it wants to be. The studio will not be taking questions at this time.</p>
+        </details>
+        <details>
+          <summary>Is the lamp real?</summary>
+          <p>The lamp is load-bearing. Please do not move it. The rest of the app is ordinary software: React, Electron, SQLite, a local-first database and a healthy suspicion of cloud sync.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
     <div class="wrap">
-      <h2 data-i18n="install.h2">Three steps and you are writing</h2>
-      <div class="steps">
-        <div class="step">
-          <span class="n">1</span>
-          <p data-i18n-html="s1.p"><strong>Install.</strong> Run the installer for your OS (or extract the portable archive). No account needed.</p>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="brand" href="./" aria-label="Kertomus home">
+            <span class="brand-mark" aria-hidden="true">K</span>
+            <span class="brand-text">
+              <span class="brand-name">Kertomus</span>
+              <span class="brand-sub">Your story studio</span>
+            </span>
+          </a>
+          <p>A free, open-source, local-first studio for stories, canon and the strange business of finishing a book.</p>
         </div>
-        <div class="step">
-          <span class="n">2</span>
-          <p data-i18n-html="s2.p"><strong>Connect a provider.</strong> Settings → AI Providers. Paste a key for a hosted API, or point to <code>localhost</code> for Ollama / LM Studio.</p>
+        <div>
+          <h4>Studio</h4>
+          <ul>
+            <li><a href="#studio">The rooms</a></li>
+            <li><a href="#desk">Writing desk</a></li>
+            <li><a href="#canon">Story Bible</a></li>
+            <li><a href="#download">Download</a></li>
+          </ul>
         </div>
-        <div class="step">
-          <span class="n">3</span>
-          <p data-i18n-html="s3.p"><strong>Write.</strong> Create a project, add story-bible entries, and start chatting or drafting chapters.</p>
+        <div>
+          <h4>Read</h4>
+          <ul>
+            <li><a href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/docs/HANDBOOK.md">Handbook</a></li>
+            <li><a href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/docs/HANDBOOK.id.md">Panduan</a></li>
+            <li><a href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/CHANGELOG.md">Changelog</a></li>
+            <li><a href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/SECURITY.md">Security</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Elsewhere</h4>
+          <ul>
+            <li><a href="https://github.com/mahakammoonlightstudio-beep/Kertomus">GitHub ↗</a></li>
+            <li><a href="https://github.com/mahakammoonlightstudio-beep/Kertomus/issues">Issues ↗</a></li>
+            <li><a href="https://www.paypal.com/paypalme/mrfozan">PayPal ↗</a></li>
+            <li><a href="https://saweria.co/MahakamMoonStudio">Saweria ↗</a></li>
+          </ul>
         </div>
       </div>
-    </div>
-  </section>
 
-  <footer>
-    <div class="wrap">
-      <div>
-        <strong>OpenPlot AI</strong> — <span data-i18n="footer.by">by Mahakam Moonlight Studio.</span>
-        <a href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/blob/main/CHANGELOG.md" data-i18n="footer.changelog">Changelog</a> ·
-        <a href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/blob/main/LICENSE">MIT License</a>
-      </div>
-      <div class="donate">
-        <span data-i18n="footer.support">Support the project:</span>
-        <a class="paypal" href="https://www.paypal.com/paypalme/mrfozan">PayPal</a> ·
-        <a href="https://sociabuzz.com/mahakam_moonlight_studio/tribe">SociaBuzz</a> ·
-        <a href="https://saweria.co/MahakamMoonStudio">Saweria</a>
+      <div class="footer-bottom">
+        <div>
+          © 2026 Mahakam Moonlight Studio · MIT licensed<br>
+          Formerly OpenPlot AI. Formerly Inkwell. Currently Kertomus.
+        </div>
+        <div class="seventh">
+          <b>There is a seventh shelf.</b><br>
+          We will not be explaining that.
+        </div>
       </div>
     </div>
   </footer>
 
-  <script>
-    (function () {
-      var OWNER = 'mahakammoonlightstudio-beep';
-      var REPO = 'OpenPlot-AI';
-      var SITE = 'https://mahakammoonlightstudio-beep.github.io/OpenPlot-AI/';
-
-      /* ---------- Bilingual dictionary (EN / ID) ---------- */
-      var I18N = {
-        en: {
-          'meta.title': 'OpenPlot AI — a free, local-first AI story studio',
-          'meta.desc': 'OpenPlot AI is a free, open-source, local-first AI chat and story-writing studio for Windows, macOS and Linux. No account, no cloud, no telemetry.',
-          'nav.features': 'Features', 'nav.download': 'Download', 'nav.install': 'Install',
-          'hero.h1': 'Your story deserves a studio,<br>not <em>five browser tabs</em>.',
-          'hero.sub': 'OpenPlot AI is a free, open-source writing studio with an AI chat that works with any provider — including fully local models. Your data never leaves your machine.',
-          'hero.cta': 'Download for my OS', 'hero.cta2': 'View source on GitHub',
-          'hero.caption': 'The chat view: streaming replies, reasoning display, prompt library on “/”, @-mentions of story entries.',
-          'features.h2': 'Everything a story needs, in one offline app',
-          'c1.h': 'Any AI provider',
-          'c1.p': 'OpenAI, Anthropic, OpenRouter, Groq — or fully local via <code>Ollama</code> and <code>LM Studio</code>. Bring your own key; it is encrypted with the OS credential vault.',
-          'c2.h': 'Story bible',
-          'c2.p': "Worlds, characters, items and lore — tagged, searchable and linked. @-mention any entry to pull it into the AI's context.",
-          'c3.h': 'Chapters & history',
-          'c3.p': 'Draft/revising/done statuses, focus mode, and version history that snapshots before every AI edit (30 kept per chapter).',
-          'c4.h': 'Story flow & stats',
-          'c4.p': 'A three-act outline board tied to chapters, plus daily goals, streaks and a 90-day heatmap that keep you writing.',
-          'c5.h': 'Real exports',
-          'c5.p': 'Whole-project export to Markdown, plain-text manuscript or EPUB — assembled locally, no external service.',
-          'c6.h': 'Private by design',
-          'c6.p': 'Local SQLite storage. No account, no cloud, no telemetry. Open source under the MIT license.',
-          'c7.h': 'Libraries & Time Machine',
-          'c7.p': 'Keep several libraries in one studio and switch with a restart. Every library keeps up to 12 whole-file snapshots — before migrations, imports, resets and restores, plus a daily copy — so a bad edit is never final.',
-          'c8.h': 'Faster in 1.3',
-          'c8.p': 'Ctrl/Cmd+P opens a chats-and-projects quick switch from anywhere. Export a portable .db with your whole studio minus machine-bound secrets, follow every chapter change in the Revision Timeline, inspect skills in Skill Lab, and tune font, zoom, density and corner radius.',
-          'dl.h': 'Download', 'dl.platform': 'Platform', 'dl.installer': 'Installer', 'dl.portable': 'Portable',
-          'dl.intro': 'The button above picks the right installer for your operating system automatically. Prefer to choose manually? All assets:',
-          'dl.note': 'macOS builds are unsigned — if Gatekeeper complains, right-click the app and choose <strong>Open</strong> the first time.',
-          'install.h2': 'Three steps and you are writing',
-          's1.p': '<strong>Install.</strong> Run the installer for your OS (or extract the portable archive). No account needed.',
-          's2.p': '<strong>Connect a provider.</strong> Settings → AI Providers. Paste a key for a hosted API, or point to <code>localhost</code> for Ollama / LM Studio.',
-          's3.p': '<strong>Write.</strong> Create a project, add story-bible entries, and start chatting or drafting chapters.',
-          'footer.by': 'by Mahakam Moonlight Studio.', 'footer.changelog': 'Changelog', 'footer.support': 'Support the project:',
-          'detect.checking': 'Detecting your operating system…',
-          'detect.ready.win': '✓ Detected Windows — your download is ready. Click the button above.',
-          'detect.ready.mac': '✓ Detected macOS — your download is ready. Click the button above.',
-          'detect.ready.linux': '✓ Detected Linux — your download is ready. Click the button above.',
-          'detect.nofs': 'Could not find the installer for your system in the latest release — grabbing the releases page instead.',
-          'detect.noos': 'Could not detect your operating system — pick a file from the list below.',
-          'detect.noapi': 'Could not reach GitHub to verify the latest release — the button opens the releases page.',
-          'detect.default': 'Not sure which file? All releases are on GitHub.'
-        },
-        id: {
-          'meta.title': 'OpenPlot AI — studio cerita AI lokal-first, gratis',
-          'meta.desc': 'OpenPlot AI adalah studio menulis dan chat AI lokal-first, gratis dan open source untuk Windows, macOS, dan Linux. Tanpa akun, tanpa cloud, tanpa telemetry.',
-          'nav.features': 'Fitur', 'nav.download': 'Unduh', 'nav.install': 'Instalasi',
-          'hero.h1': 'Ceritamu layak dapat studio,<br>bukan <em>lima tab browser</em>.',
-          'hero.sub': 'OpenPlot AI adalah studio menulis gratis dan open source dengan chat AI yang bisa dipakai dengan provider mana pun — termasuk model lokal sepenuhnya. Datamu tidak pernah meninggalkan komputer.',
-          'hero.cta': 'Unduh untuk OS-ku', 'hero.cta2': 'Lihat source di GitHub',
-          'hero.caption': 'Tampilan chat: balasan streaming, tampilan reasoning, prompt library di “/”, @-mention entri cerita.',
-          'features.h2': 'Semua yang cerita butuhkan, dalam satu app offline',
-          'c1.h': 'Provider AI apa pun',
-          'c1.p': 'OpenAI, Anthropic, OpenRouter, Groq — atau sepenuhnya lokal lewat <code>Ollama</code> dan <code>LM Studio</code>. Bawa key-mu sendiri; dienkripsi dengan credential vault OS.',
-          'c2.h': 'Story bible',
-          'c2.p': 'Dunia, karakter, item, dan lore — diberi tag, bisa dicari, dan saling terhubung. @-mention entri mana pun untuk memasukkannya ke konteks AI.',
-          'c3.h': 'Chapter & riwayat',
-          'c3.p': 'Status draft/revising/done, focus mode, dan version history yang membuat snapshot sebelum setiap edit AI (30 tersimpan per chapter).',
-          'c4.h': 'Story flow & statistik',
-          'c4.p': 'Papan outline tiga babak yang terkait chapter, plus target harian, streak, dan heatmap 90 hari yang menjaga konsistensi menulis.',
-          'c5.h': 'Ekspor sungguhan',
-          'c5.p': 'Ekspor seluruh project ke Markdown, manuskrip teks biasa, atau EPUB — dirakit secara lokal, tanpa layanan eksternal.',
-          'c6.h': 'Privat sejak desain',
-          'c6.p': 'Penyimpanan SQLite lokal. Tanpa akun, tanpa cloud, tanpa telemetry. Open source dengan lisensi MIT.',
-          'c7.h': 'Library & Time Machine',
-          'c7.p': 'Simpan beberapa library dalam satu studio dan beralih dengan restart. Setiap library menyimpan hingga 12 snapshot utuh — sebelum migrasi, impor, reset, dan restore, plus salinan harian — jadi edit yang keliru tidak pernah final.',
-          'c8.h': 'Lebih cepat di 1.3',
-          'c8.p': 'Ctrl/Cmd+P membuka quick switch chat dan proyek dari mana saja. Ekspor .db portabel berisi seluruh studio tanpa rahasia yang terikat mesin, ikuti setiap perubahan bab di Revision Timeline, periksa skill di Skill Lab, dan atur font, zoom, kepadatan, serta sudut antarmuka.',
-          'dl.h': 'Unduh', 'dl.platform': 'Platform', 'dl.installer': 'Installer', 'dl.portable': 'Portable',
-          'dl.intro': 'Tombol di atas otomatis memilih installer yang sesuai untuk sistem operasimu. Ingin memilih manual? Semua aset:',
-          'dl.note': 'Build macOS belum ditandatangani — jika Gatekeeper protes, klik kanan app lalu pilih <strong>Open</strong> saat pertama kali.',
-          'install.h2': 'Tiga langkah dan kamu mulai menulis',
-          's1.p': '<strong>Instal.</strong> Jalankan installer untuk OS-mu (atau ekstrak arsip portabel). Tanpa perlu akun.',
-          's2.p': '<strong>Hubungkan provider.</strong> Settings → AI Providers. Tempel key untuk API hosted, atau arahkan ke <code>localhost</code> untuk Ollama / LM Studio.',
-          's3.p': '<strong>Tulis.</strong> Buat project, tambahkan entri story bible, lalu mulai chat atau menyusun chapter.',
-          'footer.by': 'oleh Mahakam Moonlight Studio.', 'footer.changelog': 'Changelog', 'footer.support': 'Dukung proyek ini:',
-          'detect.checking': 'Mendeteksi sistem operasimu…',
-          'detect.ready.win': '✓ Terdeteksi Windows — unduhan siap. Klik tombol di atas.',
-          'detect.ready.mac': '✓ Terdeteksi macOS — unduhan siap. Klik tombol di atas.',
-          'detect.ready.linux': '✓ Terdeteksi Linux — unduhan siap. Klik tombol di atas.',
-          'detect.nofs': 'Installer untuk sistemmu tidak ditemukan di rilis terbaru — membuka halaman releases saja.',
-          'detect.noos': 'Sistem operasimu tidak bisa dideteksi — pilih file dari daftar di bawah.',
-          'detect.noapi': 'Tidak bisa menghubungi GitHub untuk memverifikasi rilis terbaru — tombol membuka halaman releases.',
-          'detect.default': 'Belum yakin file yang mana? Semua rilis ada di GitHub.'
-        }
-      };
-
-      var lang = 'en';
-      try {
-        var saved = localStorage.getItem('oplang');
-        lang = (saved === 'id' || saved === 'en') ? saved
-          : ((navigator.language || 'en').toLowerCase().indexOf('id') === 0 ? 'id' : 'en');
-      } catch (e) { /* storage blocked — stay EN */ }
-
-      function t(key) {
-        return (I18N[lang] && I18N[lang][key]) || I18N.en[key] || key;
-      }
-
-      var lastDetect = { key: 'detect.checking', html: true };
-
-      function applyLang() {
-        document.documentElement.lang = lang;
-        document.title = t('meta.title');
-        var md = document.querySelector('meta[name="description"]');
-        if (md) md.setAttribute('content', t('meta.desc'));
-        document.querySelectorAll('[data-i18n]').forEach(function (el) {
-          el.textContent = t(el.getAttribute('data-i18n'));
-        });
-        document.querySelectorAll('[data-i18n-html]').forEach(function (el) {
-          el.innerHTML = t(el.getAttribute('data-i18n-html'));
-        });
-        document.getElementById('lang-en').classList.toggle('active', lang === 'en');
-        document.getElementById('lang-id').classList.toggle('active', lang === 'id');
-        renderDetect(lastDetect.key);
-      }
-
-      function renderDetect(key) {
-        lastDetect = { key: key };
-        var d = document.getElementById('detect');
-        if (!d) return;
-        if (key === 'detect.checking') {
-          d.innerHTML = '<span class="spin"></span>' + t(key);
-        } else {
-          d.textContent = t(key);
-        }
-      }
-
-      document.getElementById('lang-en').addEventListener('click', function () {
-        lang = 'en'; try { localStorage.setItem('oplang', 'en'); } catch (e) {} applyLang();
-      });
-      // The ID button is a link to the static Indonesian page (/id/), which
-      // crawlers can read with Indonesian OG tags without executing JS.
-
-      /* ---------- OS detection + latest-release resolution ---------- */
-      var ua = navigator.userAgent;
-      var isMac = /Mac|iPhone|iPad/i.test(ua);
-      var isWindows = /Win/i.test(ua);
-      var isLinux = /Linux|X11|CrOS/i.test(ua) && !isMac && !isWindows;
-      var isArm = /aarch64|arm64/i.test(ua);
-
-      var OS_SUFFIX = {
-        'win':      'OpenPlot.AI.Setup.VER.exe', 'win-zip': 'OpenPlot.AI-VER-win.zip',
-        'mac-dmg':  'OpenPlot.AI-VER-universal.dmg', 'mac-zip': 'OpenPlot.AI-VER-universal-mac.zip',
-        'linux':    'OpenPlot.AI-VER.AppImage', 'linux-tar': 'openplot-ai-VER.tar.gz',
-        'linux-arm64': 'OpenPlot.AI-VER-arm64.AppImage', 'linux-arm64-tar': 'OpenPlot.AI-VER-arm64.tar.gz'
-      };
-
-      function osKey() {
-        if (isMac) return 'mac-dmg';
-        if (isWindows) return 'win';
-        if (isLinux) return isArm ? 'linux-arm64' : 'linux';
-        return null;
-      }
-
-      function browseFallback(detectKey) {
-        renderDetect(detectKey || 'detect.default');
-        var b = document.getElementById('btn-primary');
-        if (b) b.setAttribute('href', 'https://github.com/' + OWNER + '/' + REPO + '/releases/latest');
-        fillLatestLinks(null);
-      }
-
-      fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + '/releases/latest')
-        .then(function (r) { if (!r.ok) throw new Error('release lookup failed'); return r.json(); })
-        .then(function (rel) {
-          var ver = (rel.tag_name || '').replace(/^v/, '');
-          if (!ver) throw new Error('no tag');
-
-          var key = osKey();
-          var primary = document.getElementById('btn-primary');
-
-          if (key) {
-            var assetName = (OS_SUFFIX[key] || '').replace('VER', ver);
-            var asset = (rel.assets || []).find(function (a) { return a.name === assetName; });
-            if (asset) {
-              primary.setAttribute('href', asset.browser_download_url);
-              renderDetect('detect.ready.' + (key === 'win' ? 'win' : key === 'mac-dmg' ? 'mac' : 'linux'));
-            } else {
-              browseFallback('detect.nofs');
-              return;
-            }
-          } else {
-            browseFallback('detect.noos');
-            return;
-          }
-
-          document.getElementById('ver-badge').textContent = 'v' + ver;
-          fillLatestLinks(ver);
-        })
-        .catch(function () {
-          browseFallback('detect.noapi');
-        });
-
-      function fillLatestLinks(ver) {
-        if (!ver) return;
-        document.querySelectorAll('#assets a[data-os]').forEach(function (a) {
-          var key = a.getAttribute('data-os');
-          var name = (OS_SUFFIX[key] || '').replace('VER', ver);
-          a.setAttribute('href', 'https://github.com/' + OWNER + '/' + REPO +
-            '/releases/download/v' + ver + '/' + encodeURIComponent(name));
-        });
-      }
-
-      applyLang();
-    })();
-  </script>
+  <script src="site.js" defer></script>
 </body>
 </html>

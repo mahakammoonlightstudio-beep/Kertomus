@@ -10,6 +10,8 @@ import { StoryAgentView } from '../../src/components/StoryAgentView';
 import { StoryBibleView } from '../../src/components/StoryBibleView';
 import { SettingsView } from '../../src/components/SettingsView';
 import { ChatView } from '../../src/components/ChatView';
+import { WritingView } from '../../src/components/WritingView';
+import { AgentHome } from '../../src/components/AgentHome';
 import { Composer } from '../../src/components/Composer';
 import { FilePreviewModal } from '../../src/components/FilePreviewModal';
 import { ModelSettingsModal } from '../../src/components/ModelSettingsModal';
@@ -48,6 +50,10 @@ export function smoke(): Record<string, string> {
     render('settingsA-' + s, <SettingsView initialSection={s} initialMode="advanced" />);
   }
   render('chat', <ChatView />);
+  // The two desks have their own empty states; render them without data so a
+  // broken shelf/bench import is caught here rather than on first launch.
+  render('writeHome', <WritingView />);
+  render('agentHome', <AgentHome />);
   // Guide: shell + a real article body (tokens rewritten, markdown rendered),
   // plus the two global overlays that read store flags.
   render('guide', <GuideView />);

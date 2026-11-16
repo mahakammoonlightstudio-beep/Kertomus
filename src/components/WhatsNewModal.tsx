@@ -4,15 +4,14 @@ import { useT } from '../i18nReact';
 import { Modal } from './Ui';
 import { Icon } from './Icons';
 
-/** Release notes shown once per version (Task 9). */
+/** Release notes shown once per version. 1.3.1 = the Kertomus edition. */
 const CARDS: Array<{ id: string; guide?: string; route?: string }> = [
-  { id: 'files', guide: 'files' },
-  { id: 'guide', guide: 'getting-started' },
-  { id: 'thinking', guide: 'thinking' },
-  { id: 'settings', guide: 'settings' },
-  { id: 'skills', guide: 'skills' },
-  { id: 'trust', guide: 'privacy' },
-  { id: 'images', guide: 'chat' }
+  { id: 'brand', guide: 'getting-started' },
+  { id: 'langs', guide: 'settings' },
+  { id: 'sprint', guide: 'chapters' },
+  { id: 'themes', guide: 'settings' },
+  { id: 'fixes', guide: 'troubleshooting' },
+  { id: 'data', guide: 'privacy' }
 ];
 
 /**

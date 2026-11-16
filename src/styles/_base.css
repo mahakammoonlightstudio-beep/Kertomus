@@ -39,7 +39,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 }
 button:disabled { opacity: 0.45; cursor: not-allowed; }
 button:disabled:hover { background: var(--bg-panel-2); border-color: var(--border); }
-button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 button.primary:hover { filter: brightness(1.12); }
 button.danger { color: var(--danger); border-color: var(--danger); background: transparent; }
 button.danger:hover { background: rgba(229, 72, 77, 0.12); }

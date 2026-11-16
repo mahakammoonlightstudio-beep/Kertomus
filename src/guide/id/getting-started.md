@@ -6,7 +6,7 @@ order: 1
 
 # Memulai
 
-OpenPlot AI adalah studio chat dan cerita yang lokal-first. Chat, proyek, story bible, dan pengaturanmu tersimpan dalam satu file SQLite di mesinmu — hanya permintaan ke model yang keluar dari aplikasi.
+Kertomus adalah studio chat dan cerita yang lokal-first. Chat, proyek, story bible, dan pengaturanmu tersimpan dalam satu file SQLite di mesinmu — hanya permintaan ke model yang keluar dari aplikasi.
 
 ## 1. Tambah provider
 Buka [[settings:providers]] lalu pakai **Smart setup** (pilih preset → tempel key → tes) atau tambah provider manual.

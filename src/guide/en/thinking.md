@@ -6,7 +6,7 @@ order: 5
 
 # Thinking and reasoning
 
-Models that support reasoning can spend tokens before answering. OpenPlot exposes that as **Thinking**.
+Models that support reasoning can spend tokens before answering. Kertomus exposes that as **Thinking**.
 
 ## The control
 The brain icon in the composer has three states: off, on, and *auto* (on for models that support it). With `thinkingUi = auto`, models that cannot reason do not see the control at all.

@@ -210,7 +210,11 @@ const ICONS: Record<IconName, JSX.Element> = {
   )
 };
 
-// App mark: white rounded tile with bold black "OP" (OpenPlot monogram).
+/**
+ * Kertomus app mark (v1.3.1): ink-dark tile, cream serif "K" and the gold
+ * bookmark that hangs from its lower arm — the same lockup as the shipped logo.
+ * Drawn as paths rather than text so the mark is identical in every font stack.
+ */
 export function LogoMark({ size = 32, style }: { size?: number; style?: CSSProperties }) {
   return (
     <svg
@@ -221,19 +225,15 @@ export function LogoMark({ size = 32, style }: { size?: number; style?: CSSPrope
       style={{ flexShrink: 0, display: 'block', ...style }}
       aria-hidden="true"
     >
-      <rect width="48" height="48" rx="11" fill="#ffffff" />
-      <rect width="48" height="48" rx="11" stroke="rgba(0,0,0,0.08)" strokeWidth="1" />
-      <text
-        x="24"
-        y="24"
-        textAnchor="middle"
-        dominantBaseline="central"
-        fontFamily="'Segoe UI', system-ui, sans-serif"
-        fontWeight="800"
-        fontSize="19"
-        letterSpacing="-0.5"
-        fill="#000000"
-      >OP</text>
+      <rect width="48" height="48" rx="12" fill="#242329" />
+      <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" stroke="rgba(246,239,224,0.10)" />
+      {/* Cream K: stem + two arms, with the lower arm cut short for the ribbon. */}
+      <path
+        d="M14 9.5h5.6v11.9L31.9 9.5h7.4L26.1 23.4 39.7 38.5h-7.5L19.6 24.9v13.6H14Z"
+        fill="#f6efe0"
+      />
+      {/* Gold bookmark: a swallow-tailed ribbon on the K's lower arm. */}
+      <path d="M29.9 27.4 38 36.1v10.3l-3.9-3.2-3.9 3.2V28.5Z" fill="#e8ab2f" />
     </svg>
   );
 }

@@ -8,7 +8,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-const exe = path.resolve('release/win-unpacked/OpenPlot AI.exe');
+const exe = path.resolve('release/win-unpacked/Kertomus.exe');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 (async () => {
@@ -59,7 +59,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   } finally {
     try { child.kill(); } catch {}
     await sleep(800);
-    try { spawn('taskkill', ['/F', '/IM', 'OpenPlot AI.exe'], { shell: true }); } catch {}
+    try { spawn('taskkill', ['/F', '/IM', 'Kertomus.exe'], { shell: true }); } catch {}
     try { fs.rmSync(tmp, { recursive: true, force: true }); } catch {}
   }
   console.log(ok ? 'SMOKE OK' : 'SMOKE FAILED');

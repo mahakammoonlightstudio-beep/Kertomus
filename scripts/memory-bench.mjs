@@ -263,7 +263,7 @@ try {
   const rss = electronTreeRssKb(electron.pid);
   const dbStats = await cdp.evalJS("(async()=>{const r = await window.inkwell.dbCall('dbStats'); return r && r.ok !== undefined ? r.data : r;})()");
 
-  console.log('\n--- OpenPlot memory bench ---');
+  console.log('\n--- Kertomus memory bench ---');
   console.log('Empty Home: ' + empty.usedMb + ' MB heap, ' + empty.nodes + ' DOM nodes');
   console.log('Home (store fully loaded): ' + home.usedMb + ' MB heap / ' + home.totalMb + ' MB reserved, ' + home.nodes + ' DOM nodes');
   console.log('  chapters=' + home.chapters + ' story=' + home.story + ' chats=' + home.chats);

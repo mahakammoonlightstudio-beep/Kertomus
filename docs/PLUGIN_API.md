@@ -1,6 +1,6 @@
-# OpenPlot AI Plugin API
+# Kertomus Plugin API
 
-_Applies to OpenPlot AI 1.3.x — reviewed for 1.3.0 (2026-11-12)._
+_Applies to Kertomus 1.3.x — reviewed for 1.3.1 (2026-11-16)._
 
 Plugins are plain JavaScript files that receive a `context` object. They run in the
 Electron main process inside a function wrapper. That wrapper is a convenience

@@ -28,7 +28,7 @@ const bundle = JSON.parse(buildPromptBundle([
   row('2', 'Logline', 'craft', 'Write a logline for {premise}')
 ]));
 check('export: carries app/kind/version metadata',
-  bundle.app === 'OpenPlot AI' && bundle.kind === 'prompt-library' && bundle.version === 1);
+  bundle.app === 'Kertomus' && bundle.kind === 'prompt-library' && bundle.version === 1);
 check('export: one entry per prompt with title/category/template',
   bundle.prompts.length === 2
   && bundle.prompts[0].title === 'Chapter critique'

@@ -94,7 +94,7 @@ const SECRET_SEGMENTS = [
   '.ssh', '.aws', '.gnupg', '.kube', '.azure', '.terraform.d', 'gcloud',
   '.password-store', '.docker', 'cookies', 'login data', 'local state', 'keychain'
 ];
-const SECRET_FILES = /^(id_(rsa|dsa|ecdsa|ed25519)(\.pub)?|\.env(\..*)?|\.envrc|\.npmrc|\.pypirc|\.git-credentials|\.netrc|\.pgpass|\.boto|\.s3cfg|\.vault-token|\.htpasswd|\.my\.cnf|credentials(\.json)?|wallet\.dat|ntds\.dit|(openplot|inkwell|sec)\.db(-wal|-shm)?)$/i;
+const SECRET_FILES = /^(id_(rsa|dsa|ecdsa|ed25519)(\.pub)?|\.env(\..*)?|\.envrc|\.npmrc|\.pypirc|\.git-credentials|\.netrc|\.pgpass|\.boto|\.s3cfg|\.vault-token|\.htpasswd|\.my\.cnf|credentials(\.json)?|wallet\.dat|ntds\.dit|(openplot|inkwell|kertomus|sec)\.db(-wal|-shm)?)$/i;
 const SECRET_EXT = /\.(pem|key|pfx|p12|der|jks|keystore|kdbx|keychain|ppk|ovpn)$/i;
 
 /** True for paths that look like secrets: refused even when granted. */

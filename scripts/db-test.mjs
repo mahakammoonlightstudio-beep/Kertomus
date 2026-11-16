@@ -1,4 +1,4 @@
-// Deep DB-layer stress test for OpenPlot AI (no Electron needed).
+// Deep DB-layer stress test for Kertomus (no Electron needed).
 // Uses sql.js — the same engine as the app — so behavior matches 1:1.
 // Exercises schema migrations, CRUD ops, the dynamic-SET update paths,
 // reorder integrity, and volume/edge cases on a throwaway database.

@@ -42,20 +42,23 @@ export function AboutView() {
   return (
     <div className="page">
       <div className="page-narrow about-page">
+        {/* Served from public/ so both the Vite dev server and the packaged
+            file:// page resolve it without bundling a 100 KB image into JS. */}
+        <img className="about-brand-plate" src="./kertomus-banner.webp" alt="Kertomus — Your Story Studio" />
         <div className="about-hero">
           <LogoMark size={56} />
           <div>
-            <h1 style={{ margin: 0 }}>OpenPlot AI</h1>
+            <h1 style={{ margin: 0 }}>Kertomus</h1>
             <div className="subtitle" style={{ margin: '4px 0 0' }}>{t('about.tagline')}</div>
           </div>
-          <span className="version-pill">v{info?.version || '1.0.0'}</span>
+          <span className="version-pill">v{info?.version || '1.3.1'}</span>
         </div>
 
         <div className="card about-meta">
           <div className="meta-grid">
             <div className="meta-item">
               <span className="k"><Icon name="tag" size={13} /> {t('about.version')}</span>
-              <code>{info?.version || '1.0.0'}</code>
+              <code>{info?.version || '1.3.1'}</code>
             </div>
             <div className="meta-item">
               <span className="k"><Icon name="cpu" size={13} /> {t('about.platform')}</span>
@@ -141,6 +144,13 @@ export function AboutView() {
           <span className="sep">·</span>
           <span>© {new Date().getFullYear()} {STUDIO_NAME}</span>
         </div>
+        <button
+          className="seventh-hint"
+          title="There is a seventh shelf."
+          onClick={() => window.dispatchEvent(new CustomEvent('kertomus:seventh-shelf'))}
+        >
+          There is a seventh shelf.
+        </button>
       </div>
     </div>
   );

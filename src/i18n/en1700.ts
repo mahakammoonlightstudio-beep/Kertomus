@@ -1,0 +1,258 @@
+/**
+ * English, 1700s (beta) — the second joke locale.
+ *
+ * Pirate English is a voice with a hat on; this one is the drawing room it
+ * came from. The whole dictionary is derived from modern English (so nothing
+ * disappears), then a small hand-written vocabulary turns the most common
+ * controls into something a patient footman might say. Technical words — API
+ * key, token, EPUB, MCP — are left alone on purpose. A joke should never make a
+ * button unreadable.
+ */
+
+/** Whole-word substitutions applied to every derived string. */
+const ARCHAIC: Array<[RegExp, string]> = [
+  [/\byou're\b/gi, 'thou art'],
+  [/\byou are\b/gi, 'thou art'],
+  [/\byourself\b/gi, 'thyself'],
+  [/\byours\b/gi, 'thine'],
+  [/\byour\b/gi, 'thy'],
+  [/\byou\b/gi, 'thou'],
+  [/\bplease\b/gi, 'prithee'],
+  [/\bvery\b/gi, 'passing'],
+  [/\breally\b/gi, 'in sooth'],
+  [/\bperhaps\b/gi, 'mayhap'],
+  [/\bbefore\b/gi, 'ere'],
+  [/\buntil\b/gi, 'till'],
+  [/\bamong\b/gi, 'amongst'],
+  [/\bwhile\b/gi, 'whilst'],
+  [/\bdo not\b/gi, 'dost not'],
+  [/\bdon't\b/gi, 'dost not'],
+  [/\bdoes not\b/gi, 'doth not'],
+  [/\bdoesn't\b/gi, 'doth not'],
+  [/\bwill not\b/gi, 'shall not'],
+  [/\bwon't\b/gi, 'shall not'],
+  [/\bcan't\b/gi, 'cannot'],
+  [/\bokay\b/gi, 'very well'],
+  [/\bok\b/gi, 'very well'],
+  [/\bhello\b/gi, 'good morrow'],
+  [/\bhi\b/gi, 'good morrow'],
+  [/\bgoodbye\b/gi, 'fare thee well'],
+  [/\bthanks\b/gi, 'I thank thee'],
+  [/\bthank you\b/gi, 'I thank thee'],
+  [/\bsorry\b/gi, 'I crave pardon'],
+  [/\byes\b/gi, 'aye'],
+  [/\bno\b/gi, 'nay'],
+  [/\bchildren\b/gi, 'children'],
+  [/\bfriend\b/gi, 'good friend'],
+  [/\bfriends\b/gi, 'good friends']
+];
+
+function matchCase(source: string, replacement: string): string {
+  if (source === source.toUpperCase()) return replacement.toUpperCase();
+  if (source[0] === source[0]?.toUpperCase()) return replacement[0].toUpperCase() + replacement.slice(1);
+  return replacement;
+}
+
+/** Light-touch archaiser for any English string that has no hand-written line. */
+export function archaize(text: string): string {
+  let out = text;
+  for (const [pattern, replacement] of ARCHAIC) {
+    out = out.replace(pattern, (m) => matchCase(m, replacement));
+  }
+  return out;
+}
+
+/**
+ * Lines worth writing by hand: the daily controls and the places a newcomer
+ * lands first. Everything else falls through to `archaize`.
+ */
+export const en1700: Record<string, string> = {
+  'app.newChat': 'A new discourse',
+  'app.newProject': 'A new venture',
+  'app.newFolder': 'A new portfolio',
+  'app.search': 'Prithee, seek…',
+  'app.clearSearch': 'Clear the search',
+  'app.chats': 'Discourses',
+  'app.home': 'The study',
+  'app.homeHint': 'Recent discourses, the progress of thy ventures, and the health of the models.',
+  'app.projects': 'Ventures',
+  'app.story': 'The common place book',
+  'app.chapters': 'Chapters',
+  'app.flow': 'The course of the tale',
+  'app.settings': 'The house rules',
+  'app.about': 'Concerning this volume',
+  'app.donate': 'Bestow a guinea',
+  'app.palette': 'The command table',
+  'app.theme': 'Colours',
+  'app.tagline': 'Thy story studio',
+
+  'chat.empty': 'Choose a discourse, or begin a new one.',
+  'chat.welcomeTitle': 'Thou art welcome',
+  'chat.welcomeSub': 'A quiet room for thy stories. Discourses, books, notes and the worlds within them remain upon this machine — no cloud, no account, and none looking over thy shoulder.',
+  'chat.placeholder': 'Write to Kertomus… (Enter to send, Shift+Enter for a new line)',
+  'chat.send': 'Send',
+  'chat.stop': 'Stay thy hand',
+  'chat.copy': 'Copy',
+  'chat.copied': 'Copied',
+  'chat.delete': 'Delete',
+  'chat.rename': 'Rename the discourse',
+  'chat.pin': 'Pin this discourse',
+  'chat.unpin': 'Unpin this discourse',
+  'chat.zen': 'Zen mode — dim the candles (Esc to return)',
+  'chat.hideSidebar': 'Hide the rail',
+  'chat.showSidebar': 'Show the rail',
+  'chat.noProvider': 'No provider yet — add one in the house rules → AI providers.',
+  'chat.noModel': 'Choose a model first, above.',
+  'chat.thinking': 'Thinking…',
+
+  'advance.title': 'Advance',
+  'advance.chat': 'Discourse',
+  'advance.chatHint': 'Talk it through: questions, corrections and idle fancies.',
+  'advance.agent': 'Agent',
+  'advance.agentHint': 'The workbench: it reads the shelf, writes chapters and keeps notes, with tools.',
+  'advance.write': 'Writing',
+  'advance.writeHint': 'The board: chapters, sprints, and an editor that touches only what thou dost select.',
+
+  'writing.title': 'Writing',
+  'writing.sub': 'The manuscript, its chapters, and an editor that waits to be asked.',
+  'writing.chapters': 'Manuscript',
+  'writing.newChapter': 'A new chapter',
+  'writing.noChapters': 'No chapters yet. Begin one; it wants only a title.',
+  'writing.words': '{n} words',
+  'writing.saved': 'Saved',
+  'writing.saving': 'Saving…',
+  'writing.unsaved': 'Not yet saved',
+  'writing.save': 'Save',
+  'writing.untitled': 'An untitled chapter',
+  'writing.placeholder': 'Begin here. The first line is the hardest; the rest follows.',
+  'writing.ai': 'The editor',
+  'writing.critique': 'Critique',
+  'writing.rephrase': 'Rephrase',
+  'writing.expand': 'Expand',
+  'writing.shrink': 'Shrink',
+  'writing.custom': 'Ask',
+  'writing.run': 'Set to work',
+  'writing.running': 'At work…',
+  'writing.cancel': 'Stay',
+  'writing.result': 'The result',
+  'writing.replace': 'Replace the chapter',
+  'writing.replaceSelection': 'Replace the selection',
+  'writing.selection': 'The selection',
+  'writing.wholeChapter': 'The whole chapter',
+  'writing.append': 'Append to the chapter',
+  'writing.copy': 'Copy',
+  'writing.copied': 'Copied',
+  'writing.applied': 'The chapter is updated',
+  'writing.noProjects': 'No tales upon the shelf yet.',
+  'writing.shelf': 'The shelf',
+  'writing.shelfHint': 'Every novel, one shelf.',
+  'writing.shelfKicker': 'The shelf',
+  'writing.shelfTitle': 'Take up a book',
+  'writing.shelfSub': 'A novel is but a stack of pages thou dost return to. Take one, or begin a fresh stack.',
+  'writing.newNovel': 'A new novel',
+  'writing.shelfChapters': '{n} chapters',
+  'writing.shelfLatest': 'Last touched: {title}',
+  'writing.shelfBlank': 'A blank page, waiting.',
+  'writing.shelfEmptyTitle': 'The shelf is bare',
+  'writing.shelfEmpty': 'Begin a novel and the shelf will fill itself. No template, no conjurer — only a name.',
+  'writing.chapterN': 'Chapter {n}',
+
+  'novel.chats': 'Conversations',
+  'novel.newChat': 'Begin a conversation',
+  'novel.newChapter': 'Add a chapter',
+  'novel.chatTitle': '{name} — notes',
+  'novel.noChats': 'No notes yet.',
+  'novel.openHint': 'Open this novel upon the writing board',
+
+  'agent.home': 'The bench',
+  'agent.homeHint': 'The agent’s workbench: tools, state, and recent sessions.',
+  'agent.homeKicker': 'The agent’s chamber',
+  'agent.homeTitle': 'The workbench',
+  'agent.homeSub': 'A place to hand the agent a task. It reads the shelf, writes chapters, keeps notes — and shows thee every step.',
+  'agent.newSession': 'Begin a session',
+  'agent.homePlan': 'Plan a tale',
+  'agent.homePlanDesc': 'Turn a rough fancy into a premise, a cast and an outline.',
+  'agent.homeFlow': 'Open the course',
+  'agent.homeFlowDesc': 'Move the beats until the shape feels right.',
+  'agent.homeShelf': 'Go to the shelf',
+  'agent.homeShelfDesc': 'Take up a novel and continue where thou didst leave it.',
+  'agent.benchTools': 'Tools',
+  'agent.benchOn': 'Ready',
+  'agent.benchOff': 'Off in the house rules',
+  'agent.benchServers': '{n} connected',
+  'agent.benchNone': 'None',
+  'agent.benchSkills': 'Skills',
+  'agent.benchCount': '{n} ready',
+  'agent.benchProjects': 'Novels',
+  'agent.recentSessions': 'Recent sessions',
+  'agent.noSessions': 'No sessions yet. The first begins with a sentence.',
+
+  'settings.title': 'The house rules',
+  'settings.backTo': 'Return to {place}',
+  'settings.providers': 'AI providers',
+  'settings.appearance': 'Paint & trim',
+  'settings.behavior': 'Discourse behaviour',
+  'settings.memory': 'Memory',
+  'settings.skills': 'Skills',
+  'settings.models': 'Models',
+  'settings.usage': 'Usage',
+  'settings.data': 'Data',
+  'settings.about': 'Concerning this volume',
+  'settings.search': 'Seek among the rules…',
+  'settings.reset': 'Restore defaults',
+  'settings.help': 'Guide',
+
+  'welcome.recent': 'Recent discourses',
+  'welcome.modelHealth': 'The health of the model',
+  'welcome.noModel': 'No model is connected yet.',
+  'welcome.connect': 'Connect a model',
+  'welcome.card.story': 'Begin a tale',
+  'welcome.card.storyDesc': 'Give it a premise. It writes the opening with thee.',
+  'welcome.card.continue': 'Open the last chapter',
+  'welcome.card.continueDesc': 'Back to the page where thou didst stop.',
+  'welcome.card.canon': 'Ask of the canon',
+  'welcome.card.canonDesc': 'Ask before thou dost contradict thyself.',
+  'welcome.card.connect': 'Connect a model',
+  'welcome.card.connectDesc': 'Add a provider, fetch its models, test one.',
+
+  'projects.empty': 'No ventures yet — make one to bind discourses, the common place book and chapters together.',
+  'projects.name': 'The venture’s name',
+  'projects.description': 'Description',
+  'projects.create': 'Create',
+  'projects.save': 'Save',
+  'projects.delete': 'Delete the venture',
+  'projects.selectHint': 'Choose a venture…',
+  'projects.newChatHere': 'A new discourse in this venture',
+
+  'confirm.deleteChat': 'Delete this discourse and every message within it?',
+  'confirm.deleteProject': 'Delete this venture, its discourses, story data and portfolios?',
+  'confirm.deleteFolder': 'Delete the portfolio? The discourses within shall remain.',
+  'confirm.deleteEntry': 'Delete this entry?',
+  'confirm.deleteChapter': 'Delete this chapter?',
+  'confirm.discard': 'There are unsaved changes. Cast them aside?',
+  'confirm.ok': 'Aye',
+  'confirm.cancel': 'Nay',
+  'confirm.delete': 'Delete',
+  'confirm.keepEditing': 'Keep editing',
+  'confirm.discardChanges': 'Discard changes',
+
+  'toast.saved': 'Saved',
+  'toast.deleted': 'Deleted',
+  'toast.error': 'Something has gone amiss',
+
+  'guide.title': 'The guide',
+  'guide.sub': 'How the studio works, within doors and without.',
+  'guide.back': 'Back to the app',
+  'guide.search': 'Seek in the guide…',
+  'guide.noHits': 'No article answers to that.',
+  'guide.prev': 'The previous',
+  'guide.next': 'The next',
+  'guide.notTranslated': 'Not yet translated — showing English',
+  'guide.onThisPage': 'Upon this page',
+
+  'about.title': 'Concerning Kertomus',
+  'about.tagline': 'A local-first story studio for Windows, Linux and macOS.',
+  'about.localFirst': 'Thy data never leaves this machine',
+  'about.featuresTitle': 'What Kertomus does',
+  'about.made': 'Made by Mahakam Moonlight Studio'
+};

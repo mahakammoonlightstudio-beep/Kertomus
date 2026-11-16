@@ -5,7 +5,7 @@ import { Icon } from '../Icons';
 import { TrustList } from './TrustList';
 
 // ---------------- Plugins ----------------
-const SAMPLE_PLUGIN = `// OpenPlot AI plugin example
+const SAMPLE_PLUGIN = `// Kertomus plugin example
 context.registerHook('message:new', (payload) => {
   context.log('New AI message in chat ' + payload.chatId);
 });

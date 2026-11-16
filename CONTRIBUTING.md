@@ -1,6 +1,6 @@
-# Contributing to OpenPlot AI
+# Contributing to Kertomus
 
-Thanks for wanting to work on this. OpenPlot AI is a small, local-first Electron
+Thanks for wanting to work on this. Kertomus is a small, local-first Electron
 app: a React renderer, a main process that owns the database and every outbound
 request, and a narrow preload bridge between them.
 

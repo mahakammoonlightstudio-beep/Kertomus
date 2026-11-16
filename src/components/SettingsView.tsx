@@ -53,6 +53,15 @@ export function SettingsView({ initialSection, initialMode }: { initialSection?:
   const [appInfo, setAppInfo] = useState<AppInfo | null>(null);
   const [logs, setLogs] = useState<string[]>([]);
   const searchRef = useRef<HTMLInputElement>(null);
+  const settingsReturnRoute = useData((s) => s.settingsReturnRoute);
+  const returnFromSettings = useData((s) => s.returnFromSettings);
+  const returnLabels: Record<string, string> = {
+    home: 'app.home', chat: 'advance.chat', agent: 'advance.agent',
+    write: 'advance.write', 'story-agent': 'advance.agent', story: 'app.story',
+    chapters: 'app.chapters', flow: 'app.flow', projects: 'app.projects',
+    stats: 'app.stats', dump: 'dump.title', about: 'app.about', guide: 'guide.title'
+  };
+  const backLabel = t(returnLabels[settingsReturnRoute || ''] || 'app.home');
 
   useEffect(() => {
     window.inkwell.appInfo().then(setAppInfo).catch(() => {});
@@ -164,6 +173,10 @@ export function SettingsView({ initialSection, initialMode }: { initialSection?:
     <div className="page" style={{ height: '100vh', overflow: 'hidden' }}>
       <div className="settings-layout">
         <div className="settings-nav">
+          <button className="settings-back" onClick={returnFromSettings}>
+            <Icon name="chevronRight" size={12} />
+            <span>{t('settings.backTo').replace('{place}', backLabel)}</span>
+          </button>
           <h2 style={{ padding: '0 8px', display: 'flex', alignItems: 'center', gap: 6 }}>
             <Icon name="settings" size={15} /> {t('settings.title')}
           </h2>

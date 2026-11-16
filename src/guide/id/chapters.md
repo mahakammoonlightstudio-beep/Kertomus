@@ -20,5 +20,8 @@ Setiap tulisan ulang AI atau simpan manual juga menyisakan prosa yang tergeser d
 
 Agen menulis ke bab, bukan ke chat, saat keluarannya panjang. Prosa tetap di luar transkrip dan riwayat prompt.
 
+## Sprint menulis
+Di papan Tulis, **Sprint** memulai dorongan berwaktu: pilih 10, 15, 25, atau 50 menit dan papan menampilkan hitungan mundur serta jumlah kata yang bertambah sejak mulai. Timer tidak mengunci editor dan tidak mengubah bab; berhenti lebih awal cukup satu klik. Babmu tersimpan persis seperti sebelumnya.
+
 ## Status dan alur
 Status bab mengisi [[route:flow]], yang mengubah beat jadi bab. Jumlah kata mengisi [[route:stats]].

@@ -1,5 +1,5 @@
 /**
- * EXTREME STRESS TEST for the OpenPlot AI engine.
+ * EXTREME STRESS TEST for the Kertomus engine.
  * Hammers runGeneration/fetchModels/verifyModel/validateApiKey/probeCapabilities
  * with hostile scenarios a real relay can produce:
  *

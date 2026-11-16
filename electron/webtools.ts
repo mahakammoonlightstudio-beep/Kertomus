@@ -16,7 +16,7 @@ import * as https from 'https';
 import { URL } from 'url';
 import { handleDb, settingSecret } from './db';
 
-const USER_AGENT = 'OpenPlotAI/1.3.0 (+local web research; no crawler)';
+const USER_AGENT = 'Kertomus/1.3.1 (+local web research; no crawler)';
 const MAX_BYTES = 2_000_000;
 const MAX_TEXT = 20_000;
 const REQUEST_MS = 20_000;

@@ -245,7 +245,7 @@ const strOr = (v: any, fb: string): string => (typeof v === 'string' ? v : fb);
 // table are ignored so old/experimental rows can never poison the store shape.
 const SETTING_SANITIZERS: Record<string, (v: any) => any> = {
   theme: (v) => strOr(v, 'system'),
-  accent: (v) => strOr(v, '#7c5cff'),
+  accent: (v) => strOr(v, '#e0a62f'),
   lang: (v) => (isLang(v) ? v : 'en'),
   chatFontSize: (v) => clampNum(v, 14, 12, 20),
   temperature: (v) => clampNum(v, 0.7, 0, 2),
@@ -291,7 +291,7 @@ export const useSettings = create<SettingsState>((set, get) => ({
   loaded: false,
   version: '',
   theme: 'system',
-  accent: '#7c5cff',
+  accent: '#e0a62f',
   lang: 'en',
   chatFontSize: 14,
   temperature: 0.7,
@@ -382,6 +382,13 @@ interface DataState {
   activeChatId: string | null;
   activeProjectId: string | null;
   route: string;
+  /** Where Settings was opened from. Leaving Settings returns here instead of
+   *  dropping an Agent or Writing session back into Chat. */
+  settingsReturnRoute: string | null;
+  /** One-shot request from the novel tree: open this chapter on the board. */
+  writingChapterRequest: { projectId: string; chapterId: string; at: number } | null;
+  /** Last chapter open on the board, so Settings does not reset the page. */
+  writingChapterId: string | null;
   /** Guide article currently open (route `guide`); deep-linkable. */
   guideSlug: string;
   setGuideSlug(slug: string): void;
@@ -397,6 +404,9 @@ interface DataState {
   reloadProjects(): Promise<void>;
   setActiveChat(id: string | null): void;
   setActiveProject(id: string | null): void;
+  openWritingChapter(projectId: string, chapterId: string): void;
+  setWritingChapter(chapterId: string | null): void;
+  returnFromSettings(): void;
   navigate(route: string): void;
 }
 
@@ -429,6 +439,9 @@ export const useData = create<DataState>((set, get) => ({
   // chat was open last time. Every other saved route is still restored; only a
   // saved `chat` route is redirected, so closing the app mid-chat is fine.
   route: savedPosition.route && savedPosition.route !== 'chat' ? savedPosition.route : 'home',
+  settingsReturnRoute: 'home',
+  writingChapterRequest: null,
+  writingChapterId: null,
   guideSlug: 'getting-started',
   setGuideSlug(slug) { set({ guideSlug: slug || 'getting-started' }); },
   async load() {
@@ -518,7 +531,28 @@ export const useData = create<DataState>((set, get) => ({
     persistPosition(get());
   },
   setActiveProject(id) { set({ activeProjectId: id }); persistPosition(get()); },
-  navigate(route) { set({ route }); persistPosition(get()); }
+  openWritingChapter(projectId, chapterId) {
+    set({ writingChapterRequest: { projectId, chapterId, at: Date.now() } });
+  },
+  setWritingChapter(chapterId) { set({ writingChapterId: chapterId }); },
+  returnFromSettings() {
+    const back = get().settingsReturnRoute;
+    // A saved settings route or a null origin would bounce straight back into
+    // Settings; Home is the honest fallback.
+    const route = back && !back.startsWith('settings') ? back : 'home';
+    set({ route });
+    persistPosition(get());
+  },
+  navigate(route) {
+    const current = get().route;
+    // Settings is a detour, not a destination. Remember the desk it was opened
+    // from, once per visit, so Back lands in Agent/Writing rather than Chat.
+    if (route.startsWith('settings') && !current.startsWith('settings') && current !== 'guide') {
+      set({ settingsReturnRoute: current });
+    }
+    set({ route });
+    persistPosition(get());
+  }
 }));
 
 // Run automations helper (renderer side).

@@ -185,7 +185,7 @@ export function promptKey(title: string, category: string): string {
  *  built-ins ship with the app, so exporting them would freeze them in time. */
 export function buildPromptBundle(user: UserPrompt[]): string {
   return JSON.stringify({
-    app: 'OpenPlot AI',
+    app: 'Kertomus',
     kind: 'prompt-library',
     version: 1,
     exportedAt: new Date().toISOString(),

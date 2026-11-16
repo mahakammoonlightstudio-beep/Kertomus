@@ -106,7 +106,7 @@
 .agent-step.ready:hover, .agent-step.done:hover { background: var(--bg-hover); color: var(--text); }
 .agent-step.done .num { border-color: color-mix(in srgb, var(--ok) 60%, var(--border)); color: var(--ok); }
 .agent-step.active { background: var(--bg-active); color: var(--text); }
-.agent-step.active .num { background: var(--accent); border-color: var(--accent); color: #fff; }
+.agent-step.active .num { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .agent-step.locked { opacity: 0.55; }
 
 /* panels */

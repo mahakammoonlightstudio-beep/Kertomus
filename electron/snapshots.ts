@@ -7,7 +7,7 @@ import * as path from 'path';
  * Snapshots are whole SQLite files, kept inside the profile so they travel
  * with the library and never sit somewhere a path-traversal bug could reach.
  * Each library gets its own folder: restoring a snapshot of "Trial 2.db" must
- * never overwrite "openplot.db", even though both live in the same profile.
+ * never overwrite "kertomus.db", even though both live in the same profile.
  *
  * Names carry the timestamp and reason (`snap-<epoch>-<reason>.db`) so the
  * list needs no index file that can drift out of sync with the filesystem.

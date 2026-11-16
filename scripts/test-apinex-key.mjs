@@ -73,9 +73,9 @@ async function connectCdp(port) {
   const watchdog = setTimeout(() => { console.error('WATCHDOG'); process.exit(2); }, 150000);
 
   // 1. Copy the real DB into an isolated dir — the original is never touched.
-  const realDb = path.join(os.homedir(), 'AppData', 'Roaming', 'OpenPlot AI', 'openplot.db');
+  const realDb = path.join(os.homedir(), 'AppData', 'Roaming', 'Kertomus', 'kertomus.db');
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'openplot-keytest-'));
-  fs.copyFileSync(realDb, path.join(tmp, 'openplot.db'));
+  fs.copyFileSync(realDb, path.join(tmp, 'kertomus.db'));
   console.log('DB copied to ' + tmp + ' (original untouched)');
 
   const { execSync } = await import('node:child_process');

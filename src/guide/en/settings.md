@@ -19,7 +19,7 @@ Settings is grouped by what you are trying to do, not by data model:
 The search box above the nav finds controls, not just sections: type `cache` to land on the cache rows of the models page. `↑`/`↓` move, `Enter` jumps and focuses the control, `Esc` clears.
 
 ## Language
-Appearance → Language switches the interface between English (US), English (UK), Bahasa Indonesia, Español and हिन्दी. English (UK) uses British spelling; Spanish and Hindi are beta, so their core screens are translated while advanced settings fall back to English and say so.
+Appearance → Language switches the interface between English (US), English (UK), English (1700s), Bahasa Indonesia, Español, हिन्दी, 日本語 and Pirate English. English (UK) uses British spelling. Spanish, Hindi, Japanese, Pirate and 1700s English are beta: their daily studio is translated, while advanced settings fall back to English and say so. Pirate and 1700s English are voices, so documents and exported EPUBs stay tagged as English.
 
 ## Simple vs advanced
 Simple mode hides advanced model parameters and the Extend group. Nothing is removed — *Show advanced settings*, also in the palette, brings everything back, and the choice is remembered.

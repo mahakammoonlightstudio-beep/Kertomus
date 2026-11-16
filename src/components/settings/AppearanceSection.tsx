@@ -5,7 +5,9 @@ import { UI_FONTS, sanitizeFontFamily, uiFontStack } from '../../lib/appearance'
 
 // ---------------- Appearance ----------------
 const THEMES = [
-  { id: 'system', name: 'System', md: 'Auto', sw: ['#0c0f16', '#f6f5f1', '#7c5cff'] },
+  { id: 'system', name: 'System', md: 'Auto', sw: ['#171512', '#f6f0e3', '#e0a62f'] },
+  { id: 'scriptorium', name: 'Scriptorium', md: 'Kertomus', sw: ['#171512', '#27231e', '#e8ab2f'] },
+  { id: 'parchment', name: 'Parchment', md: 'Kertomus', sw: ['#f6f0e3', '#efe6d5', '#b07a24'] },
   { id: 'dark-classic', name: 'Dark Classic', md: 'Dark', sw: ['#0b0d12', '#171b26', '#7c5cff'] },
   { id: 'midnight-ink', name: 'Midnight Ink', md: 'Dark', sw: ['#07090f', '#111522', '#7c5cff'] },
   { id: 'nord', name: 'Nord', md: 'Dark', sw: ['#2e3440', '#434c5e', '#88c0d0'] },
@@ -21,7 +23,10 @@ const THEMES = [
   { id: 'light-paper', name: 'Light Paper', md: 'Light', sw: ['#f7f7f5', '#f1f1ee', '#7048e8'] }
 ];
 
-const ACCENTS = ['#7c5cff', '#4cc9f0', '#3ddc84', '#ffb703', '#ff6f91', '#e5484d', '#f5a623', '#06b6d4', '#8b5e34', '#e8e8e8'];
+const ACCENTS = ['#e0a62f', '#7c5cff', '#4cc9f0', '#3ddc84', '#ffb703', '#ff6f91', '#e5484d', '#f5a623', '#06b6d4', '#8b5e34', '#e8e8e8'];
+
+/** Locales that intentionally fall back to English on advanced screens. */
+const BETA_LANGS = ['es', 'hi', 'ja', 'pirate', 'en1700'];
 
 export function AppearanceSection() {
   const t = useT();
@@ -32,6 +37,21 @@ export function AppearanceSection() {
       <div className="subtitle">{t('appearance.sub')}</div>
       <div className="card" id="set-theme">
         <h3>{t('appearance.theme')}</h3>
+        <div className="brand-look">
+          <div>
+            <b>{t('appearance.brandLook')}</b>
+            <div className="hint">{t('appearance.brandLookHint')}</div>
+          </div>
+          <button
+            className="small"
+            onClick={() => {
+              settings.set('theme', 'scriptorium');
+              settings.set('accent', '#e0a62f');
+            }}
+          >
+            {t('appearance.brandLookApply')}
+          </button>
+        </div>
         <div className="theme-grid">
           {THEMES.map((th) => (
             <div key={th.id} className={`theme-swatch ${settings.theme === th.id ? 'active' : ''}`} onClick={() => settings.set('theme', th.id)}>
@@ -121,7 +141,7 @@ export function AppearanceSection() {
           {LANGS.map((l) => <option key={l.id} value={l.id}>{l.label}</option>)}
         </select>
         <div className="hint" style={{ marginTop: 8 }}>{t('appearance.languageHint')}</div>
-        {(settings.lang === 'es' || settings.lang === 'hi') && (
+        {BETA_LANGS.includes(settings.lang) && (
           <div className="hint" style={{ marginTop: 4 }}>{t('appearance.languageBeta')}</div>
         )}
       </div>

@@ -102,7 +102,7 @@
 .msg .content blockquote blockquote { margin-left: 6px; opacity: 0.85; }
 .msg .content table { display: block; max-width: 100%; overflow-x: auto; white-space: nowrap; }
 
-::selection { background: var(--accent); color: #fff; }
+::selection { background: var(--accent); color: var(--on-accent); }
 
 /* ---------- Reduced motion: respect OS accessibility setting ---------- */
 @media (prefers-reduced-motion: reduce) {

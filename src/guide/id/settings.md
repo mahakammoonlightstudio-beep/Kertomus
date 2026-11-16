@@ -19,7 +19,7 @@ Pengaturan dikelompokkan berdasarkan tujuanmu, bukan model data:
 Kotak pencarian di atas nav menemukan kontrol, bukan hanya bagian: ketik `cache` untuk mendarat di baris cache pada halaman model. `↑`/`↓` berpindah, `Enter` melompat dan memfokuskan kontrol, `Esc` membersihkan.
 
 ## Bahasa
-Tampilan → Bahasa mengganti antarmuka antara English (US), English (UK), Bahasa Indonesia, Español, dan हिन्दी. English (UK) memakai ejaan Britania; Spanyol dan Hindi masih beta, jadi layar intinya sudah diterjemahkan sementara pengaturan lanjutan jatuh ke bahasa Inggris dan memberi tahu.
+Tampilan → Bahasa mengganti antarmuka antara English (US), English (UK), English 1700-an, Bahasa Indonesia, Español, हिन्दी, 日本語, dan Bahasa Bajak Laut. English (UK) memakai ejaan Britania. Spanyol, Hindi, Jepang, Bajak Laut, dan English 1700-an masih beta: studio hariannya sudah diterjemahkan, sementara pengaturan lanjutan jatuh ke bahasa Inggris dan memberi tahu. Bajak Laut dan English 1700-an adalah gaya bicara, jadi dokumen dan EPUB yang diekspor tetap bertag bahasa Inggris.
 
 ## Sederhana vs lanjutan
 Mode sederhana menyembunyikan parameter model lanjutan dan grup Ekstensi. Tidak ada yang dihapus — *Tampilkan pengaturan lanjutan*, juga di palette, mengembalikan semuanya, dan pilihannya diingat.

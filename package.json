@@ -1,18 +1,18 @@
 {
-  "name": "openplot-ai",
-  "productName": "OpenPlot AI",
-  "version": "1.3.0",
-  "description": "OpenPlot AI — a local-first AI chat & story-writing studio by Mahakam Moonlight Studio, for Windows, Linux and macOS.",
+  "name": "kertomus",
+  "productName": "Kertomus",
+  "version": "1.3.1",
+  "description": "Kertomus — a local-first AI story studio by Mahakam Moonlight Studio, for Windows, Linux and macOS.",
   "main": "dist-electron/main.js",
   "author": "Mahakam Moonlight Studio",
   "license": "MIT",
-  "homepage": "https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI#readme",
+  "homepage": "https://github.com/mahakammoonlightstudio-beep/Kertomus#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI.git"
+    "url": "https://github.com/mahakammoonlightstudio-beep/Kertomus.git"
   },
   "bugs": {
-    "url": "https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/issues"
+    "url": "https://github.com/mahakammoonlightstudio-beep/Kertomus/issues"
   },
   "scripts": {
     "dev": "concurrently -k \"vite\" \"wait-on tcp:5173 && cross-env INKWELL_DEV=1 electron .\"",
@@ -58,9 +58,10 @@
     "zustand": "^5.0.1"
   },
   "build": {
-    "appId": "co.mahakammoon.openplotai",
-    "productName": "OpenPlot AI",
+    "appId": "studio.kertomus.app",
+    "productName": "Kertomus",
     "afterSign": "scripts/notarize.cjs",
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
     "directories": {
       "output": "release"
     },

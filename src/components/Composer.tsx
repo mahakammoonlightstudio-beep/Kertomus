@@ -335,7 +335,7 @@ export function Composer({
 
   async function exportPrompts() {
     if (!userPrompts.length) { ui.toast(t('prompt.exportEmpty'), 'info'); return; }
-    const res = await window.inkwell.exportFile('openplot-prompt-library.json', buildPromptBundle(userPrompts), 'json');
+    const res = await window.inkwell.exportFile('kertomus-prompt-library.json', buildPromptBundle(userPrompts), 'json');
     if (res.ok) ui.toast(t('prompt.exported').replace('{n}', String(userPrompts.length)), 'ok');
     else if (res.error !== 'cancelled') ui.toast(t('prompt.exportFailed'), 'error');
   }

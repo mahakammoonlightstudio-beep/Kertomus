@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type DragEvent } from 'react';
 import { useData, useSettings, dbCall, createChatUi, createProjectUi } from '../store';
-import { Chat, Folder, Project } from '../types';
+import { Chat, Chapter, Folder, Project } from '../types';
 import { useT } from '../i18nReact';
 import { textPrompt, confirmDialog } from './TextPrompt';
 import { Icon, LogoMark } from './Icons';
@@ -17,6 +17,8 @@ export function Sidebar() {
   const activeChatId = useData((s) => s.activeChatId);
   const activeProjectId = useData((s) => s.activeProjectId);
   const route = useData((s) => s.route);
+  const settingsReturnRoute = useData((s) => s.settingsReturnRoute);
+  const chapters = useData((s) => s.chapters);
   const setActiveChat = useData((s) => s.setActiveChat);
   const setActiveProject = useData((s) => s.setActiveProject);
   const navigate = useData((s) => s.navigate);
@@ -24,18 +26,25 @@ export function Sidebar() {
   // Which folder (or the loose "Chats" header, keyed 'loose') is under a
   // dragged chat right now — drives the drop highlight only.
   const [dragOver, setDragOver] = useState<string | null>(null);
+  // Novels start collapsed except the one being written; the tree still opens
+  // when you go looking for another book.
+  const [openNovels, setOpenNovels] = useState<Set<string>>(new Set());
   const searchRef = useRef<HTMLInputElement>(null);
   // Home is its own place: the chat and project that stay selected for the
   // next visit keep their ids, but they must not compete with Home for the
   // one accent highlight. Only the row of the screen you are on lights up.
   const atHome = route === 'home';
+  // Settings is a detour: while it is open, keep the sidebar of the desk you
+  // came from so the way back is visible instead of the rail resetting to Chat.
+  const deskRoute = route.startsWith('settings') ? (settingsReturnRoute || route) : route;
   // Chats belong to a workspace (v1.3.0): Chat sessions stay in Chat, Agent
-  // sessions stay in Agent. Writing has no chat list at all.
+  // sessions stay in Agent. Writing has no general chat list, but each novel
+  // keeps its own conversations and chapters in one tree.
   // Story Agent belongs to the Agent desk too, so it keeps listing Agent
   // sessions instead of pretending to be another Chat screen.
-  const workspace: 'chat' | 'agent' = route === 'agent' || route === 'story-agent' ? 'agent' : 'chat';
-  // Writing is a manuscript desk: no chat list, no story-agent or flow tools.
-  const writingDesk = route === 'write';
+  const workspace: 'chat' | 'agent' = deskRoute === 'agent' || deskRoute === 'story-agent' ? 'agent' : 'chat';
+  // Writing is a manuscript desk: no generic chat list, no story-agent tools.
+  const writingDesk = deskRoute === 'write';
   // Story Agent and Flow are agent-only places (v1.3.0).
   const agentDesk = workspace === 'agent';
 
@@ -50,7 +59,58 @@ export function Sidebar() {
   }, []);
 
   async function newChat() {
-    await createChatUi('New chat', activeProjectId, workspace);
+    await createChatUi(t('app.newChat'), activeProjectId, workspace);
+  }
+
+  async function newNovel() {
+    const name = await textPrompt({ title: t('writing.newNovel'), confirmLabel: t('projects.create') });
+    if (!name) return;
+    const p = await createProjectUi(name);
+    setActiveProject(p.id);
+    navigate('write');
+  }
+
+  function toggleNovel(id: string) {
+    setOpenNovels((cur) => {
+      const next = new Set(cur);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }
+
+  /** Chapters of one novel, in reading order — the same order as the board. */
+  function novelChapters(projectId: string): Chapter[] {
+    return chapters
+      .filter((c) => c.project_id === projectId)
+      .sort((a, b) => a.position - b.position);
+  }
+
+  async function newNovelChapter(p: Project) {
+    const count = novelChapters(p.id).length;
+    try {
+      const row = await dbCall<Chapter>('createChapter', {
+        projectId: p.id,
+        title: t('writing.chapterN').replace('{n}', String(count + 1)),
+        content: '',
+        status: 'draft'
+      });
+      await useData.getState().reloadChapters();
+      setActiveProject(p.id);
+      useData.getState().openWritingChapter(p.id, row.id);
+      navigate('write');
+    } catch {
+      // The tree simply stays where it was; the chapter was never created.
+    }
+  }
+
+  async function newNovelChat(p: Project) {
+    await createChatUi(t('novel.chatTitle').replace('{name}', p.name), p.id, 'chat');
+  }
+
+  function openNovelChapter(p: Project, c: Chapter) {
+    setActiveProject(p.id);
+    useData.getState().openWritingChapter(p.id, c.id);
+    navigate('write');
   }
 
   async function newProject() {
@@ -200,9 +260,9 @@ export function Sidebar() {
   return (
     <div className="sidebar">
       <div className="sidebar-header">
-        <div className="logo">
-          <LogoMark size={26} />
-          <span>Open<span className="ink">Plot</span>&nbsp;AI</span>
+        <div className="logo brand-lockup">
+          <LogoMark size={28} />
+          <span className="brand-name">Kertomus</span>
           <span className="version">{settings.version ? `v${settings.version}` : ''}</span>
         </div>
         {!writingDesk && (<div className="new-buttons">
@@ -214,16 +274,23 @@ export function Sidebar() {
         <Icon name="search" size={14} style={{ position: 'absolute', margin: 8, pointerEvents: 'none', opacity: 0.55 }} />
         <input ref={searchRef} value={q} placeholder={t('app.search')} onChange={(e) => setQ(e.target.value)} aria-label={t('app.search')} />
         {q && (
-          <button className="small ghost clear-btn" aria-label="Clear search" onClick={() => { setQ(''); searchRef.current?.focus(); }}>
+          <button className="small ghost clear-btn" aria-label={t('app.clearSearch')} onClick={() => { setQ(''); searchRef.current?.focus(); }}>
             <Icon name="x" size={13} />
           </button>
         )}
       </div>)}
       <div className="nav-tree">
         <div className="nav-section">
-          <div className={`nav-item ${route === 'home' ? 'active' : ''}`} onClick={() => navigate('home')} title={t('app.homeHint')}>
-            <span className="icon"><Icon name="quill" size={14} /></span><span className="title">{t('app.home')}</span>
-          </div>
+          {writingDesk ? (
+            <div className={`nav-item ${route === 'write' && !activeProjectId ? 'active' : ''}`}
+              onClick={() => { setActiveProject(null); navigate('write'); }} title={t('writing.shelfHint')}>
+              <span className="icon"><Icon name="book" size={14} /></span><span className="title">{t('writing.shelf')}</span>
+            </div>
+          ) : (
+            <div className={`nav-item ${route === 'home' ? 'active' : ''}`} onClick={() => navigate('home')} title={t('app.homeHint')}>
+              <span className="icon"><Icon name="quill" size={14} /></span><span className="title">{t('app.home')}</span>
+            </div>
+          )}
         </div>
 
         {/* Advance workspaces (v1.3.0): each row has its own colour so the three
@@ -302,7 +369,7 @@ export function Sidebar() {
                     <UnreadBadge chatId={c.id} />
                     <span className="actions">
                       <button title={isPinned(c) ? t('chat.unpin') : t('chat.pin')} aria-label={isPinned(c) ? t('chat.unpin') : t('chat.pin')} onClick={(e) => { e.stopPropagation(); togglePin(c); }}><Icon name="pin" size={13} /></button>
-                      <button title="Rename" aria-label="Rename" onClick={(e) => { e.stopPropagation(); renameChat(c); }}><Icon name="pencil" size={13} /></button>
+                      <button title={t('chat.rename')} aria-label={t('chat.rename')} onClick={(e) => { e.stopPropagation(); renameChat(c); }}><Icon name="pencil" size={13} /></button>
                       <button aria-label={t('chat.delete')} onClick={(e) => { e.stopPropagation(); deleteChat(c); }}><Icon name="trash" size={13} /></button>
                     </span>
                   </div>
@@ -344,7 +411,7 @@ export function Sidebar() {
                 {msgHits.find((h) => h.chat_id === c.id)?.matches}
               </span>
               <span className="actions">
-                <button title="Rename" aria-label="Rename" onClick={(e) => { e.stopPropagation(); renameChat(c); }}><Icon name="pencil" size={13} /></button>
+                <button title={t('chat.rename')} aria-label={t('chat.rename')} onClick={(e) => { e.stopPropagation(); renameChat(c); }}><Icon name="pencil" size={13} /></button>
                 <button aria-label={t('chat.delete')} onClick={(e) => { e.stopPropagation(); deleteChat(c); }}><Icon name="trash" size={13} /></button>
               </span>
             </div>
@@ -361,13 +428,87 @@ export function Sidebar() {
               <UnreadBadge chatId={c.id} />
               <span className="actions">
                 <button className={isPinned(c) ? 'pinned' : ''} title={isPinned(c) ? t('chat.unpin') : t('chat.pin')} aria-label={isPinned(c) ? t('chat.unpin') : t('chat.pin')} onClick={(e) => { e.stopPropagation(); togglePin(c); }}><Icon name="pin" size={13} /></button>
-                <button title="Rename" aria-label="Rename" onClick={(e) => { e.stopPropagation(); renameChat(c); }}><Icon name="pencil" size={13} /></button>
+                <button title={t('chat.rename')} aria-label={t('chat.rename')} onClick={(e) => { e.stopPropagation(); renameChat(c); }}><Icon name="pencil" size={13} /></button>
                 <button aria-label={t('chat.delete')} onClick={(e) => { e.stopPropagation(); deleteChat(c); }}><Icon name="trash" size={13} /></button>
               </span>
             </div>
           ))}
         </div>)}
 
+        {writingDesk && (
+          <div className="nav-section novels-section">
+            <div className="nav-section-title">
+              <span>{t('writing.projects')}</span>
+              <button
+                className="small ghost"
+                style={{ marginLeft: 'auto', padding: '0 6px', lineHeight: 1 }}
+                title={t('writing.newNovel')}
+                aria-label={t('writing.newNovel')}
+                onClick={() => { void newNovel(); }}
+              >
+                <Icon name="plus" size={12} />
+              </button>
+            </div>
+            {!projectsFiltered.length && <div className="nav-hint">{t('writing.noProjects')}</div>}
+            {projectsFiltered.map((p) => {
+              const list = novelChapters(p.id);
+              const novelChats = chats.filter((c) => c.project_id === p.id);
+              const open = openNovels.has(p.id) || p.id === activeProjectId;
+              return (
+                <div key={p.id} className="novel-tree">
+                  <div
+                    className={`nav-item novel-row ${p.id === activeProjectId ? 'active' : ''}`}
+                    onClick={() => { setActiveProject(p.id); navigate('write'); }}
+                    title={t('novel.openHint')}
+                  >
+                    <span className="icon novel-chevron" onClick={(e) => { e.stopPropagation(); toggleNovel(p.id); }}>
+                      <Icon name={open ? 'chevronDown' : 'chevronRight'} size={12} />
+                    </span>
+                    <span className="icon"><Icon name="project" size={14} /></span>
+                    <span className="title">{p.name}</span>
+                    <span className="novel-count">{list.length}</span>
+                    <span className="actions">
+                      <button title={t('novel.newChapter')} aria-label={t('novel.newChapter')}
+                        onClick={(e) => { e.stopPropagation(); void newNovelChapter(p); }}><Icon name="plus" size={13} /></button>
+                      <button title={t('novel.newChat')} aria-label={t('novel.newChat')}
+                        onClick={(e) => { e.stopPropagation(); void newNovelChat(p); }}><Icon name="chat" size={13} /></button>
+                    </span>
+                  </div>
+                  {open && (
+                    <div className="novel-children">
+                      <div className="novel-subhead"><span>{t('writing.chapters')}</span></div>
+                      {list.map((c) => (
+                        <div key={c.id} className="nav-item novel-chapter"
+                          onClick={() => openNovelChapter(p, c)} title={c.title}>
+                          <span className="icon"><Icon name="file" size={13} /></span>
+                          <span className="title">{c.title}</span>
+                          <span className="novel-words">{chapterWords(c.content)}</span>
+                        </div>
+                      ))}
+                      {!list.length && <div className="novel-empty">{t('writing.noChapters')}</div>}
+                      <div className="novel-subhead">
+                        <span>{t('novel.chats')}</span>
+                        <button className="small ghost" title={t('novel.newChat')} aria-label={t('novel.newChat')}
+                          onClick={() => { void newNovelChat(p); }}><Icon name="plus" size={11} /></button>
+                      </div>
+                      {novelChats.map((c) => (
+                        <div key={c.id} className="nav-item novel-chat"
+                          onClick={() => { setActiveChat(c.id); }} title={c.title}>
+                          <span className="icon"><Icon name="chat" size={13} /></span>
+                          <span className="title">{c.title}</span>
+                          <UnreadBadge chatId={c.id} />
+                        </div>
+                      ))}
+                      {!novelChats.length && <div className="novel-empty">{t('novel.noChats')}</div>}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {!writingDesk && (
         <div className="nav-section">
           <div className="nav-section-title">
             <span>{t('app.projects')}</span>
@@ -388,13 +529,15 @@ export function Sidebar() {
               <span className="icon"><Icon name="project" size={14} /></span>
               <span className="title">{p.name}</span>
               <span className="actions">
-                <button title={t('projects.newChatHere')} onClick={(e) => { e.stopPropagation(); createChatUi('New chat', p.id, workspace); }}><Icon name="plus" size={13} /></button>
+                <button title={t('projects.newChatHere')} onClick={(e) => { e.stopPropagation(); createChatUi(t('app.newChat'), p.id, workspace); }}><Icon name="plus" size={13} /></button>
                 <button onClick={(e) => { e.stopPropagation(); deleteProject(p); }}><Icon name="trash" size={13} /></button>
               </span>
             </div>
           ))}
         </div>
+        )}
 
+        {!writingDesk && (
         <div className="nav-section">
           <div className="nav-section-title">{t('app.story')} / {t('app.chapters')}</div>
           <div className="nav-item" onClick={() => { useData.getState().setActiveProject(activeProjectId); navigate('story'); }}>
@@ -407,10 +550,15 @@ export function Sidebar() {
             <span className="icon"><Icon name="trash" size={14} /></span><span className="title">{t('dump.title')}</span>
           </div>
         </div>
+        )}
 
         {agentDesk && (
         <div className="nav-section">
           <div className="nav-section-title">{t('app.agent')}</div>
+          <div className={`nav-item ${route === 'agent' && !activeChatId ? 'active' : ''}`}
+            onClick={() => { setActiveChat(null); navigate('agent'); }} title={t('agent.homeHint')}>
+            <span className="icon"><Icon name="tools" size={14} /></span><span className="title">{t('agent.home')}</span>
+          </div>
           <div className={`nav-item ${route === 'story-agent' ? 'active' : ''}`} onClick={() => navigate('story-agent')}>
             <span className="icon"><Icon name="sparkle" size={14} /></span><span className="title">{t('agent.title')}</span>
           </div>
@@ -449,6 +597,10 @@ export function Sidebar() {
 
 function useUiOpenPalette() {
   (window as any).__inkwellOpenPalette?.();
+}
+
+function chapterWords(text: string): number {
+  return text.trim() ? text.trim().split(/\s+/).length : 0;
 }
 
 function UnreadBadge({ chatId }: { chatId: string }) {

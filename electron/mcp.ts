@@ -18,6 +18,9 @@
 import { spawn, ChildProcessWithoutNullStreams } from 'node:child_process';
 
 export const MCP_PROTOCOL_VERSION = '2024-11-05';
+/** Main sets this from app.getVersion() before starting servers, so the
+ *  handshake never advertises a version from a previous release. */
+const APP_VERSION = process.env.KERTOMUS_APP_VERSION || '1.3.1';
 export const MCP_START_TIMEOUT_MS = 10_000;
 /** Overridable so tests do not have to wait 30 s for a timeout path. */
 export const mcpCallTimeoutMs = () => Number(process.env.OPENPLOT_MCP_CALL_TIMEOUT_MS) || 30_000;
@@ -165,7 +168,7 @@ class McpServer {
       await this.request('initialize', {
         protocolVersion: MCP_PROTOCOL_VERSION,
         capabilities: { tools: {} },
-        clientInfo: { name: 'OpenPlot AI', version: '1.2.3' }
+        clientInfo: { name: 'Kertomus', version: APP_VERSION }
       }, MCP_START_TIMEOUT_MS);
       this.notify('notifications/initialized', {});
       const listed = await this.request('tools/list', {}, MCP_START_TIMEOUT_MS);

@@ -1,5 +1,5 @@
 /*
- * OpenPlot AI — stylesheet entry.
+ * Kertomus — stylesheet entry.
  * Styles live in ordered partials under src/styles/; the import order below
  * IS the cascade order (theme → base → layout → modals → features →
  * components → flow), so keep it stable when adding new partials.
@@ -15,3 +15,5 @@
 @import './styles/_polish.css';
 @import './styles/_v130.css';
 @import './styles/_dump.css';
+@import './styles/_desks.css';
+@import './styles/_brand.css';

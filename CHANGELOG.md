@@ -1,6 +1,51 @@
 # Changelog
 
-All notable changes to OpenPlot AI are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project adheres to [Semantic Versioning](https://semver.org/).
+All notable changes to Kertomus are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project adheres to [Semantic Versioning](https://semver.org/).
+
+## [1.3.1] — 2026-11-16
+
+> The Kertomus edition: a new name and mark, three real desks, two signature
+> themes, more voices, signed Linux builds, and one story that is not in the
+> catalogue. This release also carries the rooms pass — Settings remembers where
+> you came from, Writing grows a novel tree, and Agent and Writing get their own
+> front doors instead of sharing Chat's greeting.
+
+### Added
+- **The novel tree in Writing.** The Writing rail now lists every novel and opens each one to its chapters and its conversations. A chapter click lands on that chapter in the board (not merely the novel's first page), and both a new chapter and a new conversation can be started from the row.
+- **Writing's shelf.** With no novel selected, Writing opens a shelf of books with chapter and word counts, the last chapter touched, and a single New novel action — instead of an empty board with disabled controls.
+- **The Agent bench.** Agent's empty state is now a workbench: tool/skill/MCP status, links to the story planner and flow board, and recent Agent sessions. Chat keeps its story-starter welcome; the two desks no longer share a greeting.
+- **Japanese (beta).** 565 UI strings cover navigation, chat, the composer, writing, chapters, the Story Bible, projects, statistics, settings, appearance and every confirm/toast — with full-width punctuation and Japanese sentence order rather than literal word-for-word English.
+- **Pirate English (beta).** A complete 565-string voice for the same surfaces: yarns instead of chats, the Ship's Bible, chests for folders. Plain English is kept wherever a joke would make a control ambiguous (API keys, tokens, EPUB), and `<html lang>`/EPUB metadata stay `en` because Pirate is a voice, not a language.
+- **English, 1700s (beta).** A second joke locale after Pirate. It is derived from the entire English dictionary through a light archaizer, with the controls (navigation, writing, settings, confirms) written by hand. `API key`, `token`, `EPUB` and other technical words stay modern, and `<html lang>`/EPUB metadata stay `en`.
+- **Spanish and Hindi grow up.** Both locales went from 429 to 601 strings: exports, variants, chapter linking, Story Bible attachments and import, project formats and ratings, revision history, appearance typography, the command palette, database cards and the new 1.3.1 strings are translated instead of falling back to English.
+- **Writing sprints.** The manuscript desk gains a sprint control: 10, 15, 25 or 50 minutes, a countdown in the board, a live word delta from the moment the sprint started, and a toast with the final count. Nothing is locked and no chapter is modified by the timer.
+- **The Seventh Shelf.** A hidden short story: type `kertomus` while no input has focus, or use the single line at the bottom of About. It touches no data and unlocks nothing.
+- **GPG-signed Linux releases.** The release workflow signs every AppImage and tarball with a maintainer key when `LINUX_GPG_PRIVATE_KEY` is configured, and publishes per-architecture `SHA256SUMS-linux-x64|arm64` with clearsigned `.asc` manifests. Without the secret the release is unchanged and unsigned.
+- **Language picker metadata.** Locales are now labelled in their own script, beta status is driven by one exported helper, and the guide/document language mapping handles Japanese and Pirate explicitly.
+
+### Changed
+- **OpenPlot AI is now Kertomus.** The wordmark, app mark, window and menu titles, About plate, package name and installer ID (`studio.kertomus.app`) all follow the new identity. The Kertomus logo and banner shipped in `build/` are now the app icon set, the About header and the repository social card.
+- **Your existing profile follows you.** Electron derives its user-data folder from the app name, so the rename would have opened an empty studio beside every existing chat, chapter and key. On first launch 1.3.1 copies the old `openplot-ai` profile into the new folder once (copy, never move), refuses to merge two studios, and falls back to the legacy folder if the copy fails. `OPENPLOT_DATA_DIR` profiles are never touched.
+- **The default library file is renamed too.** `openplot.db` becomes `kertomus.db`, together with its WAL/SHM sidecars and its Time Machine snapshot folder. A library the user named is left exactly as it is; if the rename is blocked, the app keeps reading `openplot.db` instead of starting a second, empty studio.
+- **A default theme with an opinion.** `system` now resolves to **Scriptorium** on a dark OS and **Parchment** on a light one: warm ink, cream paper and bookbinding gold. Every older theme stays selectable, and the Appearance section gained a one-click **Use the studio palette** preset.
+- **Accent text is derived, not guessed.** `--accent-ink` is mixed from the accent and the theme's text colour at run time, and primary-button ink comes from a computed `--on-accent`. A user who keeps the old violet accent, or picks gold, now gets readable labels in both dark and light themes instead of one hard-coded ink per theme.
+- **Settings is a detour, not a destination.** Opening Settings from Chat, Agent or Writing remembers the desk; the Back control returns there and names it. While Settings is open, the sidebar keeps that desk's sections visible instead of collapsing to Chat.
+- **Copy got a human pass.** The welcome subtitle, the story-starter cards, the writing empty states, the model/provider hints and the new desk copy now speak like a person. The old “local-first AI studio for chatting and story-building” paragraph is gone.
+- **Writing chapter names** are localized (`Chapter {n}` / `Bab {n}`) instead of hard-coded English.
+
+### Fixed
+- **Agent and Writing settings went back to Chat.** `navigate()` overwrote the route with no memory of its origin, and the sidebar computed its workspace from the Settings route itself. Both now use the remembered desk.
+- **Writing's sidebar changed under Settings.** Because the rail saw `settings` rather than `write`, it swapped the novel tree and Writing actions for the Chat tree at the exact moment the user was trying to change a setting.
+- **Stale version strings left the app.** The MCP handshake advertised `1.2.3` to every server and the web-research user agent advertised `OpenPlotAI/1.3.0`. Both now read the running app version (`app.getVersion()` through `KERTOMUS_APP_VERSION`) and fall back to `1.3.1` only in headless tests.
+- **EPUB language tags.** A book exported from a Japanese profile was tagged `en`; `ja` is now accepted, while Pirate (a voice) correctly exports as English. The whitelist still refuses arbitrary strings.
+- **Untranslated chrome.** The native “new project” prompt and new-chat titles were hard-coded English; both now read the live language store. The sidebar's rename and clear-search controls have real labels instead of English-only `aria-label`s.
+- **Portable export fallbacks** used `openplot` as the filename stem; they now use `kertomus`.
+- **Documentation drift.** The in-app guide's thinking article, the About release note, the What's New cards and the README now describe 1.3.1 rather than 1.3.0.
+
+### Documentation
+- README gains the 1.3.1 section, the new install asset names, the profile-migration boundary, the release-key fingerprint and direct handbook links; the changelog, SECURITY, CONTRIBUTING, PLUGIN_API, landing pages and handbook use the Kertomus name. The bilingual website is rebuilt around the new banner.
+
+> There is a seventh shelf. We will not be explaining that.
 
 ## [1.3.0] — 2026-11-12
 
@@ -232,13 +277,13 @@ Initial public release. A local-first AI chat and story-writing studio for Windo
 - Markdown rendering during streaming is throttled to animation frames.
 - Database persistence debounced to 1200 ms; DevTools no longer open automatically in development (opt-in with `OPENPLOT_DEVTOOLS=1`).
 
-[Unreleased]: https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/compare/v1.2.5...HEAD
-[1.3.0]: https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/compare/v1.2.5...v1.3.0
-[1.2.5]: https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/compare/v1.2.3...v1.2.5
-[1.2.3]: https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/compare/v1.2.1...v1.2.3
-[1.2.1]: https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/compare/v1.2.0...v1.2.1
-[1.2.0]: https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/compare/v1.1.1...v1.2.0
-[1.1.1]: https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/compare/v1.1.0...v1.1.1
-[1.0.2]: https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/compare/v1.0.1...v1.0.2
-[1.0.1]: https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/compare/v1.0.0...v1.0.1
-[1.0.0]: https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/tag/v1.0.0
+[1.3.1]: https://github.com/mahakammoonlightstudio-beep/Kertomus/compare/v1.3.0...v1.3.1
+[1.3.0]: https://github.com/mahakammoonlightstudio-beep/Kertomus/compare/v1.2.5...v1.3.0
+[1.2.5]: https://github.com/mahakammoonlightstudio-beep/Kertomus/compare/v1.2.3...v1.2.5
+[1.2.3]: https://github.com/mahakammoonlightstudio-beep/Kertomus/compare/v1.2.1...v1.2.3
+[1.2.1]: https://github.com/mahakammoonlightstudio-beep/Kertomus/compare/v1.2.0...v1.2.1
+[1.2.0]: https://github.com/mahakammoonlightstudio-beep/Kertomus/compare/v1.1.1...v1.2.0
+[1.1.1]: https://github.com/mahakammoonlightstudio-beep/Kertomus/compare/v1.1.0...v1.1.1
+[1.0.2]: https://github.com/mahakammoonlightstudio-beep/Kertomus/compare/v1.0.1...v1.0.2
+[1.0.1]: https://github.com/mahakammoonlightstudio-beep/Kertomus/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/mahakammoonlightstudio-beep/Kertomus/releases/tag/v1.0.0

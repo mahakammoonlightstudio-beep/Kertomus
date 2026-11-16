@@ -39,6 +39,65 @@ let revealFallback: NodeJS.Timeout | null = null;
 let startupErrorWin: BrowserWindow | null = null;
 let restartingForRecovery = false;
 const LIBRARY_CONFIG_FILE = 'library.json';
+/** The shipped library name. 1.3.1 renamed it from openplot.db; both names are
+ *  still resolved so a failed rename can never make the app open an empty db. */
+const DEFAULT_LIBRARY = 'kertomus.db';
+const LEGACY_LIBRARY = 'openplot.db';
+
+/** Profile folders used before the 1.3.1 rename (and the 1.0-era name). */
+const LEGACY_PROFILE_DIRS = ['openplot-ai', 'OpenPlot AI'];
+
+/** True when a directory holds an actual studio (a database or its config).
+ *  Chromium cache folders alone must never block the one-time copy. */
+function profileHasStudio(dir: string): boolean {
+  try {
+    return fs.readdirSync(dir).some((name) => /\.db$/i.test(name) || name === LIBRARY_CONFIG_FILE);
+  } catch { return false; }
+}
+
+/**
+ * v1.3.1 renamed the product from OpenPlot AI to Kertomus. Electron derives
+ * the profile folder from the app name, so the new name would otherwise open an
+ * empty studio while every chat, project and key sat in the old folder.
+ *
+ * The old folder is copied once — never moved — and only into an empty profile.
+ * If the copy cannot be made (locked file, no space), the app keeps using the
+ * legacy folder instead of pretending the user has no data.
+ */
+function migrateLegacyProfile(): void {
+  if (process.env.OPENPLOT_DATA_DIR) return; // explicit test/demo profile
+  let current = '';
+  let appData = '';
+  try {
+    current = app.getPath('userData');
+    appData = app.getPath('appData');
+  } catch {
+    return;
+  }
+  // A profile pinned to a custom path is not ours to rewrite.
+  if (path.dirname(path.resolve(current)) !== path.resolve(appData)) return;
+  if (profileHasStudio(current)) return;
+  const legacy = LEGACY_PROFILE_DIRS
+    .map((name) => path.join(appData, name))
+    .find((dir) => path.resolve(dir) !== path.resolve(current) && profileHasStudio(dir));
+  if (!legacy) return;
+  try {
+    // Copy the studio, not the browser: databases (plus WAL/SHM sidecars),
+    // library.json and the snapshot folders. Chromium caches are disposable
+    // and must never overwrite the new profile's own files.
+    let copied = 0;
+    for (const name of fs.readdirSync(legacy)) {
+      const isLibrary = /\.db(?:-wal|-shm|-journal)?$/i.test(name) || name === LIBRARY_CONFIG_FILE;
+      if (!isLibrary && name !== 'snapshots') continue;
+      fs.cpSync(path.join(legacy, name), path.join(current, name), { recursive: true, force: true });
+      copied++;
+    }
+    if (copied > 0) console.log(`[kertomus] copied ${copied} studio item(s) from ${legacy}`);
+  } catch (err) {
+    console.error('[kertomus] profile copy failed, staying on the legacy folder:', err);
+    try { app.setPath('userData', legacy); } catch { /* the app still starts */ }
+  }
+}
 const aborts = new Map<string, () => void>();
 // Chats with a generation in flight — db.ts refuses message deletes for
 // these so an in-flight reply can never be stranded.
@@ -179,7 +238,7 @@ function confirmExecution(kind: ExecKind, id: string, hash: string, label: strin
     defaultId: 1,
     cancelId: 1,
     noLink: true,
-    title: 'OpenPlot AI',
+    title: 'Kertomus',
     message: kind === 'plugin' ? `Run plugin "${label}"?` : `Start MCP server "${label}"?`,
     detail
   };
@@ -241,13 +300,13 @@ function mcpConfigs(interactive: boolean): any[] {
 // dead app. Also log periodic unhandled rejections so they can be diagnosed.
 process.on('uncaughtException', (err) => {
   try {
-    console.error('[openplot] uncaught exception:', err?.stack || err);
+    console.error('[kertomus] uncaught exception:', err?.stack || err);
     // ui:toast carries a plain string (see App.tsx onUi handler).
     send('ui:toast', 'Internal error caught: ' + String(err?.message || err).slice(0, 140));
   } catch { /* nothing more we can do */ }
 });
 process.on('unhandledRejection', (reason) => {
-  console.error('[openplot] unhandled rejection:', String((reason as any)?.stack || reason).slice(0, 400));
+  console.error('[kertomus] unhandled rejection:', String((reason as any)?.stack || reason).slice(0, 400));
 });
 
 function send(channel: string, ...args: any[]): void {
@@ -261,7 +320,7 @@ function rendererCrashGuard(): void {
     try {
       const opts = {
         type: 'error' as const,
-        title: 'OpenPlot AI',
+        title: 'Kertomus',
         message: 'The interface crashed and will reload.',
         detail: `Reason: ${details?.reason || 'unknown'}. Your data is safe on disk.`
       };
@@ -302,8 +361,8 @@ function createWindow(): void {
     minHeight: 600,
     // Match the OS while the renderer boots; the stored theme takes over once
     // the app resolves "system".
-    backgroundColor: nativeTheme.shouldUseDarkColors ? '#0b0d12' : '#f6f5f1',
-    title: 'OpenPlot AI',
+    backgroundColor: nativeTheme.shouldUseDarkColors ? '#171512' : '#f6f0e3',
+    title: 'Kertomus',
     show: false,
     ...(iconPath ? { icon: iconPath } : {}),
     webPreferences: {
@@ -341,8 +400,8 @@ function createWindow(): void {
     revealWindow();
     try {
       const detail = `The interface failed to load (${code}: ${description}).\n\n${url}`;
-      if (win && !win.isDestroyed()) dialog.showMessageBoxSync(win, { type: 'error', title: 'OpenPlot AI', message: detail });
-      else dialog.showErrorBox('OpenPlot AI', detail);
+      if (win && !win.isDestroyed()) dialog.showMessageBoxSync(win, { type: 'error', title: 'Kertomus', message: detail });
+      else dialog.showErrorBox('Kertomus', detail);
     } catch { /* no display */ }
   });
 
@@ -371,9 +430,9 @@ function createWindow(): void {
 function buildMenu(): void {
   const template: Electron.MenuItemConstructorOptions[] = [
     {
-      label: 'OpenPlot AI',
+      label: 'Kertomus',
       submenu: [
-        { label: 'About OpenPlot AI', click: () => send('ui:navigate', 'about') },
+        { label: 'About Kertomus', click: () => send('ui:navigate', 'about') },
         { label: 'Donate (SociaBuzz)', click: () => shell.openExternal(DONATE_URL) },
         { label: 'Donate (Saweria)', click: () => shell.openExternal(SAWERIA_URL) },
         { type: 'separator' },
@@ -434,8 +493,8 @@ secureHandle('db', (_e, op: string, payload?: any) => {
         defaultId: 1,
         cancelId: 1,
         noLink: true,
-        title: 'OpenPlot AI',
-        message: 'Delete all OpenPlot AI data?',
+        title: 'Kertomus',
+        message: 'Delete all Kertomus data?',
         detail: 'Chats, projects, story bible, chapters, settings and providers on this machine will be erased. This cannot be undone.'
       };
       const choice = win && !win.isDestroyed()
@@ -723,7 +782,7 @@ secureHandle('ui:unreadCount', (_e, count: number, chatTitle?: string) => {
   const n = Math.max(0, Math.min(999, Number(count) || 0));
   if (win && !win.isDestroyed()) {
     const name = String(chatTitle || '').replace(/[\x00-\x1f]/g, ' ').trim().slice(0, 80);
-    win.setTitle(n > 0 ? `(${n}) OpenPlot AI` : name ? `${name} — OpenPlot AI` : 'OpenPlot AI');
+    win.setTitle(n > 0 ? `(${n}) Kertomus` : name ? `${name} — Kertomus` : 'Kertomus');
   }
   return true;
 });
@@ -759,7 +818,7 @@ secureHandle('library:switch', (_e, name: string) => {
     const schema = readSchemaVersionFile(file);
     if (schema === null) throw new Error('That file is not a readable SQLite database.');
     if (schema > SCHEMA_VERSION) {
-      throw new Error(`That library was written by a newer OpenPlot AI (schema ${schema} > ${SCHEMA_VERSION}). Update the app before opening it.`);
+      throw new Error(`That library was written by a newer Kertomus (schema ${schema} > ${SCHEMA_VERSION}). Update the app before opening it.`);
     }
     setActiveLibrary(dir, target);
     relaunchForLibrary();
@@ -786,7 +845,7 @@ secureHandle('library:import', async () => {
   try {
     if (!win || win.isDestroyed()) return { ok: false, error: 'no window' };
     const res = await dialog.showOpenDialog(win, {
-      title: 'Import an OpenPlot library',
+      title: 'Import an Kertomus library',
       properties: ['openFile'],
       filters: [{ name: 'SQLite database', extensions: ['db', 'sqlite', 'sqlite3'] }]
     });
@@ -824,7 +883,7 @@ secureHandle('library:export', async () => {
     const res = await dialog.showSaveDialog(win, {
       title: 'Export a portable library',
       defaultPath: portableFileName(dbFile),
-      filters: [{ name: 'OpenPlot library', extensions: ['db'] }]
+      filters: [{ name: 'Kertomus library', extensions: ['db'] }]
     });
     if (res.canceled || !res.filePath) return { ok: false, error: 'cancelled' };
     const target = portableTarget(res.filePath, dbFile);
@@ -884,7 +943,7 @@ function ensureDailySnapshot(): void {
     if (newestDaily && Date.now() - newestDaily.savedAt < 24 * 60 * 60 * 1000) return;
     createActiveSnapshot('daily');
   } catch (e) {
-    console.error('[openplot] daily snapshot failed:', e);
+    console.error('[kertomus] daily snapshot failed:', e);
   }
 }
 
@@ -916,7 +975,7 @@ secureHandle('snapshot:restore', async (_e, file: string) => {
     const schema = readSchemaVersionFile(source);
     if (schema === null) throw new Error('That snapshot is not a readable SQLite database.');
     if (schema > SCHEMA_VERSION) {
-      throw new Error(`That snapshot was created by a newer OpenPlot AI (schema ${schema} > ${SCHEMA_VERSION}).`);
+      throw new Error(`That snapshot was created by a newer Kertomus (schema ${schema} > ${SCHEMA_VERSION}).`);
     }
 
     // Keep the state being replaced, so "restore" itself is reversible.
@@ -934,7 +993,7 @@ secureHandle('snapshot:restore', async (_e, file: string) => {
       // The live file was not replaced, so reopen it instead of leaving the
       // renderer talking to a closed database.
       try { await initDb(dir, active); } catch (reopenErr) {
-        console.error('[openplot] could not reopen after a failed restore:', reopenErr);
+        console.error('[kertomus] could not reopen after a failed restore:', reopenErr);
       }
       throw new Error(`Could not replace the active library: ${messageOf(err)}. Nothing was changed.`);
     }
@@ -955,10 +1014,10 @@ secureHandle('export:markdown', async (_e, defaultName: string, content: string)
   if (!win) return { ok: false, error: 'no window' };
   // Strip filesystem-hostile characters from chat titles — Windows silently
   // turns  `title: "foo"`  into `title_ _foo_`  and Linux refuses the path.
-  const safeName = String(defaultName || 'openplot-export.md')
+  const safeName = String(defaultName || 'kertomus-export.md')
     .replace(/[\\/:*?"<>|\x00-\x1f]/g, '_')
     .replace(/\s+/g, ' ')
-    .trim() || 'openplot-export.md';
+    .trim() || 'kertomus-export.md';
   try {
     const res = await dialog.showSaveDialog(win, {
       title: 'Export as Markdown',
@@ -1102,7 +1161,7 @@ interface EpubChapter { title: string; content: string }
 
 // Build a valid EPUB 2 (most reader-compatible) from project data.
 function buildEpubBuffer(title: string, chapters: EpubChapter[], author: string, lang: string = 'en'): Buffer {
-  const bookId = `urn:uuid:${Date.now().toString(16)}-openplot`;
+  const bookId = `urn:uuid:${Date.now().toString(16)}-kertomus`;
   const escapeId = (s: string) => s.replace(/[^a-zA-Z0-9_-]/g, '_');
   const files: { name: string; data: Buffer; store?: boolean }[] = [];
 
@@ -1168,10 +1227,10 @@ ${spine.join('\n')}
 // plain chapter data; the ZIP assembly happens here where zlib lives.
 secureHandle('export:epub', async (_e, defaultName: string, author: string, chapters: EpubChapter[], lang?: string) => {
   if (!win) return { ok: false, error: 'no window' };
-  const safeName = String(defaultName || 'openplot-export.epub')
+  const safeName = String(defaultName || 'kertomus-export.epub')
     .replace(/[\\/:*?"<>|\x00-\x1f]/g, '_')
     .replace(/\s+/g, ' ')
-    .trim() || 'openplot-export.epub';
+    .trim() || 'kertomus-export.epub';
   try {
     const res = await dialog.showSaveDialog(win, {
       title: 'Export as EPUB',
@@ -1179,13 +1238,13 @@ secureHandle('export:epub', async (_e, defaultName: string, author: string, chap
       filters: [{ name: 'EPUB', extensions: ['epub'] }]
     });
     if (res.canceled || !res.filePath) return { ok: false, error: 'cancelled' };
-    const title = safeName.replace(/\.epub$/i, '').trim() || 'OpenPlot Export';
+    const title = safeName.replace(/\.epub$/i, '').trim() || 'Kertomus Export';
     // Language tag is validated against a whitelist — arbitrary strings must
     // never reach the XML metadata unescaped (it goes through xmlEsc anyway,
     // but a well-formed tag like 'id' or 'en' is what readers expect).
     const requested = String(lang || '').toLowerCase();
     const langTag = requested === 'en-gb' ? 'en-GB' : requested === 'en-us' ? 'en-US'
-      : ['id', 'en', 'es', 'hi'].includes(requested) ? requested : 'en';
+      : ['id', 'en', 'es', 'hi', 'ja'].includes(requested) ? requested : 'en';
     const buf = buildEpubBuffer(title, Array.isArray(chapters) ? chapters : [], String(author || 'Unknown Author'), langTag);
     fs.writeFileSync(res.filePath, buf);
     return { ok: true, data: res.filePath };
@@ -1198,10 +1257,10 @@ secureHandle('export:epub', async (_e, defaultName: string, author: string, chap
 secureHandle('export:file', async (_e, defaultName: string, content: string, kind: 'txt' | 'md' | 'json') => {
   if (!win) return { ok: false, error: 'no window' };
   const ext = kind === 'txt' ? 'txt' : kind === 'json' ? 'json' : 'md';
-  const safeName = String(defaultName || `openplot-export.${ext}`)
+  const safeName = String(defaultName || `kertomus-export.${ext}`)
     .replace(/[\\/:*?"<>|\x00-\x1f]/g, '_')
     .replace(/\s+/g, ' ')
-    .trim() || `openplot-export.${ext}`;
+    .trim() || `kertomus-export.${ext}`;
   try {
     const res = await dialog.showSaveDialog(win, {
       title: `Export as ${ext.toUpperCase()}`,
@@ -1263,7 +1322,7 @@ function libraryName(name: unknown): string {
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 90);
-  if (!base) return 'openplot.db';
+  if (!base) return DEFAULT_LIBRARY;
   return /\.db$/i.test(base) ? base : `${base}.db`;
 }
 
@@ -1272,7 +1331,45 @@ function activeLibraryName(dir: string): string {
     const cfg = JSON.parse(fs.readFileSync(path.join(dir, LIBRARY_CONFIG_FILE), 'utf8'));
     if (cfg && typeof cfg.active === 'string') return libraryName(cfg.active);
   } catch { /* first run or unreadable config */ }
-  return 'openplot.db';
+  // No saved choice: prefer the current name, but never ignore a legacy file
+  // that is still on disk (a rename may have been blocked by a lock).
+  if (fs.existsSync(path.join(dir, DEFAULT_LIBRARY))) return DEFAULT_LIBRARY;
+  if (fs.existsSync(path.join(dir, LEGACY_LIBRARY))) return LEGACY_LIBRARY;
+  return DEFAULT_LIBRARY;
+}
+
+/**
+ * Rename the single shipped library from openplot.db to kertomus.db, including
+ * its WAL/SHM sidecars and its Time Machine folder. Only the default name is
+ * touched: a library the user named is theirs. If anything is in the way, the
+ * app keeps using the old name rather than creating a second, empty studio.
+ */
+function migrateLibraryFileName(dir: string): void {
+  let configured: string | null = null;
+  try {
+    const cfg = JSON.parse(fs.readFileSync(path.join(dir, LIBRARY_CONFIG_FILE), 'utf8'));
+    if (cfg && typeof cfg.active === 'string') configured = libraryName(cfg.active);
+  } catch { /* no config = use the file on disk */ }
+  if (configured && configured !== LEGACY_LIBRARY) return;
+  const legacy = path.join(dir, LEGACY_LIBRARY);
+  const current = path.join(dir, DEFAULT_LIBRARY);
+  if (!fs.existsSync(legacy) || fs.existsSync(current)) return;
+  try {
+    fs.renameSync(legacy, current);
+    for (const suffix of ['-wal', '-shm', '-journal']) {
+      const from = `${legacy}${suffix}`;
+      if (fs.existsSync(from)) fs.renameSync(from, `${current}${suffix}`);
+    }
+    const oldSnapshots = path.join(dir, 'snapshots', 'openplot');
+    const newSnapshots = path.join(dir, 'snapshots', 'kertomus');
+    if (fs.existsSync(oldSnapshots) && !fs.existsSync(newSnapshots)) {
+      fs.renameSync(oldSnapshots, newSnapshots);
+    }
+    if (configured === LEGACY_LIBRARY) setActiveLibrary(dir, DEFAULT_LIBRARY);
+    console.log('[kertomus] library renamed to kertomus.db');
+  } catch (err) {
+    console.error('[kertomus] could not rename the library; keeping openplot.db:', err);
+  }
 }
 
 function setActiveLibrary(dir: string, name: string): void {
@@ -1344,7 +1441,7 @@ function escapeHtml(value: string): string {
  */
 function showStartupError(err: unknown): void {
   const message = `The studio stopped before its main window could open.\n\n${messageOf(err)}`;
-  console.error('[openplot] startup failed:', (err as any)?.stack || message);
+  console.error('[kertomus] startup failed:', (err as any)?.stack || message);
   if (startupErrorWin && !startupErrorWin.isDestroyed()) {
     startupErrorWin.show();
     startupErrorWin.focus();
@@ -1356,13 +1453,13 @@ function showStartupError(err: unknown): void {
   const folder = escapeHtml(dataDirForErrors || '(unknown)');
   const detail = escapeHtml(messageOf(err).slice(0, 1800));
   const reset = hasDb
-    ? `<a class="button danger" href="openplot://reset-library">Start with an empty library</a>
-       <p class="hint">The current openplot.db is renamed with a timestamp; nothing is deleted.</p>`
+    ? `<a class="button danger" href="kertomus://reset-library">Start with an empty library</a>
+       <p class="hint">The current library file is renamed with a timestamp; nothing is deleted.</p>`
     : '';
-  const html = `<!doctype html><html><head><meta charset="utf-8"><title>OpenPlot AI could not start</title>
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>Kertomus could not start</title>
 <style>
  :root{color-scheme:dark}*{box-sizing:border-box}
- body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0b0d12;color:#e8eaf0;
+ body{margin:0;min-height:100vh;display:grid;place-items:center;background:#171512;color:#e8eaf0;
       font:14px/1.55 system-ui,Segoe UI,sans-serif;padding:32px}
  main{width:min(640px,100%)}h1{font-size:22px;margin:0 0 10px;color:#fff}
  p{margin:0 0 14px;color:#b9bfcc}code{color:#f4c97a;background:#171b24;padding:2px 5px;border-radius:4px;word-break:break-all}
@@ -1370,23 +1467,23 @@ function showStartupError(err: unknown): void {
  .folder{font-size:12px;color:#8f98aa;word-break:break-all;margin:12px 0 22px}
  .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
  .button{display:inline-block;padding:9px 14px;border-radius:8px;text-decoration:none;background:#2a3040;color:#fff}
- .button.primary{background:#6c8cff;color:#081020}.button.danger{background:#3a2328;color:#ffb4b4}
+ .button.primary{background:#e0a62f;color:#241d12}.button.danger{background:#3a2328;color:#ffb4b4}
  .hint{font-size:12px;color:#8f98aa;margin:8px 0 0;width:100%}
 </style></head><body><main>
-<h1>OpenPlot AI could not start</h1>
+<h1>Kertomus could not start</h1>
 <p>The app is running, but its window could not open. Your data has not been modified.</p>
 <div class="detail">${detail}</div>
 <p class="folder">Data folder:<br><code>${folder}</code></p>
 <div class="actions">
-  <a class="button primary" href="openplot://open-folder">Open data folder</a>
+  <a class="button primary" href="kertomus://open-folder">Open data folder</a>
   ${reset}
-  <a class="button" href="openplot://quit">Quit</a>
+  <a class="button" href="kertomus://quit">Quit</a>
 </div>
 </main></body></html>`;
   startupErrorWin = new BrowserWindow({
     width: 760, height: 560, minWidth: 520, minHeight: 380,
-    title: 'OpenPlot AI could not start',
-    backgroundColor: nativeTheme.shouldUseDarkColors ? '#0b0d12' : '#f6f5f1',
+    title: 'Kertomus could not start',
+    backgroundColor: nativeTheme.shouldUseDarkColors ? '#171512' : '#f6f0e3',
     show: true, autoHideMenuBar: true,
     webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true, spellcheck: false }
   });
@@ -1394,15 +1491,15 @@ function showStartupError(err: unknown): void {
   startupErrorWin.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   startupErrorWin.webContents.on('will-navigate', (event, url) => {
     event.preventDefault();
-    if (url === 'openplot://open-folder') {
+    if (url === 'kertomus://open-folder') {
       try { void shell.openPath(dataDirForErrors); } catch { /* ignore */ }
       return;
     }
-    if (url === 'openplot://reset-library') {
+    if (url === 'kertomus://reset-library') {
       resetLibraryAndRestart();
       return;
     }
-    if (url === 'openplot://quit') app.quit();
+    if (url === 'kertomus://quit') app.quit();
   });
   startupErrorWin.on('closed', () => {
     startupErrorWin = null;
@@ -1422,7 +1519,7 @@ function resetLibraryAndRestart(): void {
     app.relaunch();
     app.exit(0);
   } catch (e: any) {
-    console.error('[openplot] could not reset library:', e);
+    console.error('[kertomus] could not reset library:', e);
     if (startupErrorWin && !startupErrorWin.isDestroyed()) {
       const safe = JSON.stringify(`Could not move the database: ${messageOf(e)}`);
       void startupErrorWin.webContents.executeJavaScript(
@@ -1434,14 +1531,14 @@ function resetLibraryAndRestart(): void {
 
 function startupFailure(err: unknown): void {
   const message = messageOf(err) || 'Unknown startup error';
-  console.error('[openplot] startup failed:', (err as any)?.stack || message);
+  console.error('[kertomus] startup failed:', (err as any)?.stack || message);
   if (win && !win.isDestroyed()) {
     // A window exists, so a parented native dialog is safe here.
     revealWindow();
     try {
       dialog.showMessageBoxSync(win, {
         type: 'error',
-        title: 'OpenPlot AI',
+        title: 'Kertomus',
         message: `The studio could not finish starting.\n\n${message.slice(0, 1800)}`
       });
     } catch { /* no display */ }
@@ -1454,6 +1551,8 @@ const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) {
   app.quit();
 } else {
+  // Must run before the app is ready: the profile path is fixed by then.
+  migrateLegacyProfile();
   app.on('second-instance', () => {
     // A second launch while the first is still initializing will be handled by
     // the first window as soon as it appears. Once startup is done, recreate a
@@ -1467,6 +1566,9 @@ if (!gotLock) {
   });
 
   app.whenReady().then(async () => {
+    // One source of truth for the version advertised outside the UI (MCP
+    // handshake, user agent). The package version is bumped once per release.
+    process.env.KERTOMUS_APP_VERSION = app.getVersion();
     // OPENPLOT_DATA_DIR redirects the whole profile (DB + settings) — used for
     // clean-room test runs and screenshots without touching real user data.
     dataDirForErrors = process.env.OPENPLOT_DATA_DIR || app.getPath('userData');
@@ -1481,13 +1583,18 @@ if (!gotLock) {
         (stored) => safeStorage.decryptString(Buffer.from(stored, 'latin1'))
       );
     }
-    const activeLibrary = activeLibraryName(dataDir);
-    // carry over data from the pre-rename InkWell install
+    // Carry over data from the pre-rename InkWell install, then rename the
+    // shipped OpenPlot-era library. Both steps are best-effort and checked
+    // before initDb so a failed rename cannot produce an empty studio.
     try {
       const oldDb = path.join(dataDir, 'inkwell.db');
-      const newDb = path.join(dataDir, 'openplot.db');
-      if (activeLibrary === 'openplot.db' && fs.existsSync(oldDb) && !fs.existsSync(newDb)) fs.renameSync(oldDb, newDb);
+      const newDb = path.join(dataDir, DEFAULT_LIBRARY);
+      if (fs.existsSync(oldDb) && !fs.existsSync(newDb) && !fs.existsSync(path.join(dataDir, LEGACY_LIBRARY))) {
+        fs.renameSync(oldDb, newDb);
+      }
     } catch { /* non-fatal */ }
+    migrateLibraryFileName(dataDir);
+    const activeLibrary = activeLibraryName(dataDir);
     try {
       await initDb(dataDir, activeLibrary);
     } catch (err) {

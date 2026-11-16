@@ -20,5 +20,8 @@ Every AI rewrite or manual save also leaves the displaced prose in **Text Dump**
 
 Agents write to chapters, not to the chat, when the output is long-form. That keeps prose out of the transcript and out of the prompt history.
 
+## Writing sprints
+On the Writing board, **Sprint** starts a timed push: choose 10, 15, 25 or 50 minutes and the board shows a countdown plus the words you have added since the start. The timer never locks the editor and never edits a chapter; ending it early is one click. Your chapter is saved exactly as before.
+
 ## Status and flow
 Chapter status feeds [[route:flow]], which turns beats into chapters. Word counts feed [[route:stats]].

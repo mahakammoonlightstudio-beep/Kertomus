@@ -4,8 +4,9 @@ export type UiFontChoice = 'system' | 'serif' | 'rounded' | 'mono' | 'custom';
 
 /** The default theme follows the OS; explicit choices always win. */
 export const SYSTEM_THEME = 'system';
-export const LIGHT_THEME = 'light-paper';
-export const DARK_THEME = 'dark-classic';
+/** Kertomus signature themes: warm parchment by day, lamp-lit scriptorium by night. */
+export const LIGHT_THEME = 'parchment';
+export const DARK_THEME = 'scriptorium';
 
 export function resolveTheme(theme: string, prefersDark: boolean): string {
   if (theme !== SYSTEM_THEME) return theme || SYSTEM_THEME;

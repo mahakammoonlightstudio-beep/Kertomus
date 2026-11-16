@@ -1,431 +1,508 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OpenPlot AI — studio cerita AI lokal-first, gratis</title>
-  <meta name="description" content="OpenPlot AI adalah studio menulis dan chat AI lokal-first, gratis dan open source untuk Windows, macOS, dan Linux. Tanpa akun, tanpa cloud, tanpa telemetry.">
-  <link rel="canonical" href="https://mahakammoonlightstudio-beep.github.io/OpenPlot-AI/id/">
-  <link rel="alternate" hreflang="en" href="https://mahakammoonlightstudio-beep.github.io/OpenPlot-AI/">
-  <link rel="alternate" hreflang="id" href="https://mahakammoonlightstudio-beep.github.io/OpenPlot-AI/id/">
-  <link rel="alternate" hreflang="x-default" href="https://mahakammoonlightstudio-beep.github.io/OpenPlot-AI/">
-  <link rel="icon" href="../review/01-chat.png">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kertomus — studio penulisan AI yang lokal</title>
+  <meta name="description" content="Kertomus adalah studio penulisan AI gratis, open-source, dan local-first untuk Windows, macOS, dan Linux. Ngobrol dengan model apa pun, simpan canon di story bible, susun tiga babak, dan tulis bab dalam satu jendela desktop.">
+  <meta name="theme-color" content="#15110d">
+  <link rel="canonical" href="https://mahakammoonlightstudio-beep.github.io/Kertomus/id/">
+  <link rel="icon" href="../brand/kertomus-logo.jpeg" type="image/jpeg">
+  <link rel="preload" as="image" href="../kertomus-banner.webp">
 
-  <!-- Open Graph / Twitter previews (Bahasa Indonesia) -->
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="OpenPlot AI">
-  <meta property="og:url" content="https://mahakammoonlightstudio-beep.github.io/OpenPlot-AI/id/">
-  <meta property="og:title" content="OpenPlot AI — studio cerita AI lokal-first, gratis">
-  <meta property="og:description" content="Chat AI dengan provider apa pun, story bible, chapter dengan version history, statistik menulis. Gratis, open source, tanpa cloud, tanpa telemetry. Windows, macOS, Linux.">
-  <meta property="og:image" content="https://mahakammoonlightstudio-beep.github.io/OpenPlot-AI/og-image-id.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="OpenPlot AI — ceritamu layak dapat studio, bukan lima tab browser. Gratis dan open source untuk Windows, macOS, dan Linux.">
-  <meta property="og:locale" content="id_ID">
-  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:site_name" content="Kertomus">
+  <meta property="og:title" content="Kertomus — studio ceritamu">
+  <meta property="og:description" content="Studio penulisan AI gratis, open-source, dan local-first. Satu jendela untuk chat, canon, outline, bab, dan statistik.">
+  <meta property="og:url" content="https://mahakammoonlightstudio-beep.github.io/Kertomus/id/">
+  <meta property="og:image" content="https://mahakammoonlightstudio-beep.github.io/Kertomus/kertomus-banner.webp">
+  <meta property="og:image:width" content="1400">
+  <meta property="og:image:height" content="788">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="OpenPlot AI — studio cerita AI lokal-first, gratis">
-  <meta name="twitter:description" content="Chat AI dengan provider apa pun, story bible, chapter, statistik menulis. Gratis dan open source, lokal-first.">
-  <meta name="twitter:image" content="https://mahakammoonlightstudio-beep.github.io/OpenPlot-AI/og-image-id.png">
+  <meta name="twitter:title" content="Kertomus — studio ceritamu">
+  <meta name="twitter:description" content="Studio penulisan AI local-first untuk orang yang lebih suka menulis daripada mengurus tab.">
+  <meta name="twitter:image" content="https://mahakammoonlightstudio-beep.github.io/Kertomus/kertomus-banner.webp">
 
-  <style>
-    :root {
-      --bg: #0e1116;
-      --panel: #161b22;
-      --border: #2a313b;
-      --text: #e6edf3;
-      --muted: #9aa7b3;
-      --accent: #7aa2f7;
-      --accent-strong: #4d7fe0;
-      --ok: #3fb950;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.6;
-    }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
-
-    nav {
-      border-bottom: 1px solid var(--border);
-      background: rgba(14, 17, 22, 0.85);
-      backdrop-filter: blur(8px);
-      position: sticky; top: 0; z-index: 10;
-    }
-    nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
-    .brand { font-weight: 700; letter-spacing: 0.2px; color: var(--text); }
-    .brand span { color: var(--accent); }
-    nav .right { display: flex; align-items: center; gap: 22px; }
-    nav .links { display: flex; gap: 20px; font-size: 0.95rem; }
-    nav .links a { color: var(--muted); }
-    nav .links a:hover { color: var(--text); text-decoration: none; }
-    .lang-switch { display: flex; gap: 4px; }
-    .lang-btn {
-      background: transparent; border: 1px solid var(--border);
-      color: var(--muted); border-radius: 7px; padding: 5px 11px;
-      font-size: 0.85rem; font-weight: 600; cursor: pointer;
-      text-decoration: none;
-    }
-    .lang-btn:hover { color: var(--text); text-decoration: none; }
-    .lang-btn.active { background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
-
-    header { padding: 88px 0 64px; text-align: center; }
-    header h1 { font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.15; letter-spacing: -0.5px; }
-    header h1 em { font-style: normal; color: var(--accent); }
-    header p.sub { color: var(--muted); font-size: 1.15rem; max-width: 640px; margin: 18px auto 0; }
-    .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 34px; }
-
-    .btn {
-      display: inline-flex; align-items: center; gap: 9px;
-      padding: 13px 26px; border-radius: 9px;
-      font-size: 1.02rem; font-weight: 600;
-      border: 1px solid var(--border);
-      cursor: pointer; transition: transform .08s ease, background .15s ease;
-    }
-    .btn:hover { text-decoration: none; transform: translateY(-1px); }
-    .btn-primary { background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
-    .btn-primary:hover { background: var(--accent); }
-    .btn-secondary { background: transparent; color: var(--text); }
-    .btn-secondary:hover { background: var(--panel); }
-
-    .detect {
-      margin-top: 16px; font-size: 0.92rem; color: var(--muted);
-      min-height: 1.4em;
-    }
-    .detect .spin {
-      display: inline-block; width: 12px; height: 12px;
-      border: 2px solid var(--border); border-top-color: var(--accent);
-      border-radius: 50%; animation: spin 0.8s linear infinite;
-      vertical-align: -2px; margin-right: 6px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .detect .ok { color: var(--ok); }
-
-    .shot { margin: 26px auto 0; max-width: 900px; }
-    .shot img {
-      width: 100%; border: 1px solid var(--border); border-radius: 12px;
-      box-shadow: 0 22px 60px rgba(0,0,0,0.45);
-    }
-    .shot figcaption { color: var(--muted); font-size: 0.88rem; margin-top: 10px; }
-
-    section { padding: 56px 0; }
-    section h2 { font-size: 1.7rem; margin-bottom: 26px; letter-spacing: -0.3px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
-    .card {
-      background: var(--panel); border: 1px solid var(--border);
-      border-radius: 12px; padding: 22px;
-    }
-    .card h3 { font-size: 1.05rem; margin-bottom: 8px; }
-    .card p { color: var(--muted); font-size: 0.95rem; }
-    .card code { color: var(--accent); font-size: 0.85rem; }
-
-    table.assets { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
-    table.assets th, table.assets td {
-      text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border);
-    }
-    table.assets th { color: var(--muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.4px; }
-    table.assets td.dl a { font-weight: 600; }
-
-    .badge {
-      display: inline-block; padding: 3px 10px; border-radius: 999px;
-      border: 1px solid var(--border); font-size: 0.8rem; color: var(--muted);
-    }
-
-    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
-    .step { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-    .step .n {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 28px; height: 28px; border-radius: 50%;
-      background: var(--accent-strong); color: #fff; font-weight: 700; margin-bottom: 10px;
-    }
-    .step p { color: var(--muted); font-size: 0.93rem; }
-    .step p strong { color: var(--text); }
-
-    footer {
-      border-top: 1px solid var(--border); padding: 34px 0 44px;
-      color: var(--muted); font-size: 0.9rem;
-    }
-    footer .wrap { display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; align-items: center; }
-    footer .donate a { margin-left: 14px; }
-    footer .donate a.paypal {
-      display: inline-block; margin-left: 10px; padding: 4px 11px;
-      border: 1px solid var(--border); border-radius: 999px;
-      color: var(--text); font-weight: 600;
-    }
-    footer .donate a.paypal:hover { border-color: var(--accent); color: var(--accent); }
-
-    @media (max-width: 640px) {
-      nav .links { display: none; }
-      header { padding: 60px 0 44px; }
-    }
-  </style>
+  <link rel="stylesheet" href="../site.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Kertomus",
+    "applicationCategory": "WritingApplication",
+    "operatingSystem": "Windows, macOS, Linux",
+    "description": "Studio penulisan AI gratis, open-source, dan local-first untuk chat, canon cerita, outline, dan naskah.",
+    "url": "https://mahakammoonlightstudio-beep.github.io/Kertomus/id/",
+    "image": "https://mahakammoonlightstudio-beep.github.io/Kertomus/kertomus-banner.webp",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "license": "https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/LICENSE",
+    "author": { "@type": "Organization", "name": "Mahakam Moonlight Studio" }
+  }
+  </script>
 </head>
 <body>
-  <nav>
-    <div class="wrap">
-      <a class="brand" href="/OpenPlot-AI/id/">OpenPlot <span>AI</span></a>
-      <div class="right">
-        <div class="links">
-          <a href="#features">Fitur</a>
-          <a href="#download">Unduh</a>
-          <a href="#install">Instalasi</a>
-          <a href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI">GitHub</a>
-        </div>
-        <div class="lang-switch">
-          <a class="lang-btn" id="lang-en" href="/OpenPlot-AI/" onclick="try{localStorage.setItem('oplang','en')}catch(e){}">EN</a>
-          <span class="lang-btn active">ID</span>
-        </div>
-      </div>
-    </div>
-  </nav>
+  <a class="skip" href="#main">Lewati ke konten</a>
 
-  <header>
-    <div class="wrap">
-      <h1>Ceritamu layak dapat studio,<br>bukan <em>lima tab browser</em>.</h1>
-      <p class="sub">
-        OpenPlot AI adalah studio menulis gratis dan open source dengan chat AI yang bisa
-        dipakai dengan provider mana pun — termasuk model lokal sepenuhnya. Datamu tidak
-        pernah meninggalkan komputer.
-      </p>
-      <div class="cta-row">
-        <a id="btn-primary" class="btn btn-primary" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/latest">Unduh untuk OS-ku</a>
-        <a class="btn btn-secondary" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI">Lihat source di GitHub</a>
-      </div>
-      <p class="detect" id="detect"></p>
-      <figure class="shot">
-        <img src="../review/01-chat.png" alt="Chat OpenPlot AI dengan balasan streaming, prompt library, dan @-mention" loading="lazy">
-        <figcaption>Tampilan chat: balasan streaming, tampilan reasoning, prompt library di “/”, @-mention entri cerita.</figcaption>
-      </figure>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="./" aria-label="Beranda Kertomus">
+        <span class="brand-mark" aria-hidden="true">K</span>
+        <span class="brand-text">
+          <span class="brand-name">Kertomus</span>
+          <span class="brand-sub">Studio ceritamu</span>
+        </span>
+      </a>
+
+      <nav class="nav" id="site-nav" aria-label="Navigasi utama">
+        <a href="#studio">Studio</a>
+        <a href="#desk">Meja tulis</a>
+        <a href="#handbook">Panduan</a>
+        <a href="#download">Unduh</a>
+        <a class="nav-github" href="https://github.com/mahakammoonlightstudio-beep/Kertomus">GitHub ↗</a>
+        <span class="lang-switch" aria-label="Bahasa">
+          <a href="../">EN</a>
+          <a href="./" aria-current="page">ID</a>
+        </span>
+      </nav>
+
+      <button class="menu-btn" type="button" aria-label="Buka menu" aria-controls="site-nav" aria-expanded="false">☰</button>
     </div>
   </header>
 
-  <section id="features">
+  <div class="announce">
     <div class="wrap">
-      <h2>Semua yang cerita butuhkan, dalam satu app offline</h2>
-      <div class="grid">
-        <div class="card">
-          <h3>Provider AI apa pun</h3>
-          <p>OpenAI, Anthropic, OpenRouter, Groq — atau sepenuhnya lokal lewat <code>Ollama</code> dan <code>LM Studio</code>. Bawa key-mu sendiri; dienkripsi dengan credential vault OS.</p>
+      <span><strong>v1.3.1</strong> — Edisi Kertomus sudah tiba.</span>
+      <a href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/CHANGELOG.md">Baca catatan rilis →</a>
+      <span class="long">Dulu OpenPlot AI · Dulu Inkwell</span>
+    </div>
+  </div>
+
+  <main id="main">
+    <section class="wrap hero">
+      <div class="hero-grid">
+        <div>
+          <p class="kicker">Dulu OpenPlot AI · Dulu Inkwell</p>
+          <h1>Tempat yang lebih tenang untuk <em>menulis</em>.</h1>
+          <p class="hero-lede">
+            Kertomus adalah <strong>studio penulisan AI local-first</strong> yang gratis
+            dan open-source. Ngobrol dengan model apa pun, simpan canon di story bible
+            yang sungguhan, susun tiga babak, dan tulis bab — dalam satu jendela desktop,
+            di mesinmu sendiri.
+          </p>
+          <div class="hero-actions">
+            <a class="btn" id="primary-download" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/releases/latest">
+              <span id="primary-label">Unduh untuk Windows</span>
+              <span aria-hidden="true">↓</span>
+            </a>
+            <a class="btn btn-ghost" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/docs/HANDBOOK.id.md">Baca panduan</a>
+          </div>
+          <div class="hero-note">
+            <span>Tanpa akun</span>
+            <span>Tanpa telemetri</span>
+            <span>Windows · macOS · Linux</span>
+            <span id="detected-os">Gratis &amp; open source</span>
+          </div>
         </div>
-        <div class="card">
-          <h3>Story bible</h3>
-          <p>Dunia, karakter, item, dan lore — diberi tag, bisa dicari, dan saling terhubung. @-mention entri mana pun untuk memasukkannya ke konteks AI.</p>
-        </div>
-        <div class="card">
-          <h3>Chapter &amp; riwayat</h3>
-          <p>Status draft/revising/done, focus mode, dan version history yang membuat snapshot sebelum setiap edit AI (30 tersimpan per chapter).</p>
-        </div>
-        <div class="card">
-          <h3>Story flow &amp; statistik</h3>
-          <p>Papan outline tiga babak yang terkait chapter, plus target harian, streak, dan heatmap 90 hari yang menjaga konsistensi menulis.</p>
-        </div>
-        <div class="card">
-          <h3>Ekspor sungguhan</h3>
-          <p>Ekspor seluruh project ke Markdown, manuskrip teks biasa, atau EPUB — dirakit secara lokal, tanpa layanan eksternal.</p>
-        </div>
-        <div class="card">
-          <h3>Privat sejak desain</h3>
-          <p>Penyimpanan SQLite lokal. Tanpa akun, tanpa cloud, tanpa telemetry. Open source dengan lisensi MIT.</p>
-        </div>
-        <div class="card">
-          <h3>Library &amp; Time Machine</h3>
-          <p>Simpan beberapa library dalam satu studio dan beralih dengan restart. Setiap library menyimpan hingga 12 snapshot utuh — sebelum migrasi, impor, reset, dan restore, plus salinan harian — jadi edit yang keliru tidak pernah final.</p>
-        </div>
-        <div class="card">
-          <h3>Lebih cepat di 1.3</h3>
-          <p>Ctrl/Cmd+P membuka quick switch chat dan proyek dari mana saja. Ekspor <code>.db</code> portabel berisi seluruh studio tanpa rahasia yang terikat mesin, ikuti setiap perubahan bab di Revision Timeline, periksa skill di Skill Lab, dan atur font, zoom, kepadatan, serta sudut antarmuka.</p>
-        </div>
+
+        <figure class="plate">
+          <span class="tape">Studio dalam satu gambar</span>
+          <div class="plate-frame">
+            <img src="../kertomus-banner.webp" width="1400" height="788"
+                 alt="Banner Kertomus: seorang penulis di meja dengan lampu minyak dan tulisan 'Your story deserves a studio, not five browser tabs.'">
+          </div>
+          <figcaption>
+            <span>Kertomus <span data-version>1.3.1</span></span>
+            <span>Lampu itu menahan atap</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <div class="strip" aria-hidden="true">
+      <div class="strip-track">
+        <span>Local-first</span><span>Model sendiri</span><span>Story bible</span>
+        <span>Riwayat bab</span><span>Delapan bahasa</span><span>Linux bertanda tangan</span>
+        <span>Satu rak ketujuh yang sunyi</span>
+        <span>Local-first</span><span>Model sendiri</span><span>Story bible</span>
+        <span>Riwayat bab</span><span>Delapan bahasa</span><span>Linux bertanda tangan</span>
+        <span>Satu rak ketujuh yang sunyi</span>
       </div>
     </div>
-  </section>
 
-  <section id="download" style="background: var(--panel); border-block: 1px solid var(--border);">
-    <div class="wrap">
-      <h2>Unduh <span class="badge" id="ver-badge">v1.3.0</span></h2>
-      <p style="color: var(--muted); max-width: 620px;">
-        Tombol di atas otomatis memilih installer yang sesuai untuk sistem operasimu.
-        Ingin memilih manual? Semua aset:
+    <section class="wrap section" id="studio">
+      <div class="section-head reveal">
+        <div>
+          <p class="eyebrow">Ruangan-ruangannya</p>
+          <h2>Tiga meja. Satu <em>naskah</em>.</h2>
+        </div>
+        <p>
+          Kebanyakan alat menulis memberimu kotak chat lalu berharap yang terbaik.
+          Kertomus memberi model ceritamu yang sebenarnya — dan memberimu ruang
+          untuk membentuknya.
+        </p>
+      </div>
+
+      <div class="rooms">
+        <article class="room reveal">
+          <div class="room-top"><span class="room-num">01 / CHAT</span><span class="room-tag">Pikir</span></div>
+          <h3>Berpikir keras</h3>
+          <p>Balasan streaming, jejak penalaran, @-mention, file, dan pustaka prompt. Model bisa membaca canon-mu, bukan menebak-nebak.</p>
+          <div class="mock" aria-hidden="true">
+            <div class="mock-bar"><i></i><i></i><i></i><b>MENGURAI TWIST BUKU BESAR</b></div>
+            <div class="mock-body">
+              <div class="mock-bubble me">Bagaimana kalau angka di buku besar itu koordinat?</div>
+              <div class="mock-row"><span class="mock-chip gold">web</span><span class="mock-chip">story bible</span><span class="mock-chip">2 entri</span></div>
+              <div class="mock-bubble">Berarti pelabuhan itu jadi sandi. Setiap manifes adalah peta. <b>Mantap.</b></div>
+              <div class="mock-line mid"></div><div class="mock-line short"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="room reveal">
+          <div class="room-top"><span class="room-num">02 / AGENT</span><span class="room-tag">Kerjakan</span></div>
+          <h3>Suruh dia bekerja</h3>
+          <p>Mode Agent membaca Story Bible, mencari entri, menulis bab, dan menyimpan memori — setiap tulisan terlihat.</p>
+          <div class="mock" aria-hidden="true">
+            <div class="mock-bar"><i></i><i></i><i></i><b>MEJA KERJA</b></div>
+            <div class="mock-body">
+              <div class="mock-row"><span class="mock-chip green">agent</span><span class="mock-chip">4 alat</span><span class="mock-chip">1 mcp</span></div>
+              <div class="mock-card">
+                <div class="mock-title">read_story_bible</div>
+                <div class="mock-line mid"></div><div class="mock-line"></div>
+              </div>
+              <div class="mock-card">
+                <div class="mock-title">append_to_chapter · Bab 7</div>
+                <div class="mock-line"></div><div class="mock-line short"></div>
+              </div>
+              <div class="mock-row"><span class="mock-chip gold">selesai</span><span class="mock-chip">canon diperbarui</span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="room reveal">
+          <div class="room-top"><span class="room-num">03 / WRITING</span><span class="room-tag">Tulis</span></div>
+          <h3>Tetap di dalam adegan</h3>
+          <p>Papan naskah, versi bab, sprint, papan adegan, dan alur tiga babak. Bukunya, bukan folder draf.</p>
+          <div class="mock" aria-hidden="true">
+            <div class="mock-bar"><i></i><i></i><i></i><b>HARBOUR LIGHTS · BAB 1</b></div>
+            <div class="mock-cols">
+              <div class="mock-side">
+                <div class="mock-title">Naskah</div>
+                <div class="mock-line"></div><div class="mock-line mid"></div><div class="mock-line short"></div>
+                <div class="mock-chip gold" style="margin-top:5px">Bab 1 · 52</div>
+              </div>
+              <div class="mock-card">
+                <div class="mock-title">Low Tide</div>
+                <div class="mock-line"></div><div class="mock-line"></div><div class="mock-line mid"></div>
+                <div class="mock-line" style="margin-top:8px"></div><div class="mock-line short"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap section split" id="desk">
+      <div class="split-copy reveal">
+        <p class="eyebrow">Meja tulis</p>
+        <h2>Bagian di mana kamu benar-benar menulis.</h2>
+        <p>
+          Kertomus bukan jendela chat dengan penghitung kata yang ditempel belakangan.
+          Naskah adalah pusat ruangan: bab dalam urutan baca, versi yang bisa dibuka
+          lagi, dan timer sprint yang menghitung kata tanpa mengunci pintu.
+        </p>
+        <ul class="checklist">
+          <li><strong>Papan naskah sungguhan.</strong> Draf, revisi, selesai, urutkan ulang — dengan papan adegan untuk bagian tengah yang berantakan.</li>
+          <li><strong>Riwayat versi yang tidak mengganggu.</strong> Tiga puluh snapshot terakhir disimpan, termasuk sebelum AI menambahkan teks dan sebelum restore.</li>
+          <li><strong>Sprint, bukan streak.</strong> Pilih 10, 15, 25, atau 50 menit. Lihat selisih katanya. Tidak ada yang dikunci; tidak ada rasa bersalah yang dipasang.</li>
+          <li><strong>Papan alur tiga babak.</strong> Beat terhubung ke bab, jadi bentuk buku adalah papan, bukan firasat.</li>
+        </ul>
+      </div>
+
+      <div class="split-art reveal">
+        <div class="art-card">
+          <div class="art-label"><span>Writing / Naskah</span><b>Tersimpan</b></div>
+          <div class="editor" aria-hidden="true">
+            <div class="editor-head">
+              <span class="editor-title">Bab 1 — Low Tide</span>
+              <span>Novel · Harbour Lights</span>
+            </div>
+            <div class="editor-body">
+              <div class="editor-rail">
+                <div class="on">Bab 1 · 52</div>
+                <div>Bab 2 · 0</div>
+                <div>Bab 3 · 0</div>
+                <div style="margin-top:10px;opacity:.65">Papan adegan</div>
+                <div style="opacity:.65">Riwayat</div>
+              </div>
+              <div class="editor-page">
+                <h4>Low Tide</h4>
+                <p>Surat itu tiba hari Selasa, terlipat di dalam manifes kapal.</p>
+                <p>Sari membacanya dua kali. Pelabuhan di luar jendelanya masih tidur di bawah selimut kabut, dan crane di Dermaga 7 berdiri seperti tiang gantungan di cahaya kelabu.</p>
+                <p class="faint">“Mereka menemukan satu lagi,” kata catatan itu. Tanpa tanda tangan. Tanpa tanggal.</p>
+              </div>
+            </div>
+            <div class="editor-foot"><span>52 kata</span><span>draf · tersimpan otomatis</span></div>
+          </div>
+          <span class="sprint-pill">SPRINT 25:00 · +318 kata</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap section split reverse" id="canon">
+      <div class="split-art reveal">
+        <div class="art-card">
+          <div class="art-label"><span>Story Bible / Harbour Lights</span><b>18 entri</b></div>
+          <div class="canon-board" aria-hidden="true">
+            <div class="canon-card">
+              <span class="canon-kind">Karakter</span>
+              <h4>Sari Winata</h4>
+              <p>Syahbandar. Membaca manifes untuk hidup; membaca orang lebih buruk.</p>
+              <div class="canon-tags"><span>protagonis</span><span>pov</span><span>dermaga 7</span></div>
+            </div>
+            <div class="canon-card">
+              <span class="canon-kind">Lokasi</span>
+              <h4>Dermaga 7</h4>
+              <p>Crane kontainer, kantor terkunci, dan kabut yang datang tepat waktu.</p>
+              <div class="canon-tags"><span>pelabuhan</span><span>babak i</span></div>
+            </div>
+            <div class="canon-card wide">
+              <span class="canon-kind">Lore</span>
+              <h4>Sandi buku besar</h4>
+              <p>Angka-angka itu koordinat. Pelabuhan adalah kuncinya. Sari belum sadar.</p>
+              <span class="canon-link">terhubung dari Bab 1 · Bab 7</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="split-copy reveal">
+        <p class="eyebrow">Canon, bukan perasaan</p>
+        <h2>Dia ingat apa yang kamu tulis.</h2>
+        <p>
+          Dunia, lokasi, karakter, item, dan lore adalah catatan sungguhan — diberi
+          tag, saling terhubung, dan bisa dicari — bukan paragraf yang terus kamu
+          tempel ke prompt. Agent membaca bible yang sama denganmu.
+        </p>
+        <ul class="checklist">
+          <li><strong>Lima jenis canon.</strong> Dunia, lokasi, karakter, item, dan lore, dengan hitungan per kategori dan pencarian penuh.</li>
+          <li><strong>Tautan yang melakukan sesuatu.</strong> Entri saling merujuk, dan agent bisa membuat atau memperbaruinya di tengah percakapan.</li>
+          <li><strong>File referensi tinggal bersama entri.</strong> Lampirkan Markdown, teks, JSON, atau CSV; baca lagi tanpa mencari foldernya.</li>
+          <li><strong>Impor massal dengan batas waras.</strong> Bawa seluruh setting dari Markdown, JSON, atau CSV, lengkap dengan pratinjau dan lewati duplikat.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="wrap section" id="numbers">
+      <div class="section-head reveal">
+        <div>
+          <p class="eyebrow">Angka yang sangat serius</p>
+          <h2>Studio, diukur dengan hal yang <em>penting</em>.</h2>
+        </div>
+        <p>
+          Tanpa grafik pertumbuhan. Tanpa deck investor. Hanya angka yang mungkin
+          benar-benar dipedulikan penulis, plus satu angka yang secara kontrak
+          tidak boleh kami jelaskan.
+        </p>
+      </div>
+
+      <div class="numbers reveal">
+        <div class="number">
+          <strong>0</strong>
+          <span>Akun, sinkronisasi cloud, dan layanan telemetri antara kamu dan naskahmu.</span>
+          <small>SQLITE LOKAL · DISK-MU</small>
+        </div>
+        <div class="number">
+          <strong>8</strong>
+          <span>Bahasa antarmuka, termasuk satu dari tahun 1700-an dan satu yang bilang “yarr”.</span>
+          <small>DUA-DUANYA BETA. DUA-DUANYA SERIUS.</small>
+        </div>
+        <div class="number">
+          <strong>16</strong>
+          <span>Tema, sebelas aksen, dan satu lampu. Lampu bukan pengaturan.</span>
+          <small>TERANG, GELAP, DAN LAINNYA</small>
+        </div>
+        <div class="number">
+          <strong>1</strong>
+          <span>Rak ketujuh yang tidak ada di navigasi, dokumentasi, atau kalimat ini.</span>
+          <small>TOLONG JANGAN TANYA</small>
+        </div>
+      </div>
+      <p class="serif-note">
+        <em>Juga benar:</em> tanpa langganan, tanpa akun, tanpa spinner “menyinkronkan…”. Kata-katamu tetap di tempat kamu menaruhnya.
       </p>
-      <table class="assets" id="assets" style="margin-top: 18px;">
-        <thead>
-          <tr><th>Platform</th><th>Installer</th><th>Portable</th><th></th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Windows</td>
-            <td class="dl"><a data-os="win" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/latest">Setup .exe</a></td>
-            <td class="dl"><a data-os="win-zip" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/latest">.zip</a></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>macOS (Intel + Apple silicon)</td>
-            <td class="dl"><a data-os="mac-dmg" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/latest">Universal .dmg</a></td>
-            <td class="dl"><a data-os="mac-zip" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/latest">Universal .zip</a></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Linux (x64)</td>
-            <td class="dl"><a data-os="linux" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/latest">.AppImage</a></td>
-            <td class="dl"><a data-os="linux-tar" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/latest">.tar.gz</a></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Linux (arm64)</td>
-            <td class="dl"><a data-os="linux-arm64" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/latest">.AppImage</a></td>
-            <td class="dl"><a data-os="linux-arm64-tar" href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/latest">.tar.gz</a></td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
-      <p style="color: var(--muted); font-size: 0.88rem; margin-top: 14px;">
-        Build macOS belum ditandatangani — jika Gatekeeper protes, klik kanan app lalu pilih <strong>Open</strong> saat pertama kali.
+    </section>
+
+    <section class="wrap section" id="download">
+      <div class="download-shell reveal">
+        <div class="download-copy">
+          <p class="eyebrow">Bawa pulang</p>
+          <h2>Studio-mu, di mejamu.</h2>
+          <p>
+            Gratis dan open source. Pasang installer atau buka folder portabel.
+            Bawa API key sendiri, atau arahkan Kertomus ke Ollama dan biarkan
+            semuanya tetap offline.
+          </p>
+          <p class="ver"><span>Rilis saat ini</span> v<span data-version>1.3.1</span> · Windows, macOS &amp; Linux</p>
+          <div class="download-actions">
+            <a class="btn" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/releases/latest">Lihat rilis ↓</a>
+            <a class="btn btn-ghost" href="https://github.com/mahakammoonlightstudio-beep/Kertomus#install">Catatan pemasangan</a>
+          </div>
+          <p class="signing-note">
+            Artefak Linux ditandatangani GPG oleh workflow rilis.
+            <a href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/docs/keys/README.md">Cara memverifikasi unduhan</a>.
+          </p>
+        </div>
+
+        <div class="assets">
+          <div class="assets-head"><span>Pilih platform</span><span>v<span data-version>1.3.1</span></span></div>
+          <a class="asset" data-os="win" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/releases/latest">
+            <span class="asset-icon" aria-hidden="true">W</span>
+            <span><b>Windows · x64</b><small>Installer NSIS · zip portabel</small></span>
+            <span class="arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="asset" data-os="mac" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/releases/latest">
+            <span class="asset-icon" aria-hidden="true">M</span>
+            <span><b>macOS · universal</b><small>dmg · Intel + Apple silicon</small></span>
+            <span class="arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="asset" data-os="linux" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/releases/latest">
+            <span class="asset-icon" aria-hidden="true">L</span>
+            <span><b>Linux · x64</b><small>AppImage · tar.gz · bertanda tangan</small></span>
+            <span class="arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="asset" data-os="linux-arm64" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/releases/latest">
+            <span class="asset-icon" aria-hidden="true">A</span>
+            <span><b>Linux · arm64</b><small>AppImage · tar.gz · bertanda tangan</small></span>
+            <span class="arrow" aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+      <p class="browse">
+        Setiap rilis juga menyertakan salinan portabel, changelog, dan manifes SHA-256.
+        <a href="https://github.com/mahakammoonlightstudio-beep/Kertomus/releases">Lihat semua rilis ↗</a>
       </p>
-    </div>
-  </section>
+    </section>
 
-  <section id="install">
+    <section class="wrap section" id="handbook">
+      <div class="section-head reveal">
+        <div>
+          <p class="eyebrow">Panduan</p>
+          <h2>Baca manualnya. <em>Bagus, kok.</em></h2>
+        </div>
+        <p>
+          Panduan sungguhan, bukan daftar fitur dengan tangkapan layar. Mulai dari
+          bab pertama, atau lompat ke bagian yang sedang bermasalah.
+        </p>
+      </div>
+
+      <div class="handbook">
+        <a class="hand-card primary reveal" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/docs/HANDBOOK.id.md">
+          <span class="hand-kicker">Bahasa Indonesia · Panduan</span>
+          <h3>Dari peluncuran pertama sampai bab selesai.</h3>
+          <p>Provider, chat, canon, bab, alur, statistik, skill, MCP, privasi, dan semua pintasan. Ditulis untuk manusia yang punya naskah.</p>
+          <span class="go">Buka panduan ↗</span>
+        </a>
+        <a class="hand-card reveal" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/docs/HANDBOOK.md">
+          <span class="hand-kicker">English · Handbook</span>
+          <h3>The full English manual.</h3>
+          <p>Versi Inggris dengan istilah yang sama, untuk saat kamu butuh detail yang lebih panjang.</p>
+          <span class="go">Open the handbook ↗</span>
+        </a>
+        <a class="hand-card reveal" href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/docs/PLUGIN_API.md">
+          <span class="hand-kicker">Extend · Plugin API</span>
+          <h3>Hook, command, approval.</h3>
+          <p>Lifecycle hook, perintah palette, dan gerbang persetujuan yang mencegah kode asing berjalan sendiri.</p>
+          <span class="go">Baca API ↗</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="wrap section faq" id="faq">
+      <div class="reveal">
+        <p class="eyebrow">Pertanyaan wajar</p>
+        <h2>Hal yang ditanyakan sebelum menyalakan lampu.</h2>
+      </div>
+      <div class="faq-list reveal">
+        <details>
+          <summary>Apakah naskahku diunggah ke suatu tempat?</summary>
+          <p>Hanya teks yang kamu pilih untuk dikirim ke penyedia model. Library-mu — chat, canon, bab, versi, pengaturan — tinggal di file SQLite lokal. Tidak ada akun Kertomus dan tidak ada telemetri. Jika kamu memakai model hosted, kebijakan penyedianya berlaku untuk teks yang kamu kirim; jika memakai Ollama atau LM Studio, tidak ada yang keluar dari mesin.</p>
+        </details>
+        <details>
+          <summary>Apakah aku perlu API key?</summary>
+          <p>Kamu perlu model, bukan akun di kami. Bawa key OpenAI-compatible, Anthropic, OpenRouter, Groq, atau arahkan ke server lokal. Ollama dan LM Studio tidak perlu key. Satu kartu provider per layanan; model berbeda untuk setiap chat.</p>
+        </details>
+        <details>
+          <summary>Benar-benar jalan di Linux?</summary>
+          <p>Ya. Build AppImage dan tarball x64 serta arm64, dengan <code>.zsync</code> untuk AppImageUpdate. Artefak rilis ditandatangani GPG dan disertai <code>SHA256SUMS-linux-x64</code> (atau <code>-arm64</code>) plus tanda tangan terpisah.</p>
+        </details>
+        <details>
+          <summary>Apa itu rak ketujuh?</summary>
+          <p><strong>Rak ketujuh bukan fitur.</strong> Dia tidak ada di navigasi. Dia sebuah cerita pendek, dan dia ada tepat di tempat yang dia inginkan. Studio ini tidak akan menerima pertanyaan saat ini.</p>
+        </details>
+        <details>
+          <summary>Lampunya asli?</summary>
+          <p>Lampu itu menahan atap. Tolong jangan dipindah. Sisa aplikasinya adalah software biasa: React, Electron, SQLite, database local-first, dan rasa curiga yang sehat terhadap sinkronisasi cloud.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
     <div class="wrap">
-      <h2>Tiga langkah dan kamu mulai menulis</h2>
-      <div class="steps">
-        <div class="step">
-          <span class="n">1</span>
-          <p><strong>Instal.</strong> Jalankan installer untuk OS-mu (atau ekstrak arsip portabel). Tanpa perlu akun.</p>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="brand" href="./" aria-label="Beranda Kertomus">
+            <span class="brand-mark" aria-hidden="true">K</span>
+            <span class="brand-text">
+              <span class="brand-name">Kertomus</span>
+              <span class="brand-sub">Studio ceritamu</span>
+            </span>
+          </a>
+          <p>Studio gratis, open-source, dan local-first untuk cerita, canon, dan urusan aneh bernama menyelesaikan buku.</p>
         </div>
-        <div class="step">
-          <span class="n">2</span>
-          <p><strong>Hubungkan provider.</strong> Settings → AI Providers. Tempel key untuk API hosted, atau arahkan ke <code>localhost</code> untuk Ollama / LM Studio.</p>
+        <div>
+          <h4>Studio</h4>
+          <ul>
+            <li><a href="#studio">Ruangan</a></li>
+            <li><a href="#desk">Meja tulis</a></li>
+            <li><a href="#canon">Story Bible</a></li>
+            <li><a href="#download">Unduh</a></li>
+          </ul>
         </div>
-        <div class="step">
-          <span class="n">3</span>
-          <p><strong>Tulis.</strong> Buat project, tambahkan entri story bible, lalu mulai chat atau menyusun chapter.</p>
+        <div>
+          <h4>Baca</h4>
+          <ul>
+            <li><a href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/docs/HANDBOOK.id.md">Panduan</a></li>
+            <li><a href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/docs/HANDBOOK.md">Handbook</a></li>
+            <li><a href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/CHANGELOG.md">Changelog</a></li>
+            <li><a href="https://github.com/mahakammoonlightstudio-beep/Kertomus/blob/main/SECURITY.md">Keamanan</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Lainnya</h4>
+          <ul>
+            <li><a href="https://github.com/mahakammoonlightstudio-beep/Kertomus">GitHub ↗</a></li>
+            <li><a href="https://github.com/mahakammoonlightstudio-beep/Kertomus/issues">Issues ↗</a></li>
+            <li><a href="https://www.paypal.com/paypalme/mrfozan">PayPal ↗</a></li>
+            <li><a href="https://saweria.co/MahakamMoonStudio">Saweria ↗</a></li>
+          </ul>
         </div>
       </div>
-    </div>
-  </section>
 
-  <footer>
-    <div class="wrap">
-      <div>
-        <strong>OpenPlot AI</strong> — oleh Mahakam Moonlight Studio.
-        <a href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/blob/main/CHANGELOG.md">Changelog</a> ·
-        <a href="https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/blob/main/LICENSE">Lisensi MIT</a>
-      </div>
-      <div class="donate">
-        Dukung proyek ini:
-        <a class="paypal" href="https://www.paypal.com/paypalme/mrfozan">PayPal</a> ·
-        <a href="https://sociabuzz.com/mahakam_moonlight_studio/tribe">SociaBuzz</a> ·
-        <a href="https://saweria.co/MahakamMoonStudio">Saweria</a>
+      <div class="footer-bottom">
+        <div>
+          © 2026 Mahakam Moonlight Studio · Lisensi MIT<br>
+          Dulu OpenPlot AI. Dulu Inkwell. Sekarang Kertomus.
+        </div>
+        <div class="seventh">
+          <b>Ada rak ketujuh.</b><br>
+          Kami tidak akan menjelaskannya.
+        </div>
       </div>
     </div>
   </footer>
 
-  <script>
-    (function () {
-      var OWNER = 'mahakammoonlightstudio-beep';
-      var REPO = 'OpenPlot-AI';
-
-      // This page is static Indonesian; remember the choice for the EN root.
-      try { localStorage.setItem('oplang', 'id'); } catch (e) {}
-
-      var ua = navigator.userAgent;
-      var isMac = /Mac|iPhone|iPad/i.test(ua);
-      var isWindows = /Win/i.test(ua);
-      var isLinux = /Linux|X11|CrOS/i.test(ua) && !isMac && !isWindows;
-      var isArm = /aarch64|arm64/i.test(ua);
-
-      var OS_SUFFIX = {
-        'win':      'OpenPlot.AI.Setup.VER.exe', 'win-zip': 'OpenPlot.AI-VER-win.zip',
-        'mac-dmg':  'OpenPlot.AI-VER-universal.dmg', 'mac-zip': 'OpenPlot.AI-VER-universal-mac.zip',
-        'linux':    'OpenPlot.AI-VER.AppImage', 'linux-tar': 'openplot-ai-VER.tar.gz',
-        'linux-arm64': 'OpenPlot.AI-VER-arm64.AppImage', 'linux-arm64-tar': 'OpenPlot.AI-VER-arm64.tar.gz'
-      };
-
-      function osKey() {
-        if (isMac) return 'mac-dmg';
-        if (isWindows) return 'win';
-        if (isLinux) return isArm ? 'linux-arm64' : 'linux';
-        return null;
-      }
-
-      var MSG = {
-        checking: 'Mendeteksi sistem operasimu…',
-        readyWin: '✓ Terdeteksi Windows — unduhan siap. Klik tombol di atas.',
-        readyMac: '✓ Terdeteksi macOS — unduhan siap. Klik tombol di atas.',
-        readyLinux: '✓ Terdeteksi Linux — unduhan siap. Klik tombol di atas.',
-        nofs: 'Installer untuk sistemmu tidak ditemukan di rilis terbaru — membuka halaman releases saja.',
-        noos: 'Sistem operasimu tidak bisa dideteksi — pilih file dari daftar di bawah.',
-        noapi: 'Tidak bisa menghubungi GitHub untuk memverifikasi rilis terbaru — tombol membuka halaman releases.',
-        def: 'Belum yakin file yang mana? Semua rilis ada di GitHub.'
-      };
-
-      var lastKey = MSG.checking;
-
-      function renderDetect(key) {
-        lastKey = key;
-        var d = document.getElementById('detect');
-        if (!d) return;
-        if (key === MSG.checking) {
-          d.innerHTML = '<span class="spin"></span>' + key;
-        } else {
-          d.textContent = key;
-        }
-      }
-
-      function browseFallback(detectMsg) {
-        renderDetect(detectMsg || MSG.def);
-        var b = document.getElementById('btn-primary');
-        if (b) b.setAttribute('href', 'https://github.com/' + OWNER + '/' + REPO + '/releases/latest');
-        fillLatestLinks(null);
-      }
-
-      fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + '/releases/latest')
-        .then(function (r) { if (!r.ok) throw new Error('release lookup failed'); return r.json(); })
-        .then(function (rel) {
-          var ver = (rel.tag_name || '').replace(/^v/, '');
-          if (!ver) throw new Error('no tag');
-
-          var key = osKey();
-          var primary = document.getElementById('btn-primary');
-
-          if (key) {
-            var assetName = (OS_SUFFIX[key] || '').replace('VER', ver);
-            var asset = (rel.assets || []).find(function (a) { return a.name === assetName; });
-            if (asset) {
-              primary.setAttribute('href', asset.browser_download_url);
-              renderDetect(key === 'win' ? MSG.readyWin : key === 'mac-dmg' ? MSG.readyMac : MSG.readyLinux);
-            } else {
-              browseFallback(MSG.nofs);
-              return;
-            }
-          } else {
-            browseFallback(MSG.noos);
-            return;
-          }
-
-          document.getElementById('ver-badge').textContent = 'v' + ver;
-          fillLatestLinks(ver);
-        })
-        .catch(function () {
-          browseFallback(MSG.noapi);
-        });
-
-      function fillLatestLinks(ver) {
-        if (!ver) return;
-        document.querySelectorAll('#assets a[data-os]').forEach(function (a) {
-          var key = a.getAttribute('data-os');
-          var name = (OS_SUFFIX[key] || '').replace('VER', ver);
-          a.setAttribute('href', 'https://github.com/' + OWNER + '/' + REPO +
-            '/releases/download/v' + ver + '/' + encodeURIComponent(name));
-        });
-      }
-
-      renderDetect(MSG.checking);
-    })();
-  </script>
+  <script src="../site.js" defer></script>
 </body>
 </html>

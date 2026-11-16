@@ -1,0 +1,137 @@
+/* ============================================================
+   Kertomus brand layer (v1.3.1)
+   Loaded last: the identity should not need !important wars with older
+   feature CSS. Everything here is type, hairline and surface — no images, no
+   gradients behind text, so contrast stays a property of the theme tokens.
+   ============================================================ */
+
+/* ---- Sidebar lockup ---- */
+.sidebar-header {
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 16%, var(--border));
+  padding-bottom: 12px;
+}
+.logo.brand-lockup { gap: 10px; }
+.brand-name {
+  font-family: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Times New Roman', serif;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: var(--text);
+}
+.brand-lockup .version {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.4px;
+  color: var(--text-faint);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 1px 6px;
+}
+/* The active place is marked by a gold rule on the left as well as the soft
+   fill: colour alone is not a reliable signpost in every theme. */
+.nav-item.active { box-shadow: inset 2px 0 0 var(--accent); }
+
+/* ---- Home / welcome lockup ---- */
+.welcome-hero .brand-hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+.welcome-hero .brand-hero-text { text-align: left; }
+.welcome-hero .logo-big {
+  font-family: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Times New Roman', serif;
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  line-height: 1.05;
+}
+.brand-kicker {
+  margin-top: 3px;
+  font-size: 10.5px;
+  letter-spacing: 2.1px;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+/* Section labels read like a book's running heads, not a dashboard filter. */
+.nav-section-title { letter-spacing: 1.15px; }
+
+/* ---- Signature theme ambience ----
+   One very quiet radial light in the upper corner: it gives the flat panels a
+   sense of a room without tinting any text. Reduced motion never touches it. */
+[data-theme='scriptorium'] .app {
+  background:
+    radial-gradient(1100px 520px at 78% -12%, rgba(232, 171, 47, 0.055), transparent 68%),
+    var(--bg);
+}
+[data-theme='parchment'] .app {
+  background:
+    radial-gradient(1000px 480px at 82% -14%, rgba(196, 150, 62, 0.07), transparent 70%),
+    var(--bg);
+}
+/* A bundled heading rule under page titles, drawn in the accent. */
+.page > h1:first-child,
+.page .page-narrow > h1:first-child {
+  padding-bottom: 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 26%, var(--border));
+}
+
+/* The manuscript header gained a Sprint control; let the row breathe instead of
+   pushing Save off-screen on a narrow window. */
+.write-head { flex-wrap: wrap; }
+.write-head-right { flex-wrap: wrap; justify-content: flex-end; }
+
+/* ---- Appearance: one-click Kertomus look ---- */
+.brand-look {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-content: space-between;
+  padding: 10px 12px;
+  margin: 2px 0 12px;
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--accent) 5%, var(--bg-panel-2));
+}
+.brand-look .hint { margin-top: 2px; }
+
+/* ---- Writing sprint ---- */
+.write-sprint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 7px 10px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-panel-2);
+  color: var(--text-dim);
+  font-size: 12px;
+}
+.write-sprint.running {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  background: color-mix(in srgb, var(--accent) 7%, var(--bg-panel-2));
+}
+.write-sprint .ws-time {
+  font-family: var(--mono);
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.write-sprint .ws-title { color: var(--text); font-weight: 600; }
+.write-sprint .ws-words { color: var(--accent-ink); }
+.write-sprint .spacer { flex: 1; }
+
+/* ---- About: the shipped brand plate ---- */
+.about-brand-plate {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  margin: 0 0 14px;
+  aspect-ratio: 900 / 500;
+  object-fit: cover;
+}

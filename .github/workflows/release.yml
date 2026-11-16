@@ -11,6 +11,11 @@ name: Release
 #   APPLE_APP_SPECIFIC_PASSWORD  app-specific password for that account
 #   APPLE_TEAM_ID              Apple developer team id
 # Without them the macOS build is unsigned (Gatekeeper needs Open on first run).
+#
+# Linux GPG signing is opt-in too. Add these repository secrets to sign every
+# Linux artifact and publish SHA256SUMS + SHA256SUMS.asc:
+#   LINUX_GPG_PRIVATE_KEY      armored private key, or its base64
+#   LINUX_GPG_PASSPHRASE       passphrase for that key (empty if none)
 
 on:
   push:
@@ -42,7 +47,7 @@ jobs:
           # links to them by name.
           - os: ubuntu-latest
             label: linux-arm64
-            extra_args: "--linux --arm64 '-c.linux.artifactName=OpenPlot.AI-${version}-arm64.${ext}'"
+            extra_args: "--linux --arm64 '-c.linux.artifactName=Kertomus-${version}-linux-arm64.${ext}'"
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out repository
@@ -145,6 +150,51 @@ jobs:
             zsyncmake -u "$url" -o "${appimage}.zsync" "$appimage"
           done
 
+      - name: Sign Linux artifacts (optional GPG)
+        # Detached signatures for the AppImage and tarball, plus a signed
+        # SHA256SUMS. Without the secret the job stays green and ships unsigned
+        # artifacts, exactly like the Windows and macOS paths do.
+        if: runner.os == 'Linux'
+        shell: bash
+        env:
+          LINUX_GPG_PRIVATE_KEY: ${{ secrets.LINUX_GPG_PRIVATE_KEY }}
+          LINUX_GPG_PASSPHRASE: ${{ secrets.LINUX_GPG_PASSPHRASE }}
+          # x64 and arm64 are separate jobs uploading to one release: the
+          # manifest must say which architecture it describes.
+          MATRIX_LABEL: ${{ matrix.label }}
+        run: |
+          if [ -z "$LINUX_GPG_PRIVATE_KEY" ]; then
+            echo "No LINUX_GPG_PRIVATE_KEY secret: Linux artifacts stay unsigned."
+            exit 0
+          fi
+          mkdir -p "$HOME/.gnupg"
+          chmod 700 "$HOME/.gnupg"
+          keyfile="$RUNNER_TEMP/kertomus-linux-signing.key"
+          printf '%s\n' "$LINUX_GPG_PRIVATE_KEY" > "$keyfile"
+          if ! grep -q "BEGIN PGP PRIVATE KEY" "$keyfile"; then
+            base64 --decode "$keyfile" > "$keyfile.asc"
+            keyfile="$keyfile.asc"
+          fi
+          gpg --batch --import "$keyfile"
+          shopt -s nullglob
+          cd release
+          artifacts=(Kertomus-*.AppImage Kertomus-*.tar.gz)
+          if [ ${#artifacts[@]} -eq 0 ]; then
+            echo "No Linux artifacts to sign."
+            exit 0
+          fi
+          manifest="SHA256SUMS-${MATRIX_LABEL}"
+          sha256sum "${artifacts[@]}" > "$manifest"
+          for artifact in "${artifacts[@]}"; do
+            gpg --batch --yes --armor --detach-sign \
+              --pinentry-mode loopback --passphrase "$LINUX_GPG_PASSPHRASE" \
+              "$artifact"
+          done
+          gpg --batch --yes --clearsign --output "$manifest.asc" \
+            --pinentry-mode loopback --passphrase "$LINUX_GPG_PASSPHRASE" \
+            "$manifest"
+          echo "Signed ${#artifacts[@]} Linux artifact(s) and $manifest."
+
       - name: Upload release assets
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
@@ -157,6 +207,8 @@ jobs:
             release/*.AppImage
             release/*.zsync
             release/*.tar.gz
+            release/*.asc
+            release/SHA256SUMS-*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -164,7 +216,7 @@ jobs:
         if: "!startsWith(github.ref, 'refs/tags/v')"
         uses: actions/upload-artifact@v4
         with:
-          name: openplot-${{ matrix.label }}
+          name: kertomus-${{ matrix.label }}
           path: |
             release/*.exe
             release/*.zip
@@ -172,4 +224,6 @@ jobs:
             release/*.AppImage
             release/*.zsync
             release/*.tar.gz
+            release/*.asc
+            release/SHA256SUMS-*
           if-no-files-found: warn

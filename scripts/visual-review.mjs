@@ -265,7 +265,7 @@ const PROBE = `(() => {
     // again the moment load() finishes.
     await waitUntil(() => cdp.evalJS("!!window.useSettings.getState().version"), 30000, 'settings loaded');
     check('theme: default follows a light system preference',
-      (await cdp.evalJS("document.documentElement.getAttribute('data-theme')")) === 'light-paper');
+      (await cdp.evalJS("document.documentElement.getAttribute('data-theme')")) === 'parchment');
     await cdp.evalJS("window.useSettings.getState().set('lastSeenVersion', window.useSettings.getState().version)");
     await cdp.evalJS("window.useData.getState().navigate('home')");
     await waitUntil(() => cdp.evalJS("!!document.querySelector('.welcome-card')"), 30000, 'home cards');

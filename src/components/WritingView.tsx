@@ -1,13 +1,22 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useData, useSettings, useUi, dbCall, uid, createProjectUi } from '../store';
 import { Chapter, Provider } from '../types';
-import { useT } from '../i18nReact';
+import { useT, translate } from '../i18nReact';
 import { Icon } from './Icons';
 import { diffCounts, diffWords } from '../lib/textDiff';
 import { buildSkillsBlock } from '../lib/prompt';
 import { RevisionTimeline } from './RevisionTimeline';
+import { WritingHome } from './WritingHome';
 
 const wordCount = (s: string) => (s.trim() ? s.trim().split(/\s+/).length : 0);
+
+/** Writing sprints: short, timed pushes with the clock in sight (v1.3.1). */
+const SPRINT_CHOICES = [10, 15, 25, 50];
+
+function clockText(seconds: number): string {
+  const s = Math.max(0, Math.round(seconds));
+  return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+}
 
 type Action = 'critique' | 'rephrase' | 'expand' | 'shrink';
 
@@ -53,8 +62,12 @@ export function WritingView() {
   const providers = useData((s) => s.providers);
   const skills = useData((s) => s.skills);
   const activeProjectId = useData((s) => s.activeProjectId);
+  const writingChapterRequest = useData((s) => s.writingChapterRequest);
+  const lastWritingChapterId = useData((s) => s.writingChapterId);
 
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  // Coming back from Settings remounts this view; start on the page that was
+  // open instead of quietly jumping to chapter one.
+  const [selectedId, setSelectedId] = useState<string | null>(lastWritingChapterId);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [dirty, setDirty] = useState(false);
@@ -73,8 +86,17 @@ export function WritingView() {
   // Chapter-scoped revision history: the board is where rewrites happen, so
   // the timeline belongs one click away from the draft.
   const [timelineOpen, setTimelineOpen] = useState(false);
+  // Sprint timer: prepared in place, then a countdown that never blocks the
+  // editor. Word progress is the difference from the count when it started.
+  const [sprintOpen, setSprintOpen] = useState(false);
+  const [sprintMinutes, setSprintMinutes] = useState(25);
+  const [sprintEnd, setSprintEnd] = useState<number | null>(null);
+  const [sprintLeft, setSprintLeft] = useState(0);
+  const [sprintBase, setSprintBase] = useState(0);
   const taRef = useRef<HTMLTextAreaElement | null>(null);
   const reqRef = useRef<string | null>(null);
+  const contentRef = useRef(content);
+  useEffect(() => { contentRef.current = content; }, [content]);
 
   const scoped = useMemo(
     () => chapters
@@ -110,11 +132,57 @@ export function WritingView() {
     return () => window.removeEventListener('keydown', onKey);
   }, [pickerOpen]);
 
+  // Countdown. A ref-held end time keeps the interval stable while typing; the
+  // toast reports only words added since the sprint began.
+  useEffect(() => {
+    if (!sprintEnd) return;
+    const tick = () => {
+      const left = sprintEnd - Date.now();
+      setSprintLeft(Math.max(0, left / 1000));
+      if (left > 0) return;
+      const words = Math.max(0, wordCount(contentRef.current) - sprintBase);
+      setSprintEnd(null);
+      setSprintOpen(false);
+      // Read the live language/toast stores so this timer is not torn down and
+      // rebuilt on every keystroke (the hook closures change each render).
+      const msg = translate(useSettings.getState().lang, 'sprint.done').replace('{n}', words.toLocaleString());
+      useUi.getState().toast(msg, 'ok');
+    };
+    tick();
+    const id = window.setInterval(tick, 1000);
+    return () => window.clearInterval(id);
+  }, [sprintEnd, sprintBase]);
+
+  function startSprint() {
+    setSprintBase(wordCount(content));
+    setSprintLeft(sprintMinutes * 60);
+    setSprintEnd(Date.now() + sprintMinutes * 60_000);
+  }
+
   // Open the first chapter so the board is never empty for no reason.
   useEffect(() => {
     if (selectedId && scoped.some((c) => c.id === selectedId)) return;
     setSelectedId(scoped[0]?.id || null);
   }, [scoped, selectedId]);
+
+  // A click in the sidebar's novel tree lands here as a one-shot request. This
+  // must run AFTER the first-chapter effect: both fire on a project switch, and
+  // the last state write wins. The request is the more specific instruction.
+  useEffect(() => {
+    if (!writingChapterRequest) return;
+    if (activeProjectId !== writingChapterRequest.projectId) {
+      useData.getState().setActiveProject(writingChapterRequest.projectId);
+      return;
+    }
+    setSelectedId(writingChapterRequest.chapterId);
+  }, [writingChapterRequest?.at, activeProjectId]);
+
+  // Keep the store in step with the page actually open. A settings detour (or
+  // any other remount) can then restore it without asking the user to find the
+  // chapter again.
+  useEffect(() => {
+    if (selectedId) useData.getState().setWritingChapter(selectedId);
+  }, [selectedId]);
 
   // Load the draft only when the chapter changes. A save reloads the chapter
   // rows, and that refresh must never overwrite what is still being typed.
@@ -229,7 +297,7 @@ export function WritingView() {
     try {
       const row = await dbCall<Chapter>('createChapter', {
         projectId,
-        title: `Chapter ${scoped.length + 1}`,
+        title: t('writing.chapterN').replace('{n}', String(scoped.length + 1)),
         content: '',
         status: 'draft'
       });
@@ -380,6 +448,10 @@ export function WritingView() {
     }
   }
 
+  // No novel selected means the shelf, not an empty board with a disabled
+  // toolbar. The board only earns its chrome once there is a book to write in.
+  if (!project) return <WritingHome />;
+
   return (
     <div className="page write-page">
       <header className="write-head">
@@ -398,6 +470,10 @@ export function WritingView() {
           <span className={`write-status ${dirty ? 'dirty' : ''}`}>
             {saving ? t('writing.saving') : dirty ? t('writing.unsaved') : t('writing.saved')}
           </span>
+          <button className={`small ${sprintOpen ? 'primary' : 'ghost'}`} onClick={() => setSprintOpen((v) => !v)}
+            title={t('sprint.hint')} aria-expanded={sprintOpen}>
+            <Icon name="flame" size={13} /> {t('sprint.button')}
+          </button>
           <button className="small ghost" onClick={() => { void openTimeline(); }} disabled={!selected}
             title={t('revision.openHint')}>
             <Icon name="clock" size={13} /> {t('revision.open')}
@@ -470,6 +546,35 @@ export function WritingView() {
         <section className="write-board">
           {selected ? (
             <>
+              {sprintOpen && (
+                <div className={`write-sprint ${sprintEnd ? 'running' : ''}`} role="group" aria-label={t('sprint.title')}>
+                  <Icon name="flame" size={14} />
+                  {sprintEnd ? (
+                    <>
+                      <b className="ws-time">{clockText(sprintLeft)}</b>
+                      <span className="ws-words">
+                        {t('sprint.words').replace('{n}', Math.max(0, wordCount(content) - sprintBase).toLocaleString())}
+                      </span>
+                      <span className="spacer" />
+                      <button className="small ghost" onClick={() => { setSprintEnd(null); setSprintOpen(false); }}>
+                        {t('sprint.stop')}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <span className="ws-title">{t('sprint.title')}</span>
+                      {SPRINT_CHOICES.map((m) => (
+                        <button key={m} className={`small ${sprintMinutes === m ? 'primary' : 'ghost'}`}
+                          onClick={() => setSprintMinutes(m)}>
+                          {t('sprint.min').replace('{n}', String(m))}
+                        </button>
+                      ))}
+                      <span className="spacer" />
+                      <button className="small primary" onClick={startSprint}>{t('sprint.start')}</button>
+                    </>
+                  )}
+                </div>
+              )}
               <input className="write-title" value={title}
                 placeholder={t('writing.untitled')}
                 onChange={(e) => { setTitle(e.target.value); setDirty(true); }} />

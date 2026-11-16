@@ -270,6 +270,14 @@ async function prewarmVite(base) {
   };
 
   await run('boot', async () => {
+    // The app page target exists before the renderer bridge is installed; a
+    // reset evaluated during that navigation loses its execution context and
+    // cascades into every later selector. Wait for the bridge, then reset.
+    await waitUntil(
+      () => cdp.evalJS("typeof window.inkwell !== 'undefined' && typeof window.inkwell.dbCall === 'function'"),
+      90000,
+      'app bridge'
+    );
     // fail fast if this instance is somehow contaminated
     const counts = await cdp.evalJS("(async()=>{await window.inkwell.dbCall('resetAll');return 'fresh';})()");
     check('isolated DB confirmed (' + counts + ')', counts === 'fresh');
@@ -555,7 +563,7 @@ async function prewarmVite(base) {
     // The raw DB file must NOT contain the plaintext key we just saved.
     // (Mock key 'sk-test' is distinctive enough to scan for.)
     const dbPath = await cdp.evalJS("window.inkwell.appInfo().then(i=>i.dataPath)");
-    const raw = fs.readFileSync(path.join(String(dbPath), 'openplot.db'));
+    const raw = fs.readFileSync(path.join(String(dbPath), 'kertomus.db'));
     const plainIdx = raw.indexOf(Buffer.from('sk-test', 'utf8'));
     check('raw DB file contains NO plaintext api key', plainIdx === -1, plaintextHit(plainIdx));
     // The app itself must still read the key back correctly (decrypted).
@@ -790,8 +798,9 @@ async function prewarmVite(base) {
   });
 
   await run('modal: rename chat', async () => {
-    // The app uses SVG icons (no emoji text) — find the row by its Rename button
-    const clicked = await cdp.evalJS("(function(){var it=[...document.querySelectorAll('.nav-item')].find(function(n){return n.querySelector('button[title=\"Rename\"]');});if(!it)return 'noitem';it.querySelector('button[title=\"Rename\"]').click();return 'ok';})()");
+    // The tooltip is localized ("Rename chat", "Ganti nama chat", …), so match
+    // the label rather than the old untranslated "Rename" string.
+    const clicked = await cdp.evalJS("(function(){var it=[...document.querySelectorAll('.nav-item')].find(function(n){return [...n.querySelectorAll('button')].some(function(b){return /rename|ganti nama/i.test((b.getAttribute('title')||'')+' '+(b.getAttribute('aria-label')||''));});});if(!it)return 'noitem';var b=[...it.querySelectorAll('button')].find(function(x){return /rename|ganti nama/i.test((x.getAttribute('title')||'')+' '+(x.getAttribute('aria-label')||''));});b.click();return 'ok';})()");
     if (clicked !== 'ok') throw new Error('rename button not reachable: ' + clicked);
     await waitUntil(() => cdp.evalJS("!!document.querySelector('.modal input')"), 5000, 'rename modal');
     await cdp.evalJS(`(function(){var i=document.querySelector('.modal input');${setReactInput}(i,'Renamed chat');})()`);

@@ -1,6 +1,6 @@
 # Security policy
 
-OpenPlot AI is a local-first desktop app. Your manuscript, settings and API
+Kertomus is a local-first desktop app. Your manuscript, settings and API
 credentials live on your machine, and the app can run code you explicitly
 approve (plugins and MCP servers). This document states the trust boundary, what
 ships as a control, and what remains out of scope.
@@ -19,13 +19,13 @@ Only the latest `1.3.x` release receives security fixes. If you build from
 
 **Email: [mr.fauzan121314@gmail.com](mailto:mr.fauzan121314@gmail.com)**
 
-Use the subject line `[SECURITY] OpenPlot AI — <short summary>` and do **not**
+Use the subject line `[SECURITY] Kertomus — <short summary>` and do **not**
 open a public GitHub issue. If you prefer GitHub, **Security → Report a
 vulnerability** on the repository also works; email is checked first.
 
 Please include:
 
-- the OpenPlot AI version (About screen or `package.json`) and your OS;
+- the Kertomus version (About screen or `package.json`) and your OS;
 - the affected component (renderer, preload bridge, main process, database,
   plugin/MCP gate, image proxy, importer, export);
 - clear reproduction steps or a proof of concept;
@@ -180,7 +180,7 @@ future versions.
 ## Known residual risks
 
 No desktop app can honestly claim to be “totally safe”. These are the remaining
-boundaries in 1.3.0:
+boundaries in 1.3.1:
 
 - **A renderer compromise is serious.** CSP and DOMPurify are layered defences,
   not a proof. If script execution is achieved in the renderer, the attacker can
@@ -201,7 +201,12 @@ boundaries in 1.3.0:
   review tool actions and use a narrow model for untrusted content.
 - **Release provenance.** Binaries are built by the project's GitHub Actions
   workflow. Building from the tagged source is the strongest way to verify what
-  you run.
+  you run. Linux artifacts can additionally be GPG-signed: when the release
+  carries `SHA256SUMS-linux-x64` (or `-arm64`) and its `.asc`, verify the
+  manifest and then the artifact hashes (`gpg --verify
+  SHA256SUMS-linux-x64.asc`, `sha256sum --check SHA256SUMS-linux-x64`).
+  Individual AppImages and tarballs also ship a detached `.asc`.
+  Signing is opt-in for maintainers and does not change the build itself.
 
 ## Security test coverage
 

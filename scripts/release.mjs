@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * One-command release helper for OpenPlot AI.
+ * One-command release helper for Kertomus.
  *
  * It verifies the version/changelog at the target commit, creates the
  * annotated tag on origin/main (unless it already exists locally), pushes the
@@ -147,7 +147,7 @@ function links() {
 
 function printHelp() {
   console.log(`
-OpenPlot AI — release helper
+Kertomus — release helper
 
 Usage
   npm run release -- [options]
@@ -247,7 +247,7 @@ ${links()?.releases || 'GitHub → Releases'}
   if (data.isDraft) {
     console.log(`
 Next: review the assets, then publish from the Releases page or with
-  gh release edit ${opts.tag} --draft=false --title "OpenPlot AI ${opts.tag}"
+  gh release edit ${opts.tag} --draft=false --title "Kertomus ${opts.tag}"
 `);
   } else {
     console.log('\n✓ Release is published.');
@@ -326,7 +326,7 @@ if (String(remoteTags.stdout || '').trim()) {
 }
 
 console.log(`
-OpenPlot AI release
+Kertomus release
   version : ${version}
   tag     : ${opts.tag}
   commit  : ${short} ${subject}
@@ -347,7 +347,7 @@ if (!confirmed) {
 if (localExists) {
   note(`Tag ${opts.tag} already exists locally at ${short}.`);
 } else {
-  const message = `OpenPlot AI ${opts.tag}`;
+  const message = `Kertomus ${opts.tag}`;
   if (opts.dryRun) printCommand('git', ['tag', '-a', opts.tag, target, '-m', message]);
   else {
     const tagged = git('tag', '-a', opts.tag, target, '-m', message);

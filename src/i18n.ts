@@ -1,11 +1,14 @@
 import { es } from './i18n/es';
 import { hi } from './i18n/hi';
+import { ja } from './i18n/ja';
+import { pirate } from './i18n/pirate';
+import { en1700 as en1700Overrides, archaize } from './i18n/en1700';
 
 /**
  * UI locales. `en` is US English (the source dictionary); `en-GB` is derived
  * from it by the spelling pass at the bottom of this file.
  */
-export type Lang = 'en' | 'en-GB' | 'id' | 'es' | 'hi';
+export type Lang = 'en' | 'en-GB' | 'en1700' | 'id' | 'es' | 'hi' | 'ja' | 'pirate';
 
 type Dict = Record<string, string>;
 
@@ -14,6 +17,7 @@ const en: Dict = {
   'app.newProject': 'New Project',
   'app.newFolder': 'New Folder',
   'app.search': 'Search…',
+  'app.clearSearch': 'Clear search',
   'app.chats': 'Chats',
   'app.home': 'Home',
   'app.homeHint': 'Recent chats, project progress and model health.',
@@ -38,11 +42,57 @@ const en: Dict = {
   'app.donate': 'Donate',
   'app.palette': 'Command Palette',
   'app.theme': 'Theme',
+  'app.tagline': 'Your story studio',
+  'settings.backTo': 'Back to {place}',
+
+  // ---- Writing shelf & novel tree (v1.3.2) ----
+  'writing.shelf': 'Shelf',
+  'writing.shelfHint': 'Every novel, one shelf.',
+  'writing.shelfKicker': 'The shelf',
+  'writing.shelfTitle': 'Pick up a book',
+  'writing.shelfSub': 'A novel is just a stack of pages you keep coming back to. Pick one, or start a fresh stack.',
+  'writing.newNovel': 'New novel',
+  'writing.shelfChapters': '{n} chapters',
+  'writing.shelfLatest': 'Last touched: {title}',
+  'writing.shelfBlank': 'A blank page, waiting.',
+  'writing.shelfEmptyTitle': 'Nothing on the shelf yet',
+  'writing.shelfEmpty': 'Start a novel and the shelf will fill itself. No template, no wizard — just a name.',
+  'writing.chapterN': 'Chapter {n}',
+
+  'novel.chats': 'Conversations',
+  'novel.newChat': 'Start a conversation',
+  'novel.newChapter': 'Add a chapter',
+  'novel.chatTitle': '{name} — notes',
+  'novel.noChats': 'No notes yet.',
+  'novel.openHint': 'Open this novel on the writing board',
+
+  'agent.home': 'Bench',
+  'agent.homeHint': 'The agent’s workbench: tools, status and recent sessions.',
+  'agent.homeKicker': 'Agent workspace',
+  'agent.homeTitle': 'The workbench',
+  'agent.homeSub': 'A place to hand the agent a job. It can read the shelf, write chapters, keep notes — and show you every step.',
+  'agent.newSession': 'Start a session',
+  'agent.homePlan': 'Plan a story',
+  'agent.homePlanDesc': 'Turn a rough idea into a premise, a cast and an outline.',
+  'agent.homeFlow': 'Open the story flow',
+  'agent.homeFlowDesc': 'Move the beats around until the shape feels right.',
+  'agent.homeShelf': 'Go to the shelf',
+  'agent.homeShelfDesc': 'Pick up a novel and keep writing where you left off.',
+  'agent.benchTools': 'Tools',
+  'agent.benchOn': 'Ready',
+  'agent.benchOff': 'Off in Settings',
+  'agent.benchServers': '{n} connected',
+  'agent.benchNone': 'None',
+  'agent.benchSkills': 'Skills',
+  'agent.benchCount': '{n} ready',
+  'agent.benchProjects': 'Novels',
+  'agent.recentSessions': 'Recent sessions',
+  'agent.noSessions': 'No sessions yet. The first one starts with a sentence.',
 
   'chat.empty': 'Select or create a chat to start.',
   'chat.welcomeTitle': 'Welcome to',
-  'chat.welcomeSub': 'Your local-first AI studio for chatting and story-building. Chats, projects, worlds and memories live on your laptop — no cloud required. Built by Mahakam Moonlight Studio.',
-  'chat.placeholder': 'Message OpenPlot AI… (Enter to send, Shift+Enter for newline)',
+  'chat.welcomeSub': 'A quiet room for your stories. Chats, books, notes and the worlds inside them stay on this machine — no cloud, no account, nobody reading over your shoulder.',
+  'chat.placeholder': 'Message Kertomus… (Enter to send, Shift+Enter for newline)',
   'chat.words': '{n} words',
   'chat.hideThinking': 'Hide thinking',
   'chat.thoughtProcess': 'Thought process',
@@ -175,13 +225,13 @@ const en: Dict = {
   'welcome.noModel': 'No model connected yet.',
   'welcome.connect': 'Connect a model',
   'welcome.card.story': 'Start a story',
-  'welcome.card.storyDesc': 'Brief the AI and write the opening scene.',
-  'welcome.card.continue': 'Continue the open chapter',
-  'welcome.card.continueDesc': 'Pick up the latest draft exactly where it stopped.',
+  'welcome.card.storyDesc': 'Give it a premise. It writes the opening with you.',
+  'welcome.card.continue': 'Open the last chapter',
+  'welcome.card.continueDesc': 'Back to the page where you stopped.',
   'welcome.card.canon': 'Ask about canon',
-  'welcome.card.canonDesc': 'Query the Story Bible before you invent.',
+  'welcome.card.canonDesc': 'Ask before you contradict yourself.',
   'welcome.card.connect': 'Connect a model',
-  'welcome.card.connectDesc': 'Add a provider, fetch its models and verify one.',
+  'welcome.card.connectDesc': 'Add a provider, pull its models, test one.',
   'welcome.promptStory': 'Start a new story. Ask me for the premise, genre and tone, then write the opening scene.',
   'welcome.promptContinue': 'Continue the chapter “{title}”. Match its voice and pick up exactly where it stopped.',
   'welcome.promptContinueNone': 'Continue the story from where we left off. Recap the last scene in one line, then write forward.',
@@ -218,23 +268,23 @@ const en: Dict = {
   'advance.chat': 'Chat',
   'advance.chatHint': 'Talk it through: questions, feedback and brainstorming.',
   'advance.agent': 'Agent',
-  'advance.agentHint': 'Agent workspace — reads and writes projects, the story bible, chapters and flow, and switches modes by itself.',
+  'advance.agentHint': 'The workbench: it reads the shelf, writes chapters and keeps notes, with tools.',
   'advance.write': 'Writing',
-  'advance.writeHint': 'Manuscript board with an AI editor: critique, rephrase, expand, shrink.',
+  'advance.writeHint': 'The board: chapters, sprints, and an editor that touches only what you select.',
   'writing.title': 'Writing',
-  'writing.sub': 'Focused manuscript board.',
+  'writing.sub': 'The manuscript, the chapters, and an editor that waits to be asked.',
   'writing.chapters': 'Manuscript',
   'writing.newChapter': 'New chapter',
-  'writing.noChapters': 'No chapters yet — create one to start writing.',
+  'writing.noChapters': 'No chapters yet. Start one; it only needs a title.',
   'writing.words': '{n} words',
   'writing.saved': 'Saved',
   'writing.saving': 'Saving…',
   'writing.unsaved': 'Unsaved changes',
   'writing.save': 'Save',
-  'writing.placeholder': 'Write your chapter here…',
+  'writing.placeholder': 'Start here. The first line is the hardest; the rest follows.',
   'writing.untitled': 'Untitled chapter',
   'writing.ai': 'AI editor',
-  'writing.aiHint': 'Select text in the board to work on just that passage; with nothing selected the whole chapter is used.',
+  'writing.aiHint': 'Select a passage and the editor works on that. No selection means the whole chapter.',
   'writing.skillsActive': '{n} writing skills',
   'writing.critique': 'Critique',
   'writing.rephrase': 'Rephrase',
@@ -253,15 +303,15 @@ const en: Dict = {
   'writing.diffLabel': 'Changes preview',
   'writing.diffAdded': 'added',
   'writing.diffRemoved': 'removed',
-  'writing.aiEmptyTitle': 'Your edit appears here',
-  'writing.aiEmpty': 'Select a passage, then run an action. Additions show in green and removals in red before you apply.',
+  'writing.aiEmptyTitle': 'The editor waits',
+  'writing.aiEmpty': 'Pick a passage, choose an action, and read the changes before you keep them.',
   'writing.append': 'Append to chapter',
   'writing.copy': 'Copy',
   'writing.copied': 'Copied',
-  'writing.noModel': 'Connect a provider and pick a model in Settings first.',
+  'writing.noModel': 'No model connected yet. Add one in Settings, then come back.',
   'writing.noChapter': 'Create or open a chapter first.',
-  'writing.failed': 'The AI request failed',
-  'writing.empty': 'Nothing to edit yet — write or open a chapter first.',
+  'writing.failed': 'That edit did not come back. Your draft is untouched.',
+  'writing.empty': 'Nothing to edit yet. Write a line, or open a chapter.',
   'writing.applied': 'Chapter updated',
 
   // ---- Text Dump (recovery bin) ----
@@ -723,6 +773,18 @@ const en: Dict = {
   'whatsnew.start': 'Start writing',
   'whatsnew.showMe': 'Show me',
   'whatsnew.soon': 'This one is a setting, not a screen',
+  'whatsnew.brand.t': 'Say hello to Kertomus',
+  'whatsnew.brand.b': 'Same local-first studio, a name that fits it: Kertomus — the Finnish word for a story. New mark, same files on your disk, nothing to re-import.',
+  'whatsnew.langs.t': 'Eight voices',
+  'whatsnew.langs.b': 'Japanese, Pirate and 1700s English arrive, Spanish and Hindi grow a deeper vocabulary, and every language keeps the same shortcuts and layout.',
+  'whatsnew.sprint.t': 'Writing sprints',
+  'whatsnew.sprint.b': 'On the manuscript desk: pick 10, 15, 25 or 50 minutes, write, and watch the words you added. No lock-in, no gamified streak.',
+  'whatsnew.themes.t': 'Scriptorium & Parchment',
+  'whatsnew.themes.b': 'Two signature themes — lamp-lit ink and warm paper — now follow your light/dark preference by default, with bookbinding gold as the accent.',
+  'whatsnew.fixes.t': 'Quieter machinery',
+  'whatsnew.fixes.b': 'Stale version strings, locale-tagged EPUB metadata, untranslated dialogs and the profile-folder rename are all handled; the request path is unchanged.',
+  'whatsnew.data.t': 'Nothing left behind',
+  'whatsnew.data.b': 'Your existing studio is copied into the new profile on first launch. Chats, chapters, keys and snapshots stay where the app can find them.',
   'whatsnew.files.t': 'Files in chat',
   'whatsnew.files.b': 'Attach up to 8 files to any message. They arrive as cards, are validated before sending, and are searchable later.',
   'whatsnew.guide.t': 'An in-app guide',
@@ -909,15 +971,15 @@ const en: Dict = {
   'data.resetConfirm': 'Delete ALL chats, projects, story data and settings? This cannot be undone.',
   'data.resetDone': 'All data cleared',
 
-  'about.title': 'About OpenPlot AI',
-  'about.tagline': 'A local-first AI chat & story studio for Windows, Linux and macOS.',
+  'about.title': 'About Kertomus',
+  'about.tagline': 'A local-first story studio for Windows, Linux and macOS.',
   'about.version': 'Version',
   'about.platform': 'Platform',
   'about.localFirst': 'Your data never leaves this machine',
   'about.whatsNewTitle': 'New in this version',
-  'about.whatsNewBody': 'v{version} adds separate libraries with Time Machine snapshots, portable .db export, Ctrl/Cmd+P quick switch, a Revision Timeline, Skill Lab, and appearance controls — with a theme that follows your system by default. Release notes are in CHANGELOG.md.',
+  'about.whatsNewBody': 'v{version} is the Kertomus edition: a new name and mark, a Scriptorium/Parchment palette, Japanese and Pirate locales, deeper Spanish and Hindi, a writing-sprint timer, and a batch of fixes. Release notes are in CHANGELOG.md.',
   'about.whatsNewHide': 'Dismiss for this version',
-  'about.featuresTitle': 'What OpenPlot AI does',
+  'about.featuresTitle': 'What Kertomus does',
   'about.f1t': 'Multi-provider chat',
   'about.f1d': 'Bring your own key: OpenAI, Claude, Gemini, DeepSeek, local models via Ollama and more.',
   'about.f2t': 'Story Bible',
@@ -930,7 +992,7 @@ const en: Dict = {
   'about.made': 'Made by Mahakam Moonlight Studio',
   'about.socialTitle': 'Find the studio',
   'about.donate': 'Support the project',
-  'about.thanks': 'If OpenPlot AI helps your writing, consider donating — it keeps development going!',
+  'about.thanks': 'If Kertomus helps your writing, consider donating — it keeps development going!',
 
   'palette.placeholder': 'Type a command…',
   'palette.switchPlaceholder': 'Switch to a chat or project…',
@@ -1392,8 +1454,21 @@ const en: Dict = {
   'data.chatFilesCleared': '{n} chat attachments removed.',
 
   'appearance.language': 'Language',
-  'appearance.languageHint': 'Interface language. English (UK) uses British spelling; Spanish and Hindi are beta — their advanced screens still fall back to English.',
+  'appearance.languageHint': 'Interface language. English (UK) uses British spelling. Spanish, Hindi, Japanese, Pirate and 1700s English are beta — their advanced screens still fall back to English. The last two are jokes that happen to be usable.',
   'appearance.languageBeta': 'Beta — some advanced screens are still in English.',
+  'appearance.brandLook': 'The Kertomus look',
+  'appearance.brandLookHint': 'Scriptorium at night, Parchment by day — one click, and the accent turns to bookbinding gold.',
+  'appearance.brandLookApply': 'Use the studio palette',
+
+  // ---- Writing sprint (v1.3.1) ----
+  'sprint.button': 'Sprint',
+  'sprint.title': 'Writing sprint',
+  'sprint.hint': 'A timed push with the clock in sight. Nothing is locked — leave whenever you like.',
+  'sprint.min': '{n} min',
+  'sprint.start': 'Start sprint',
+  'sprint.stop': 'End sprint',
+  'sprint.words': '{n} words',
+  'sprint.done': 'Sprint finished — {n} words written.',
 
   // ---- Custom appearance (v1.3.0) ----
   'appearance.uiFont': 'Interface font',
@@ -1503,6 +1578,7 @@ const id: Dict = {
   'app.newProject': 'Proyek Baru',
   'app.newFolder': 'Folder Baru',
   'app.search': 'Cari…',
+  'app.clearSearch': 'Bersihkan pencarian',
   'app.chats': 'Chat',
   'app.home': 'Beranda',
   'app.homeHint': 'Chat terbaru, progres proyek, dan status model.',
@@ -1527,11 +1603,56 @@ const id: Dict = {
   'app.donate': 'Donasi',
   'app.palette': 'Palet Perintah',
   'app.theme': 'Tema',
+  'app.tagline': 'Studio ceritamu',
+  'settings.backTo': 'Kembali ke {place}',
+
+  'writing.shelf': 'Rak',
+  'writing.shelfHint': 'Semua novel, satu rak.',
+  'writing.shelfKicker': 'Rak naskah',
+  'writing.shelfTitle': 'Pilih satu buku',
+  'writing.shelfSub': 'Novel itu cuma tumpukan halaman yang terus kamu buka lagi. Pilih satu, atau mulai tumpukan baru.',
+  'writing.newNovel': 'Novel baru',
+  'writing.shelfChapters': '{n} bab',
+  'writing.shelfLatest': 'Terakhir disentuh: {title}',
+  'writing.shelfBlank': 'Halaman kosong, menunggu.',
+  'writing.shelfEmptyTitle': 'Rak masih kosong',
+  'writing.shelfEmpty': 'Mulai satu novel, raknya akan terisi sendiri. Tanpa template, tanpa wizard — cukup nama.',
+  'writing.chapterN': 'Bab {n}',
+
+  'novel.chats': 'Obrolan',
+  'novel.newChat': 'Mulai obrolan',
+  'novel.newChapter': 'Tambah bab',
+  'novel.chatTitle': '{name} — catatan',
+  'novel.noChats': 'Belum ada catatan.',
+  'novel.openHint': 'Buka novel ini di papan tulis',
+
+  'agent.home': 'Meja kerja',
+  'agent.homeHint': 'Meja kerja agent: alat, status, dan sesi terbaru.',
+  'agent.homeKicker': 'Ruang Agent',
+  'agent.homeTitle': 'Meja kerja',
+  'agent.homeSub': 'Tempat menyerahkan pekerjaan ke agent. Ia bisa membaca rak, menulis bab, menyimpan catatan — dan menunjukkan setiap langkahnya.',
+  'agent.newSession': 'Mulai sesi',
+  'agent.homePlan': 'Rencanakan cerita',
+  'agent.homePlanDesc': 'Ubah ide kasar jadi premis, tokoh, dan kerangka.',
+  'agent.homeFlow': 'Buka alur cerita',
+  'agent.homeFlowDesc': 'Geser beat-nya sampai bentuknya terasa pas.',
+  'agent.homeShelf': 'Ke rak novel',
+  'agent.homeShelfDesc': 'Ambil novel dan lanjutkan dari halaman terakhir.',
+  'agent.benchTools': 'Alat',
+  'agent.benchOn': 'Siap',
+  'agent.benchOff': 'Mati di Pengaturan',
+  'agent.benchServers': '{n} terhubung',
+  'agent.benchNone': 'Tidak ada',
+  'agent.benchSkills': 'Skill',
+  'agent.benchCount': '{n} siap',
+  'agent.benchProjects': 'Novel',
+  'agent.recentSessions': 'Sesi terbaru',
+  'agent.noSessions': 'Belum ada sesi. Yang pertama dimulai dengan satu kalimat.',
 
   'chat.empty': 'Pilih atau buat chat untuk mulai.',
   'chat.welcomeTitle': 'Selamat datang di',
-  'chat.welcomeSub': 'Studio AI lokal untuk ngobrol dan membangun cerita. Chat, proyek, dunia, dan memori tersimpan di laptopmu — tanpa cloud. Dibuat oleh Mahakam Moonlight Studio.',
-  'chat.placeholder': 'Kirim pesan ke OpenPlot AI… (Enter kirim, Shift+Enter baris baru)',
+  'chat.welcomeSub': 'Ruang tenang buat ceritamu. Chat, buku, catatan, dan dunia di dalamnya tetap di komputer ini — tanpa cloud, tanpa akun, tanpa yang mengintip di belakang.',
+  'chat.placeholder': 'Kirim pesan ke Kertomus… (Enter kirim, Shift+Enter baris baru)',
   'chat.words': '{n} kata',
   'chat.hideThinking': 'Sembunyikan proses berpikir',
   'chat.thoughtProcess': 'Proses berpikir',
@@ -1664,13 +1785,13 @@ const id: Dict = {
   'welcome.noModel': 'Belum ada model terhubung.',
   'welcome.connect': 'Hubungkan model',
   'welcome.card.story': 'Mulai cerita',
-  'welcome.card.storyDesc': 'Beri brief ke AI dan tulis adegan pembuka.',
-  'welcome.card.continue': 'Lanjutkan bab terbuka',
-  'welcome.card.continueDesc': 'Sambung draf terbaru tepat dari bagian terakhir.',
+  'welcome.card.storyDesc': 'Kasih satu premis. Pembukaannya ditulis berdua.',
+  'welcome.card.continue': 'Buka bab terakhir',
+  'welcome.card.continueDesc': 'Kembali ke halaman tempat kamu berhenti.',
   'welcome.card.canon': 'Tanya soal kanon',
-  'welcome.card.canonDesc': 'Cek kitab cerita sebelum menciptakan hal baru.',
+  'welcome.card.canonDesc': 'Tanya dulu sebelum menabrak kanon sendiri.',
   'welcome.card.connect': 'Hubungkan model',
-  'welcome.card.connectDesc': 'Tambah provider, ambil model, lalu verifikasi satu.',
+  'welcome.card.connectDesc': 'Tambah provider, tarik modelnya, tes satu.',
   'welcome.promptStory': 'Mulai cerita baru. Tanya aku premis, genre, dan tone-nya, lalu tulis adegan pembuka.',
   'welcome.promptContinue': 'Lanjutkan bab “{title}”. Ikuti suaranya dan sambung tepat dari bagian terakhir.',
   'welcome.promptContinueNone': 'Lanjutkan cerita dari bagian terakhir. Ringkas adegan terakhir dalam satu baris, lalu tulis terus.',
@@ -1707,23 +1828,23 @@ const id: Dict = {
   'advance.chat': 'Chat',
   'advance.chatHint': 'Ngobrol dan brainstorming: tanya, minta kritik, cari ide.',
   'advance.agent': 'Agent',
-  'advance.agentHint': 'Ruang Agent — membaca dan menulis proyek, story bible, chapter dan flow, serta mengganti mode sendiri.',
+  'advance.agentHint': 'Meja kerja: membaca rak, menulis bab, dan menyimpan catatan, dengan alat.',
   'advance.write': 'Menulis',
-  'advance.writeHint': 'Papan naskah dengan editor AI: kritik, parafrase, perluas, ringkas.',
+  'advance.writeHint': 'Papan tulis: bab, sprint, dan editor yang cuma menyentuh bagian yang kamu pilih.',
   'writing.title': 'Menulis',
-  'writing.sub': 'Papan naskah yang fokus.',
+  'writing.sub': 'Naskah, bab-babnya, dan editor yang menunggu diminta.',
   'writing.chapters': 'Naskah',
   'writing.newChapter': 'Chapter baru',
-  'writing.noChapters': 'Belum ada chapter — buat satu untuk mulai menulis.',
+  'writing.noChapters': 'Belum ada bab. Mulai satu; cuma butuh judul.',
   'writing.words': '{n} kata',
   'writing.saved': 'Tersimpan',
   'writing.saving': 'Menyimpan…',
   'writing.unsaved': 'Belum disimpan',
   'writing.save': 'Simpan',
-  'writing.placeholder': 'Tulis chapter kamu di sini…',
+  'writing.placeholder': 'Mulai dari sini. Baris pertama yang paling berat; sisanya mengalir.',
   'writing.untitled': 'Chapter tanpa judul',
   'writing.ai': 'Editor AI',
-  'writing.aiHint': 'Pilih teks di papan untuk mengerjakan bagian itu saja; tanpa pilihan, seluruh chapter dipakai.',
+  'writing.aiHint': 'Pilih satu bagian, editor menggarap itu. Tanpa pilihan, seluruh bab dipakai.',
   'writing.skillsActive': '{n} skill menulis',
   'writing.critique': 'Kritik',
   'writing.rephrase': 'Parafrase',
@@ -1742,15 +1863,15 @@ const id: Dict = {
   'writing.diffLabel': 'Pratinjau perubahan',
   'writing.diffAdded': 'ditambah',
   'writing.diffRemoved': 'dihapus',
-  'writing.aiEmptyTitle': 'Hasil edit muncul di sini',
+  'writing.aiEmptyTitle': 'Editornya menunggu',
   'writing.aiEmpty': 'Pilih bagian teks, lalu jalankan aksi. Tambahan tampil hijau dan yang dihapus merah sebelum kamu terapkan.',
   'writing.append': 'Tambahkan ke chapter',
   'writing.copy': 'Salin',
   'writing.copied': 'Tersalin',
-  'writing.noModel': 'Hubungkan provider dan pilih model di Pengaturan dulu.',
+  'writing.noModel': 'Belum ada model. Tambahkan di Pengaturan, lalu kembali.',
   'writing.noChapter': 'Buat atau buka chapter dulu.',
-  'writing.failed': 'Permintaan AI gagal',
-  'writing.empty': 'Belum ada yang bisa diedit — tulis atau buka chapter dulu.',
+  'writing.failed': 'Editannya tidak kembali. Drafmu tidak tersentuh.',
+  'writing.empty': 'Belum ada yang bisa diedit. Tulis satu baris, atau buka bab.',
   'writing.applied': 'Chapter diperbarui',
 
   // ---- Text Dump (tempat pemulihan) ----
@@ -2210,6 +2331,18 @@ const id: Dict = {
   'whatsnew.start': 'Mulai menulis',
   'whatsnew.showMe': 'Tunjukkan',
   'whatsnew.soon': 'Ini pengaturan, bukan layar',
+  'whatsnew.brand.t': 'Kenalan dengan Kertomus',
+  'whatsnew.brand.b': 'Studio lokal-first yang sama, dengan nama yang lebih pas: Kertomus — kata Finlandia untuk cerita. Lambang baru, berkas yang sama di disk, tanpa impor ulang.',
+  'whatsnew.langs.t': 'Delapan suara',
+  'whatsnew.langs.b': 'Bahasa Jepang, Bajak Laut, dan English 1700-an hadir, kosakata Spanyol dan Hindi diperluas, dan semua bahasa memakai pintasan serta tata letak yang sama.',
+  'whatsnew.sprint.t': 'Sprint menulis',
+  'whatsnew.sprint.b': 'Di meja manuskrip: pilih 10, 15, 25, atau 50 menit, menulis, lalu lihat kata yang bertambah. Tanpa kunci, tanpa streak yang dibuat-buat.',
+  'whatsnew.themes.t': 'Scriptorium & Parchment',
+  'whatsnew.themes.b': 'Dua tema khas — tinta lampu minyak dan kertas hangat — sekarang mengikuti preferensi terang/gelap secara bawaan, dengan emas penjilidan sebagai aksen.',
+  'whatsnew.fixes.t': 'Mesin yang lebih tenang',
+  'whatsnew.fixes.b': 'String versi usang, metadata EPUB ber-tag bahasa, dialog yang belum diterjemahkan, dan penggantian folder profil sudah diurus; jalur permintaan tidak berubah.',
+  'whatsnew.data.t': 'Tidak ada yang tertinggal',
+  'whatsnew.data.b': 'Studio lamamu disalin ke profil baru saat peluncuran pertama. Chat, bab, kunci, dan snapshot tetap di tempat yang bisa ditemukan aplikasi.',
   'whatsnew.files.t': 'File di chat',
   'whatsnew.files.b': 'Lampirkan sampai 8 file ke pesan mana pun. Tampil sebagai kartu, divalidasi sebelum dikirim, dan bisa dicari lagi.',
   'whatsnew.guide.t': 'Panduan di dalam aplikasi',
@@ -2396,15 +2529,15 @@ const id: Dict = {
   'data.resetConfirm': 'Hapus SEMUA chat, proyek, data cerita, dan pengaturan? Ini tidak bisa dibatalkan.',
   'data.resetDone': 'Semua data dibersihkan',
 
-  'about.title': 'Tentang OpenPlot AI',
-  'about.tagline': 'Studio AI chat & cerita yang lokal-first untuk Windows, Linux, dan macOS.',
+  'about.title': 'Tentang Kertomus',
+  'about.tagline': 'Studio cerita lokal-first untuk Windows, Linux, dan macOS.',
   'about.version': 'Versi',
   'about.platform': 'Platform',
   'about.localFirst': 'Datamu tidak pernah meninggalkan mesin ini',
   'about.whatsNewTitle': 'Baru di versi ini',
-  'about.whatsNewBody': 'v{version} menambah library terpisah dengan snapshot Time Machine, ekspor .db portabel, quick switch Ctrl/Cmd+P, Revision Timeline, Skill Lab, dan kontrol tampilan — dengan tema yang mengikuti sistem secara bawaan. Catatan rilis ada di CHANGELOG.md.',
+  'about.whatsNewBody': 'v{version} adalah edisi Kertomus: nama dan lambang baru, palet Scriptorium/Parchment, bahasa Jepang dan Bajak Laut, Spanyol dan Hindi yang lebih dalam, timer sprint menulis, dan banyak perbaikan. Catatan rilis ada di CHANGELOG.md.',
   'about.whatsNewHide': 'Sembunyikan untuk versi ini',
-  'about.featuresTitle': 'Apa yang dilakukan OpenPlot AI',
+  'about.featuresTitle': 'Apa yang dilakukan Kertomus',
   'about.f1t': 'Chat multi-provider',
   'about.f1d': 'Bawa API key-mu: OpenAI, Claude, Gemini, DeepSeek, model lokal via Ollama, dan lainnya.',
   'about.f2t': 'Kitab Cerita',
@@ -2417,7 +2550,7 @@ const id: Dict = {
   'about.made': 'Dibuat oleh Mahakam Moonlight Studio',
   'about.socialTitle': 'Temukan studionya',
   'about.donate': 'Dukung proyeknya',
-  'about.thanks': 'Kalau OpenPlot AI membantu penulisanmu, pertimbangkan donasi — ini menjaga pengembangan tetap jalan!',
+  'about.thanks': 'Kalau Kertomus membantu penulisanmu, pertimbangkan donasi — ini menjaga pengembangan tetap jalan!',
 
   'palette.placeholder': 'Ketik perintah…',
   'palette.switchPlaceholder': 'Pindah ke chat atau proyek…',
@@ -2879,8 +3012,20 @@ const id: Dict = {
   'data.chatFilesCleared': '{n} lampiran chat dihapus.',
 
   'appearance.language': 'Bahasa',
-  'appearance.languageHint': 'Bahasa antarmuka. English (UK) memakai ejaan Britania; Spanyol dan Hindi masih beta — layar lanjutannya masih berbahasa Inggris.',
+  'appearance.languageHint': 'Bahasa antarmuka. English (UK) memakai ejaan Britania. Spanyol, Hindi, Jepang, Bajak Laut, dan English 1700-an masih beta — layar lanjutannya masih berbahasa Inggris. Dua yang terakhir candaan yang kebetulan tetap bisa dipakai.',
   'appearance.languageBeta': 'Beta — sebagian layar lanjutan masih berbahasa Inggris.',
+  'appearance.brandLook': 'Nuansa Kertomus',
+  'appearance.brandLookHint': 'Scriptorium saat malam, Parchment saat siang — sekali klik, aksennya jadi emas penjilidan buku.',
+  'appearance.brandLookApply': 'Pakai palet studio',
+
+  'sprint.button': 'Sprint',
+  'sprint.title': 'Sprint menulis',
+  'sprint.hint': 'Dorongan berwaktu dengan jam tetap terlihat. Tidak ada yang dikunci — berhenti kapan saja.',
+  'sprint.min': '{n} mnt',
+  'sprint.start': 'Mulai sprint',
+  'sprint.stop': 'Akhiri sprint',
+  'sprint.words': '{n} kata',
+  'sprint.done': 'Sprint selesai — {n} kata tertulis.',
 
   // ---- Tampilan kustom (v1.3.0) ----
   'appearance.uiFont': 'Font antarmuka',
@@ -2989,18 +3134,30 @@ const id: Dict = {
 export const LANGS: Array<{ id: Lang; label: string }> = [
   { id: 'en', label: 'English (US)' },
   { id: 'en-GB', label: 'English (UK)' },
+  { id: 'en1700', label: 'English (1700s, beta)' },
   { id: 'id', label: 'Bahasa Indonesia' },
   { id: 'es', label: 'Español (beta)' },
-  { id: 'hi', label: 'हिन्दी (beta)' }
+  { id: 'hi', label: 'हिन्दी (beta)' },
+  { id: 'ja', label: '日本語 (beta)' },
+  { id: 'pirate', label: 'Pirate English (beta)' }
 ];
 
 export function isLang(value: unknown): value is Lang {
   return typeof value === 'string' && LANGS.some((l) => l.id === value);
 }
 
+export function isBetaLang(lang: Lang): boolean {
+  return lang === 'es' || lang === 'hi' || lang === 'ja' || lang === 'pirate' || lang === 'en1700';
+}
+
 /** BCP-47 tag for <html lang> and the EPUB metadata. */
 export function htmlLang(lang: Lang): string {
-  return lang === 'en' ? 'en-US' : lang;
+  if (lang === 'en') return 'en-US';
+  // "Pirate" is a voice, not a language: it is English with a hat on, so the
+  // document (and any exported book) is tagged as English for readers and
+  // screen readers that would reject an invalid tag.
+  if (lang === 'pirate' || lang === 'en1700') return 'en';
+  return lang;
 }
 
 /** The guide ships only EN and ID; other locales read English without a badge. */
@@ -3058,7 +3215,14 @@ const enGB: Dict = Object.fromEntries(
   Object.entries(en).map(([key, value]) => [key, toBritishEnglish(value)])
 ) as Dict;
 
-export const dictionaries: Record<Lang, Partial<Dict>> = { en, 'en-GB': enGB, id, es, hi };
+// 1700s English is derived, not copied: every modern line gets a light
+// archaism, and the hand-written lines above cover the controls people touch
+// first. A new English string therefore never disappears from this locale.
+const en1700: Dict = Object.fromEntries(
+  Object.entries(en).map(([key, value]) => [key, en1700Overrides[key] ?? archaize(value)])
+) as Dict;
+
+export const dictionaries: Record<Lang, Partial<Dict>> = { en, 'en-GB': enGB, en1700, id, es, hi, ja, pirate };
 
 export function translate(lang: Lang, key: string): string {
   return dictionaries[lang]?.[key] ?? dictionaries.en[key] ?? key;

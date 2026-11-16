@@ -173,7 +173,7 @@ function runScript(file) {
 }
 
 // ------------------------------------------------------------------ main ----
-console.log(`\n🧪 OpenPlot AI test runner — groups: ${selected.join(', ')}`);
+console.log(`\n🧪 Kertomus test runner — groups: ${selected.join(', ')}`);
 const t0 = Date.now();
 const summary = [];
 let failures = 0;

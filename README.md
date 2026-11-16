@@ -1,26 +1,30 @@
 <div align="center">
 
-<img src="docs/og-image.png" alt="OpenPlot AI — a local-first story studio" width="860" />
+<img src="docs/kertomus-banner.webp" alt="Kertomus — Your Story Studio" width="860" />
 
-# OpenPlot AI
+# Kertomus
 
 **Your story deserves a studio, not five browser tabs.**
 
 A free, open-source, local-first AI writing studio for Windows, macOS and Linux.
+Kertomus is the **former OpenPlot AI, former Inkwell** — the same local studio,
+with a name that finally fits.
+
 Chat with any model, keep your canon in a structured story bible, outline in
 three acts, write chapters, and watch the book grow — in one desktop window.
 
-[**Download the latest release**](https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases/latest) ·
-[Website](https://mahakammoonlightstudio-beep.github.io/OpenPlot-AI/) ·
+[**Download**](https://github.com/mahakammoonlightstudio-beep/Kertomus/releases/latest) ·
+[Website](https://mahakammoonlightstudio-beep.github.io/Kertomus/) ·
+[Handbook](docs/HANDBOOK.md) ·
+[Panduan (ID)](docs/HANDBOOK.id.md) ·
 [Changelog](CHANGELOG.md) ·
-[Security](SECURITY.md) ·
-[Contributing](CONTRIBUTING.md)
+[Security](SECURITY.md)
 
-[![Release](https://img.shields.io/github/v/release/mahakammoonlightstudio-beep/OpenPlot-AI?style=flat-square)](https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases)
-[![CI](https://img.shields.io/github/actions/workflow/status/mahakammoonlightstudio-beep/OpenPlot-AI/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/actions/workflows/ci.yml)
-[![License](https://img.shields.io/github/license/mahakammoonlightstudio-beep/OpenPlot-AI?style=flat-square)](LICENSE)
-[![Downloads](https://img.shields.io/github/downloads/mahakammoonlightstudio-beep/OpenPlot-AI/total?style=flat-square&logo=github)](https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases)
-![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue?style=flat-square)
+[![Release](https://img.shields.io/github/v/release/mahakammoonlightstudio-beep/Kertomus?style=flat-square)](https://github.com/mahakammoonlightstudio-beep/Kertomus/releases)
+[![CI](https://img.shields.io/github/actions/workflow/status/mahakammoonlightstudio-beep/Kertomus/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/mahakammoonlightstudio-beep/Kertomus/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/mahakammoonlightstudio-beep/Kertomus?style=flat-square)](LICENSE)
+[![Downloads](https://img.shields.io/github/downloads/mahakammoonlightstudio-beep/Kertomus/total?style=flat-square&logo=github)](https://github.com/mahakammoonlightstudio-beep/Kertomus/releases)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-e3ae43?style=flat-square)
 ![Electron](https://img.shields.io/badge/Electron-33-47848F?logo=electron&logoColor=white&style=flat-square)
 ![Local-first](https://img.shields.io/badge/local--first-no%20telemetry-2ea043?style=flat-square)
 
@@ -28,90 +32,71 @@ three acts, write chapters, and watch the book grow — in one desktop window.
 
 ---
 
+## Start here
+
+| If you want to… | Go to |
+| --- | --- |
+| Install it and write something tonight | [Install](#install) |
+| Learn the whole studio, properly | [Handbook](docs/HANDBOOK.md) · [Panduan](docs/HANDBOOK.id.md) |
+| Bring your own model | [Bring your own model](#bring-your-own-model) |
+| Check a Linux download | [Verify a Linux download](#verify-a-linux-download) |
+| Build from source or run the tests | [Build from source](#build-from-source) |
+| See every change in this release | [CHANGELOG.md](CHANGELOG.md) |
+
+The in-app **Guide** is the same handbook, searchable from `F1` or the sidebar.
+The English and Indonesian editions are generated from the same source, so the
+desk you are looking at and the page you are reading do not drift apart.
+
 ## The room where the book happens
 
-Most AI writing tools give you a chat box and hope. OpenPlot AI gives the model
+Most AI writing tools give you a chat box and hope. Kertomus gives the model
 your actual story — and gives you the room to shape it.
 
 | | |
 | --- | --- |
-| **One window, one project** | Chat, story bible, outline board, chapters and statistics share the same project. No copy-pasting canon between tabs, no “which doc has the latest version?” |
+| **One window, one project** | Chat, Story Bible, outline board, chapters and statistics share the same project. No copy-pasting canon between tabs, no “which doc has the latest version?” |
 | **Canon that is data, not a prompt** | Worlds, locations, characters, items and lore are real records with tags, links and reference files. The agent reads all of it with native tools. |
 | **The model you already pay for** | OpenAI, Anthropic, OpenRouter, Groq, Ollama, LM Studio, or any OpenAI-compatible `/v1` endpoint. One provider card per service, any model per chat. |
 | **Local by default** | SQLite on your disk, keys in the OS credential vault, no account, no cloud sync, no telemetry. The renderer cannot even open a socket. |
 
-## Screenshots
+## New in 1.3.1
 
-_Captured from a demo workspace using a local mock provider._
+**The Kertomus edition — a new name, three real desks, and one shelf that is not
+in the catalogue.**
 
-<table>
-  <tr>
-    <td colspan="2">
-      <img src="docs/showcase/14-home.png" alt="Home screen with a time-based greeting, quick starts, recent chats and model health" />
-      <sub><b>Home first.</b> A greeting that follows the clock, four quick starts, recent chats and the live model-health strip.</sub>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <img src="docs/showcase/01-chat.png" alt="Chat with streaming replies, model health, reasoning and token counts" />
-      <sub><b>Chat that stays out of the way.</b> Streaming replies, reasoning display, agent tools, per-message tokens and model health.</sub>
-    </td>
-    <td width="50%">
-      <img src="docs/showcase/02-story.png" alt="Story Bible entries with tags, categories and reference files" />
-      <sub><b>Canon you can browse.</b> Structured Story Bible entries with tags, links and attached reference files.</sub>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <img src="docs/showcase/03-chapters.png" alt="Chapter editor with statuses, word counts and version history" />
-      <sub><b>Write where the book lives.</b> Draft, revise and finish chapters with version history and a scene board.</sub>
-    </td>
-    <td width="50%">
-      <img src="docs/showcase/04-flow.png" alt="Three-act story flow board with beats linked to chapters" />
-      <sub><b>The shape of the story.</b> A three-act board of beats you can link to chapters and move between acts.</sub>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <img src="docs/showcase/06-stats.png" alt="Writing statistics with daily goal, streaks, heatmap and project totals" />
-      <sub><b>Progress you can see.</b> Daily goal, streaks, weekly totals, a 90-day heatmap and per-project progress.</sub>
-    </td>
-    <td width="50%">
-      <img src="docs/showcase/11-theme-light-paper.png" alt="The light-paper theme" />
-      <sub><b>Light or dark, your call.</b> Follows your system by default, with 14 themes and 10 accents in English or Bahasa Indonesia.</sub>
-    </td>
-  </tr>
-</table>
+- **OpenPlot AI is now Kertomus.** New mark, wordmark, window and menu titles,
+  installer identity (`studio.kertomus.app`) and About plate. Your existing
+  studio is copied into the new profile on first launch; the original is left
+  untouched.
+- **The rooms edition.** Settings now remembers whether you came from Chat,
+  Agent or Writing and returns you there. Writing’s sidebar grew a novel tree
+  (chapters and project chats together), Writing opens on a shelf of books, and
+  Agent opens on a workbench with tools, skills, MCP status and recent sessions.
+- **Scriptorium & Parchment.** The default `system` theme is a lamp-lit ink room
+  at night and warm paper by day, with bookbinding gold as the accent. Sixteen
+  themes and eleven accents remain; **Settings → Appearance** has a one-click
+  studio palette preset.
+- **More voices.** Japanese (beta) and Pirate English (beta) join the studio,
+  English 1700s (beta) is derived from the whole English dictionary, and Spanish
+  and Hindi grew from 429 to 601 strings.
+- **Writing sprints.** Pick 10, 15, 25 or 50 minutes on the manuscript desk and
+  watch the words you add. No lock-in, no streak pressure.
+- **The Seventh Shelf.** A hidden short story with no catalogue number. Type the
+  studio’s name when no field has focus, or look at the very bottom of About.
+  It touches no data and unlocks nothing.
+- **Signed Linux builds.** Every AppImage and tarball gets a detached `.asc`
+  signature, and each architecture gets a signed `SHA256SUMS-linux-x64` or
+  `SHA256SUMS-linux-arm64`. See [Verify a Linux download](#verify-a-linux-download).
+- **Under the hood.** Profile and database migration, version drift in the
+  MCP/HTTP user agent, EPUB language tags for Japanese, derived accent ink for
+  readable labels, localized chapter names, and the last hard-coded English
+  dialogs are fixed.
 
-## New in 1.3.0
+Everything from 1.3.0 is still here: separate libraries with Time Machine
+snapshots, portable `.db` export, `Ctrl/Cmd+P` quick switch, the Revision
+Timeline, Skill Lab, MCP, automations and the full appearance system.
 
-**One studio, many libraries — and a faster way to move around it.**
-
-- **Separate libraries.** **Settings → Data** lists every library in your profile
-  with its schema and size, and switches with a restart. Import a portable `.db`
-  without touching the source, or start a new, empty one.
-- **Library Time Machine.** Up to 12 whole-library snapshots per library:
-  before a migration, import, reset or restore, plus one daily and any manual
-  copy. Restore confirms, snapshots the current state first, then restarts into
-  the chosen copy.
-- **Portable library export.** One `.db` carries chats, projects, canon,
-  chapters, attachments, prompts, styles, skills and settings to another
-  machine. Provider keys, the web-search key, MCP environment variables and
-  execution approvals stay behind.
-- **Quick switch.** `Ctrl/Cmd+P` opens a chats-and-projects palette from
-  anywhere: every chat is searchable, results name their project, and the
-  current chat and project lead the list.
-- **Revision Timeline.** Chapter snapshots and passages displaced by AI edits
-  in one newest-first timeline, with a word-level before/after diff and a
-  one-click restore that is itself undoable.
-- **Skill Lab.** Categories for Chat, Agent and Writing desks, a full
-  instruction inspector, a live preview of the prompt block, a 12,000-character
-  budget, and duplicate/overlap/tension warnings.
-- **Appearance controls.** Follows your system light/dark preference by
-  default, plus a font stack, whole-UI zoom, comfortable/compact density and
-  corner radius — applied immediately and stored locally.
-
-[Full changelog →](CHANGELOG.md)
+[The complete release notes, including every fix and documentation change →](CHANGELOG.md#131--2026-11-16)
 
 ## What the studio does
 
@@ -132,7 +117,7 @@ _Captured from a demo workspace using a local mock provider._
   you can read before sending, stay in the transcript, and open in a popup
   after a restart.
 - **Context guard.** Old turns are trimmed from the request when a chat exceeds
-  the model's window; nothing is deleted from the transcript.
+  the model’s window; nothing is deleted from the transcript.
 
 ### Canon and writing
 
@@ -150,8 +135,7 @@ _Captured from a demo workspace using a local mock provider._
 
 ### Extensions — with a gate
 
-- **Skills.** Six builtin skills (Continuity Guardian, Prose Polisher, Dialogue
-  Coach, Pacing Analyst, Beta Reader, Worldbuilding Architect) plus your own.
+- **Skills.** Nine builtin skills across Chat, Agent and Writing, plus your own.
   A new skill starts disabled; switch any skill off per chat.
 - **Plugins.** JavaScript lifecycle hooks and palette commands, with full Node
   access. They run only after you approve that exact code.
@@ -179,23 +163,59 @@ hosted gateways that reject probe models work too.
 
 ## Install
 
-Prebuilt binaries for **v1.3.0** are attached to the
-[GitHub releases](https://github.com/mahakammoonlightstudio-beep/OpenPlot-AI/releases).
+Prebuilt binaries for **v1.3.1** are attached to the
+[GitHub releases](https://github.com/mahakammoonlightstudio-beep/Kertomus/releases).
 Each platform has a full installer/app and a portable folder build.
 
 | Platform | Full app | Folder |
 | --- | --- | --- |
-| Windows | `OpenPlot.AI.Setup.1.3.0.exe` (NSIS installer) | `OpenPlot.AI-1.3.0-win.zip` |
-| macOS | `OpenPlot.AI-1.3.0-universal.dmg` (universal) | `OpenPlot.AI-1.3.0-universal-mac.zip` / `OpenPlot.AI-1.3.0-arm64-mac.zip` |
-| Linux (x64) | `OpenPlot.AI-1.3.0.AppImage` | `openplot-ai-1.3.0.tar.gz` |
-| Linux (arm64) | `OpenPlot.AI-1.3.0-arm64.AppImage` | `OpenPlot.AI-1.3.0-arm64.tar.gz` |
+| Windows | `Kertomus-1.3.1-win-x64.exe` (NSIS installer) | `Kertomus-1.3.1-win-x64.zip` |
+| macOS | `Kertomus-1.3.1-mac-universal.dmg` (universal) | `Kertomus-1.3.1-mac-universal.zip` / `Kertomus-1.3.1-mac-arm64.zip` |
+| Linux (x64) | `Kertomus-1.3.1-linux-x64.AppImage` | `Kertomus-1.3.1-linux-x64.tar.gz` |
+| Linux (arm64) | `Kertomus-1.3.1-linux-arm64.AppImage` | `Kertomus-1.3.1-linux-arm64.tar.gz` |
 
 The macOS disk image and the main macOS zip are universal (Intel + Apple
-silicon); the `arm64-mac.zip` is smaller and Apple-silicon only.
+silicon); the `mac-arm64` zip is smaller and Apple-silicon only.
 
 Every Linux AppImage release also ships a matching `.zsync` file for
 [AppImageUpdate](https://github.com/AppImageCommunity/AppImageUpdate) delta
 downloads.
+
+### Verify a Linux download
+
+Linux release artifacts are signed by the release workflow. Import the project
+key once, then verify both the manifest and the artifact:
+
+```bash
+curl -LO https://raw.githubusercontent.com/mahakammoonlightstudio-beep/Kertomus/main/docs/keys/kertomus-release.asc
+gpg --import kertomus-release.asc
+gpg --fingerprint "Kertomus Releases"   # fingerprint below
+
+arch=x64   # or arm64
+gpg --verify SHA256SUMS-linux-$arch.asc
+sha256sum --check SHA256SUMS-linux-$arch
+```
+
+Each AppImage and tarball also has a detached `.asc` signature, so a single
+file can be checked without the manifest:
+
+```bash
+gpg --verify Kertomus-1.3.1-linux-x64.AppImage.asc \
+  Kertomus-1.3.1-linux-x64.AppImage
+```
+
+Release key fingerprint:
+
+```text
+A840 1FF4 C843 1BF2 081B  0DE2 77C5 8650 CE5E F7A7
+```
+
+The key belongs to **Kertomus Releases** and expires on 2028-11-15. The private
+key lives only in the repository’s `LINUX_GPG_PRIVATE_KEY` /
+`LINUX_GPG_PASSPHRASE` Actions secrets; it is never committed or shipped. A
+rotation is documented in [docs/keys/README.md](docs/keys/README.md). Without
+the secrets the Linux build still succeeds and ships unsigned — it does not
+fail the release.
 
 ## Build from source
 
@@ -216,7 +236,7 @@ npm run dist:mac     # macOS dmg + zip
 ```
 
 The release workflow also cross-builds Linux **arm64** AppImage and tarball
-(`OpenPlot.AI-<version>-arm64.*`); `npm run dist:linux` locally stays x64.
+(`Kertomus-<version>-arm64.*`); `npm run dist:linux` locally stays x64.
 
 macOS builds are signed with the hardened runtime and notarized automatically
 when the repository has `MAC_CERT_P12`, `MAC_CERT_PASSWORD`, `APPLE_ID`,
@@ -256,7 +276,7 @@ src/               React renderer
   guide/           bundled English + Indonesian handbook
   styles/          ordered CSS partials
 scripts/           headless, UI-render, GUI and end-to-end tests
-docs/              plugin API, handbook, stress notes, showcase screenshots
+docs/              handbook, plugin API, keys, stress notes, website
 ```
 
 Every file, what it owns, and the invariants that keep it safe are listed in
@@ -265,9 +285,11 @@ something under `electron/`.
 
 ## Privacy and security
 
-OpenPlot AI stores its database in the OS user-data path
-(`%APPDATA%/openplot-ai` on Windows, `~/Library/Application Support/openplot-ai`
-on macOS, `~/.config/openplot-ai` on Linux). Uninstalling does not delete it;
+Kertomus stores its database in the OS user-data path
+(`%APPDATA%/Kertomus` on Windows, `~/Library/Application Support/Kertomus`
+on macOS, `~/.config/Kertomus` on Linux). On the first 1.3.1 launch the old
+`openplot-ai` profile is copied into this folder once; the original is left
+untouched. Uninstalling does not delete either folder;
 **Settings → Data** can reset everything, including memories and chapters.
 
 Provider API keys and the web-search key are encrypted at rest with the OS
@@ -289,12 +311,19 @@ open a public issue.
 
 ## Documentation
 
+- [Handbook](docs/HANDBOOK.md) · [Panduan (ID)](docs/HANDBOOK.id.md)
 - [Security policy](SECURITY.md)
 - [Contributing and file map](CONTRIBUTING.md)
 - [Changelog](CHANGELOG.md)
 - [Plugin API](docs/PLUGIN_API.md)
-- [Handbook](docs/HANDBOOK.md) · [Panduan (ID)](docs/HANDBOOK.id.md)
+- [Linux release key](docs/keys/README.md)
 - [Stress test notes](docs/STRESS_TEST.md)
+
+## There is a seventh shelf
+
+It is not in the sidebar. It is not in the handbook. It is a short story, and it
+is exactly where it wants to be. If you type the studio’s name while no field has
+focus, that is between you and the shelf. We will not be taking questions.
 
 ## License
 

@@ -11,15 +11,15 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 
-const exe = path.join(os.homedir(), 'AppData', 'Local', 'Programs', 'openplot-ai', 'OpenPlot AI.exe');
-const profile = path.join(os.homedir(), 'AppData', 'Roaming', 'OpenPlot AI');
+const exe = path.join(os.homedir(), 'AppData', 'Local', 'Programs', 'kertomus', 'Kertomus.exe');
+const profile = path.join(os.homedir(), 'AppData', 'Roaming', 'Kertomus');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 (async () => {
   // Hard watchdog: the harness must always exit (a killed process loses its
   // piped output, so hanging forever = zero diagnostics).
-  setTimeout(() => { console.error('WATCHDOG: harness timed out'); try { execSync('taskkill /F /IM "OpenPlot AI.exe" /T', { shell: 'cmd.exe' }); } catch {} process.exit(2); }, 150000);
-  try { execSync('taskkill /F /IM "OpenPlot AI.exe" /T', { shell: 'cmd.exe' }); } catch {}
+  setTimeout(() => { console.error('WATCHDOG: harness timed out'); try { execSync('taskkill /F /IM "Kertomus.exe" /T', { shell: 'cmd.exe' }); } catch {} process.exit(2); }, 150000);
+  try { execSync('taskkill /F /IM "Kertomus.exe" /T', { shell: 'cmd.exe' }); } catch {}
   await sleep(1200);
 
   const port = 9530;
@@ -133,7 +133,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   } finally {
     try { child.kill(); } catch {}
     await sleep(1000);
-    try { execSync('taskkill /F /IM "OpenPlot AI.exe" /T', { shell: 'cmd.exe' }); } catch {}
+    try { execSync('taskkill /F /IM "Kertomus.exe" /T', { shell: 'cmd.exe' }); } catch {}
   }
   console.log(failures === 0 ? 'REAL-UI KEY TEST OK' : 'REAL-UI KEY TEST FAILED');
   process.exit(failures ? 1 : 0);

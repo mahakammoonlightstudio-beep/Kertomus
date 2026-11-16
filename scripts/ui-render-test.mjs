@@ -134,11 +134,11 @@ try {
 const { smoke } = require(outfile);
 const views = smoke();
 
-for (const name of ['app', 'story-agent', 'story', 'settings', 'chat']) {
+for (const name of ['app', 'story-agent', 'story', 'settings', 'chat', 'writeHome', 'agentHome']) {
   const err = views[name + 'Error'];
   check(`renders ${name} without crashing`, !err, err ? err.split('\n').slice(0, 2).join(' | ') : '');
 }
-check('app shell renders the sidebar + welcome', /nav-tree/.test(views.app || '') && /Plot/.test(views.app || ''));
+check('app shell renders the sidebar + welcome', /nav-tree/.test(views.app || '') && /Kertomus/.test(views.app || ''));
 check('story agent renders Plot Smith + all four steps', /Plot Smith/.test(views['story-agent'] || '') && /Brief/.test(views['story-agent'] || '') && /Outline/.test(views['story-agent'] || ''));
 check('story agent renders the option chips (genres + tones)', /Fantasy/.test(views['story-agent'] || '') && /Hopeful/.test(views['story-agent'] || ''));
 check('story bible renders import + attachment affordances', /Import/.test(views.story || '') && /Story Bible/.test(views.story || ''));
@@ -158,6 +158,16 @@ check('settings shell renders grouped nav, search and mode switch',
   /settings-group-label/.test(views['settings-models'] || '')
   && /settings-search/.test(views['settings-models'] || '')
   && /settings-mode-toggle/.test(views['settings-models'] || ''));
+check('settings offers a named way back to the desk it came from',
+  /settings-back/.test(views['settings-models'] || '')
+  && /Back to Home/.test(views['settings-models'] || ''));
+check('writing without a novel opens the shelf, not an empty board',
+  /write-home/.test(views.writeHome || '')
+  && /Pick up a book/.test(views.writeHome || '')
+  && /New novel/.test(views.writeHome || ''));
+check('agent without a session opens its own bench',
+  /agent-home/.test(views.agentHome || '')
+  && /The workbench/.test(views.agentHome || '') && /Recent sessions/.test(views.agentHome || ''));
 check('simple mode keeps Extend out of the nav',
   !/settings-group-label[^>]*>Extend</.test(views['settings-models'] || '')
   && /Show advanced settings/.test(views['settings-models'] || ''));
@@ -176,7 +186,7 @@ check('about section publishes the feedback address',
   /set-feedback-email/.test(views['settings-about'] || '')
   && /mahakammoonlightstudio@gmail\.com/.test(views['settings-about'] || ''));
 check('chat welcome renders without a provider', /Start a story/i.test(views.chat || '')
-  && /Continue the open chapter/i.test(views.chat || ''));
+  && /Open the last chapter/i.test(views.chat || ''));
 check('welcome shows exactly four quick-start cards',
   ((views.chat || '').match(/class="welcome-card[" ]/g) || []).length === 4);
 check('welcome leads with Connect a model when nothing is connected',
@@ -259,8 +269,8 @@ try {
 check('pure helper modules bundle', !helperError, helperError);
 if (!helperError) {
   const { resolveTheme } = require(appearanceFile);
-  check('theme: system follows the OS preference',
-    resolveTheme('system', false) === 'light-paper' && resolveTheme('system', true) === 'dark-classic');
+  check('theme: system follows the OS preference with the Kertomus themes',
+    resolveTheme('system', false) === 'parchment' && resolveTheme('system', true) === 'scriptorium');
   check('theme: an explicit choice is never overridden',
     resolveTheme('nord', false) === 'nord' && resolveTheme('sepia', true) === 'sepia');
   const { toStoryArray } = require(storyHelperFile);

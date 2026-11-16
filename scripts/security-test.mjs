@@ -312,7 +312,7 @@ const timeIt = (fn) => { const t = performance.now(); const out = fn(); return [
 {
   const root = path.join(dir, 'profile');
   fs.mkdirSync(root, { recursive: true });
-  const dbLike = path.join(root, 'openplot.db');
+  const dbLike = path.join(root, 'kertomus.db');
   const profileNote = path.join(root, 'notes.txt');
   fs.writeFileSync(dbLike, 'SECRET DATA');
   fs.writeFileSync(profileNote, 'profile text');
@@ -327,7 +327,8 @@ const timeIt = (fn) => { const t = performance.now(); const out = fn(); return [
   check('files: the database inside the profile yields no content',
     readTextFiles([dbLike]).length === 0);
   check('files: a database file is refused by name',
-    isSensitivePath('/x/openplot.db') && isSensitivePath('C:\\x\\inkwell.db'));
+    isSensitivePath('/x/openplot.db') && isSensitivePath('C:\\x\\inkwell.db')
+    && isSensitivePath('/x/kertomus.db') && isSensitivePath('/x/kertomus.db-wal'));
   check('files: absurdly long paths are refused',
     checkReadable('C:\\' + 'a'.repeat(5000)).error === 'path too long');
 

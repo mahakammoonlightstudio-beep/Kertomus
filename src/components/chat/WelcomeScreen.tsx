@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Icon, IconName } from '../Icons';
+import { Icon, IconName, LogoMark } from '../Icons';
 import { ModelBadge } from './MessageBubble';
 import { ModelStatusBar } from '../ModelStatusBar';
 import { useT } from '../../i18nReact';
@@ -74,7 +74,13 @@ export function WelcomeScreen({
   return (
     <div className="page welcome-page" style={{ display: 'flex', flexDirection: 'column' }}>
       <div className="welcome-hero">
-        <div className="logo-big">Open<span className="ink">Plot</span>&nbsp;AI</div>
+        <div className="brand-hero">
+          <LogoMark size={52} />
+          <div className="brand-hero-text">
+            <div className="logo-big">Kertomus</div>
+            <div className="brand-kicker">{t('app.tagline')}</div>
+          </div>
+        </div>
         <div className="welcome-greet">
           <b>{greetingFor(lang, now)}</b> · {openingFor(lang, now)}
         </div>

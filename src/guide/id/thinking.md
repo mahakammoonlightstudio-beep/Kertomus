@@ -6,7 +6,7 @@ order: 5
 
 # Thinking dan reasoning
 
-Model yang mendukung reasoning bisa memakai token sebelum menjawab. OpenPlot menampilkannya sebagai **Thinking**.
+Model yang mendukung reasoning bisa memakai token sebelum menjawab. Kertomus menampilkannya sebagai **Thinking**.
 
 ## Kontrol
 Ikon otak di composer punya tiga keadaan: mati, nyala, dan *auto*. Dengan `thinkingUi = auto`, model yang tidak bisa reasoning tidak melihat kontrol ini sama sekali.

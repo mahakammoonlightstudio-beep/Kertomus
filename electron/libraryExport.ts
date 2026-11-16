@@ -14,13 +14,13 @@ function stamp(now: Date): string {
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 }
 
-/** `openplot.db` → `openplot-portable-2026-11-11.db`, host characters removed. */
+/** `kertomus.db` → `kertomus-portable-2026-11-11.db`, host characters removed. */
 export function portableFileName(dbFile: string, now = new Date()): string {
-  const stem = path.basename(dbFile, path.extname(dbFile)) || 'openplot';
+  const stem = path.basename(dbFile, path.extname(dbFile)) || 'kertomus';
   const safe = stem
     .replace(/[\\/:*?"<>|\x00-\x1f]/g, '_')
     .replace(/\s+/g, ' ')
-    .trim() || 'openplot';
+    .trim() || 'kertomus';
   return `${safe}-portable-${stamp(now)}.db`;
 }
 

@@ -602,7 +602,7 @@ export function uid(): string {
   });
 }
 
-export async function initDb(dir: string, fileName = 'openplot.db'): Promise<string> {
+export async function initDb(dir: string, fileName = 'kertomus.db'): Promise<string> {
   const SQL: SqlJsStatic = await initSqlJs({
     locateFile: (f: string) => {
       const candidates = [
@@ -628,7 +628,7 @@ export async function initDb(dir: string, fileName = 'openplot.db'): Promise<str
     try { db.close(); } catch { /* ignore */ }
     db = null;
     throw new Error(
-      `This database was created by a newer version of OpenPlot AI (schema ${from} > ${SCHEMA_VERSION}). ` +
+      `This database was created by a newer version of Kertomus (schema ${from} > ${SCHEMA_VERSION}). ` +
       'Update the app, or restore a backup of the database file.'
     );
   }
@@ -795,7 +795,7 @@ export const AGENT_MD_VERSION = 2;
  * still equals this string was never edited, so upgrading it is safe; every
  * other value belongs to the user and is never touched.
  */
-export const DEFAULT_AGENT_MD_V1 = `You are OpenPlot, a focused AI writing and chat assistant living inside a local-first story studio.
+export const DEFAULT_AGENT_MD_V1 = `You are Kertomus, a focused AI writing and chat assistant living inside a local-first story studio.
 
 ## Style
 - Match the user's language (English or Indonesian) and their tone.
@@ -815,7 +815,7 @@ export const DEFAULT_AGENT_MD_V1 = `You are OpenPlot, a focused AI writing and c
  * fact. Every rule here maps to something the app actually enforces, so the
  * text stays honest when features change.
  */
-export const DEFAULT_AGENT_MD = `You are OpenPlot, a focused AI writing and chat assistant inside a local-first story studio. The user owns this machine and this file: their edits to agent.md always win over this shipped text.
+export const DEFAULT_AGENT_MD = `You are Kertomus, a focused AI writing and chat assistant inside a local-first story studio. The user owns this machine and this file: their edits to agent.md always win over this shipped text.
 
 ## Who you are
 - A working collaborator, not a chatbot: help the user write, plan, edit and keep their world consistent.

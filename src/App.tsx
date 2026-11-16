@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { useData, useSettings, useUi, runAutomations, dbCall, createChatUi, clearToastTimers, createProjectUi } from './store';
 import { resolveTheme } from './lib/appearance';
 import { Sidebar } from './components/Sidebar';
@@ -20,6 +20,7 @@ const GuideView = lazy(() => import('./components/GuideView').then((m) => ({ def
 import { CommandPalette } from './components/CommandPalette';
 import { ShortcutsSheet } from './components/ShortcutsSheet';
 import { WhatsNewModal } from './components/WhatsNewModal';
+import { SeventhShelf } from './components/SeventhShelf';
 import { textPrompt } from './components/TextPrompt';
 import { useUnreadStore } from './unreadStore';
 import { htmlLang, translate } from './i18n';
@@ -42,6 +43,7 @@ export default function App() {
   const route = useData((s) => s.route);
   const activeChatId = useData((s) => s.activeChatId);
   const sidebarHidden = useUi((s) => s.sidebarHidden);
+  const [seventhOpen, setSeventhOpen] = useState(false);
 
   // boot: load settings then data
   useEffect(() => {
@@ -76,6 +78,10 @@ export default function App() {
     document.documentElement.style.setProperty('--accent', settings.accent);
     const rgb = hexToRgb(settings.accent);
     document.documentElement.style.setProperty('--accent-soft', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.16)`);
+    // Readable ink on an accent fill: gold wants dark ink, violet wants white.
+    // Pick whichever of the two actually contrasts more, with WCAG luminance,
+    // instead of a brightness guess that could leave 3.9:1 labels on red.
+    document.documentElement.style.setProperty('--on-accent', readableInk(rgb));
     document.documentElement.lang = htmlLang(settings.lang);
     return () => media?.removeEventListener?.('change', applyTheme);
   }, [settings.theme, settings.accent, settings.lang]);
@@ -137,9 +143,30 @@ export default function App() {
     };
   }, []);
 
-  // expose palette opener for Sidebar
+  // Expose the palette opener for Sidebar.
   useEffect(() => {
     (window as any).__inkwellOpenPalette = () => useUi.getState().setPalette(true);
+  }, []);
+
+  // The seventh shelf: type the studio's name when no field has focus, or use
+  // the single line at the bottom of About. Deliberately not advertised.
+  useEffect(() => {
+    let typed = '';
+    const open = () => setSeventhOpen(true);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.ctrlKey || e.metaKey || e.altKey || e.key.length !== 1) return;
+      const el = document.activeElement as HTMLElement | null;
+      const tag = el?.tagName?.toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || tag === 'select' || el?.isContentEditable) return;
+      typed = (typed + e.key.toLowerCase()).slice(-8);
+      if (typed === 'kertomus') { typed = ''; open(); }
+    };
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('kertomus:seventh-shelf', open);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('kertomus:seventh-shelf', open);
+    };
   }, []);
 
   // Teardown: cancel pending toast countdowns and scroll-memory writes so a
@@ -182,12 +209,16 @@ export default function App() {
   // native menu actions (new chat / new project) — handled globally so they
   // work from ANY route (they used to only work while the chat was open)
   useEffect(() => {
+    const lang = () => useSettings.getState().lang;
     const newChat = async () => {
-      await createChatUi('New chat', useData.getState().activeProjectId);
+      await createChatUi(translate(lang(), 'app.newChat'), useData.getState().activeProjectId);
     };
     const openPrompts = () => openPromptLibraryUi();
     const newProject = async () => {
-      const name = await textPrompt({ title: 'Project name', confirmLabel: 'Create' });
+      const name = await textPrompt({
+        title: translate(lang(), 'projects.name'),
+        confirmLabel: translate(lang(), 'projects.create')
+      });
       if (!name) return;
       await createProjectUi(name);
       useData.getState().navigate('projects');
@@ -284,6 +315,7 @@ function RouteFallback() {
       <CommandPalette />
       <ShortcutsSheet />
       <WhatsNewModal />
+      <SeventhShelf open={seventhOpen} onClose={() => setSeventhOpen(false)} />
       <Toasts />
     </div>
   );
@@ -302,6 +334,24 @@ function Toasts() {
       ))}
     </div>
   );
+}
+
+/** WCAG relative luminance for one sRGB channel pair. */
+function relativeLuminance({ r, g, b }: { r: number; g: number; b: number }): number {
+  const channel = (v: number) => {
+    const s = v / 255;
+    return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+  };
+  return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+}
+
+/** Dark ink or white, whichever reads better on the given fill. */
+function readableInk(rgb: { r: number; g: number; b: number }): string {
+  const fill = relativeLuminance(rgb);
+  const dark = { r: 36, g: 29, b: 18 }; // the studio's warm ink
+  const withDark = (fill + 0.05) / (relativeLuminance(dark) + 0.05);
+  const withWhite = 1.05 / (fill + 0.05);
+  return withDark >= withWhite ? '#241d12' : '#ffffff';
 }
 
 function hexToRgb(hex: string): { r: number; g: number; b: number } {

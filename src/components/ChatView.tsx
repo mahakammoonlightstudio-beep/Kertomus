@@ -29,6 +29,7 @@ import {
 import { MessageBubble } from './chat/MessageBubble';
 import { StreamingBubble } from './chat/StreamingBubble';
 import { WelcomeScreen } from './chat/WelcomeScreen';
+import { AgentHome } from './AgentHome';
 import { SaveChapterModal } from './chat/SaveChapterModal';
 import {
   clampNum, contentWordCount, estimateTokens, fmtTokens, relativeTime, tokenLabel,
@@ -1251,7 +1252,7 @@ export function ChatView({ workspace = 'chat' }: { workspace?: 'chat' | 'agent' 
     let name: string;
     if (format === 'json') {
       content = JSON.stringify({
-        app: 'OpenPlot AI',
+        app: 'Kertomus',
         title: chat.title,
         model: chat.model || null,
         exportedAt: new Date().toISOString(),
@@ -1517,6 +1518,8 @@ export function ChatView({ workspace = 'chat' }: { workspace?: 'chat' | 'agent' 
   }
 
   if (!chat || route === 'home') {
+    // Agent's empty state is a workbench, not the story-starter grid.
+    if (workspace === 'agent' && route !== 'home') return <AgentHome />;
     return (
       <WelcomeScreen
         hasProvider={enabledProviders.length > 0}

@@ -9,12 +9,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 
-const exe = path.join(os.homedir(), 'AppData', 'Local', 'Programs', 'openplot-ai', 'OpenPlot AI.exe');
-const profile = path.join(os.homedir(), 'AppData', 'Roaming', 'OpenPlot AI');
+const exe = path.join(os.homedir(), 'AppData', 'Local', 'Programs', 'kertomus', 'Kertomus.exe');
+const profile = path.join(os.homedir(), 'AppData', 'Roaming', 'Kertomus');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 (async () => {
-  try { execSync('taskkill /F /IM "OpenPlot AI.exe" /T', { shell: 'cmd.exe' }); } catch {}
+  try { execSync('taskkill /F /IM "Kertomus.exe" /T', { shell: 'cmd.exe' }); } catch {}
   await sleep(1200);
 
   const port = 9520;
@@ -77,7 +77,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   } finally {
     try { child.kill(); } catch {}
     await sleep(1000);
-    try { execSync('taskkill /F /IM "OpenPlot AI.exe" /T', { shell: 'cmd.exe' }); } catch {}
+    try { execSync('taskkill /F /IM "Kertomus.exe" /T', { shell: 'cmd.exe' }); } catch {}
   }
   console.log(ok ? 'INSTALLED APP VERIFY OK' : 'INSTALLED APP VERIFY FAILED');
   process.exit(ok ? 0 : 1);

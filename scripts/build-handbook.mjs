@@ -97,8 +97,8 @@ ${body}
 }
 
 const out = [
-  ['HANDBOOK.md', build('en', 'OpenPlot AI Handbook')],
-  ['HANDBOOK.id.md', build('id', 'Panduan OpenPlot AI')]
+  ['HANDBOOK.md', build('en', 'Kertomus Handbook')],
+  ['HANDBOOK.id.md', build('id', 'Panduan Kertomus')]
 ];
 for (const [name, content] of out) {
   const file = path.join(ROOT, 'docs', name);

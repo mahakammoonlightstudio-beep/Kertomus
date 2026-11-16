@@ -2,7 +2,7 @@
  * Locale registry tests (headless).
  *
  * Guards the parts that are easy to break silently:
- *   - five locales exist and English (UK) is derived from English (US),
+ *   - eight locales exist and both English variants are derived from English (US),
  *   - British spelling is applied to whole words with case preserved,
  *   - Spanish/Hindi only add keys that exist in English (no typo keys),
  *   - every translated value keeps the same {placeholders} as its source,
@@ -16,6 +16,7 @@ import { loadTs } from './lib/load-ts.mjs';
 const {
   dictionaries, translate, LANGS, htmlLang, guideLangFor, toBritishEnglish, isLang
 } = await loadTs('src/i18n.ts');
+const en1700 = dictionaries.en1700;
 
 const results = [];
 const check = (name, ok, extra = '') => {
@@ -26,13 +27,17 @@ const check = (name, ok, extra = '') => {
 const en = dictionaries.en;
 const es = dictionaries.es;
 const hi = dictionaries.hi;
+const ja = dictionaries.ja;
+const pirate = dictionaries.pirate;
+const beta = { es, hi, ja, pirate, en1700 };
 
-check('locales: five options in a stable order',
-  LANGS.map((l) => l.id).join(',') === 'en,en-GB,id,es,hi',
+check('locales: eight options in a stable order',
+  LANGS.map((l) => l.id).join(',') === 'en,en-GB,en1700,id,es,hi,ja,pirate',
   LANGS.map((l) => l.id).join(','));
 
 check('locales: stored values are validated',
-  isLang('en-GB') && isLang('hi') && !isLang('en-US') && !isLang('xx') && !isLang(null));
+  isLang('en-GB') && isLang('en1700') && isLang('hi') && isLang('ja') && isLang('pirate')
+  && !isLang('en-US') && !isLang('xx') && !isLang(null));
 
 check('english UK: every US key has a British counterpart',
   Object.keys(dictionaries['en-GB']).length === Object.keys(en).length,
@@ -50,9 +55,17 @@ check('english UK: reads as a separate dictionary value',
   && translate('en', 'appearance.accent') === 'Accent color',
   translate('en-GB', 'appearance.accent'));
 
-check('spanish and hindi: substantial core coverage',
-  Object.keys(es).length >= 300 && Object.keys(hi).length >= 300,
-  `${Object.keys(es).length} / ${Object.keys(hi).length}`);
+check('beta locales: substantial core coverage',
+  Object.keys(es).length >= 500 && Object.keys(hi).length >= 500
+  && Object.keys(ja).length >= 300 && Object.keys(pirate).length >= 300
+  && Object.keys(en1700).length === Object.keys(en).length,
+  `${Object.keys(es).length} / ${Object.keys(hi).length} / ${Object.keys(ja).length} / ${Object.keys(pirate).length} / ${Object.keys(en1700).length}`);
+
+check('1700s english: derived every key and rewrote the controls',
+  translate('en1700', 'app.newChat') === 'A new discourse'
+  && translate('en1700', 'writing.save') === 'Save'
+  && translate('en1700', 'chat.welcomeSub') !== en['chat.welcomeSub'],
+  translate('en1700', 'app.newChat'));
 
 check('spanish and hindi: cover the same keys', (() => {
   const a = Object.keys(es).sort().join(',');
@@ -60,19 +73,31 @@ check('spanish and hindi: cover the same keys', (() => {
   return a === b;
 })(), `${Object.keys(es).length} / ${Object.keys(hi).length}`);
 
-check('spanish and hindi: no key that English does not ship', (() => {
-  const bad = [...Object.keys(es), ...Object.keys(hi)].filter((k) => !(k in en));
-  return bad.length === 0;
+check('beta locales: no key that English does not ship', (() => {
+  const bad = Object.values(beta).flatMap((dict) => Object.keys(dict)).filter((k) => !(k in en));
+  return bad.length === 0 ? true : [...new Set(bad)].join(',');
 })());
 
-check('spanish and hindi: every value keeps its {placeholders}', (() => {
+check('beta locales: every value keeps its {placeholders}', (() => {
   const holders = (s) => (String(s).match(/\{[a-zA-Z]+\}/g) || []).sort().join(',');
   const bad = [];
-  for (const [lang, dict] of [['es', es], ['hi', hi]]) {
+  for (const [lang, dict] of Object.entries(beta)) {
     for (const [key, value] of Object.entries(dict)) {
       if (holders(value) !== holders(en[key])) bad.push(`${lang}:${key}`);
     }
   }
+  return bad.length === 0 ? true : bad.join(',');
+})());
+
+check('japanese and pirate: real translations, not English copies', (() => {
+  const core = ['app.newChat', 'chat.send', 'writing.save', 'settings.appearance', 'about.tagline'];
+  const bad = core.filter((k) => !ja[k] || !pirate[k] || ja[k] === en[k] || pirate[k] === en[k]);
+  return bad.length === 0 ? true : bad.join(',');
+})());
+
+check('1700s english: placeholders survive the archaizer', (() => {
+  const holders = (s) => (String(s).match(/\{[a-zA-Z]+\}/g) || []).sort().join(',');
+  const bad = Object.entries(en1700).filter(([k, v]) => holders(v) !== holders(en[k])).map(([k]) => k);
   return bad.length === 0 ? true : bad.join(',');
 })());
 
@@ -90,11 +115,18 @@ check('fallback: an unknown key returns itself',
 
 check('html lang: US English is tagged en-US, UK stays en-GB',
   htmlLang('en') === 'en-US' && htmlLang('en-GB') === 'en-GB'
-  && htmlLang('id') === 'id' && htmlLang('es') === 'es' && htmlLang('hi') === 'hi');
+  && htmlLang('id') === 'id' && htmlLang('es') === 'es' && htmlLang('hi') === 'hi'
+  && htmlLang('ja') === 'ja');
+
+check('html lang: voices, not languages, stay tagged as English',
+  htmlLang('pirate') === 'en' && htmlLang('en1700') === 'en',
+  `${htmlLang('pirate')} / ${htmlLang('en1700')}`);
 
 check('guide language: only Indonesian maps to the ID guide',
   guideLangFor('id') === 'id' && guideLangFor('en') === 'en'
-  && guideLangFor('en-GB') === 'en' && guideLangFor('es') === 'en' && guideLangFor('hi') === 'en');
+  && guideLangFor('en-GB') === 'en' && guideLangFor('es') === 'en' && guideLangFor('hi') === 'en'
+  && guideLangFor('ja') === 'en' && guideLangFor('pirate') === 'en'
+  && guideLangFor('en1700') === 'en');
 
 const failed = results.filter((r) => !r.ok).length;
 console.log(`\n${failed === 0 ? `ALL I18N TESTS PASSED (${results.length})` : `${failed} CHECK(S) FAILED`}`);
